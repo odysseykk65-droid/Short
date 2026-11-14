@@ -421,6 +421,19 @@
         ];
 
         // 씬 번호와 전체 씬 개수에 따라 중복 없이 순차적으로 진행되는 서사 생성 함수
+
+        function placeify(r) {
+            const set = ((document.getElementById('castSet') || {}).value || '').trim();
+            const at = set ? ' in ' + set.replace(/^(an?|the|one) /i, 'the ') : '';
+            if (isClassicTopic(currentTopicTitle) && !/어사/.test(currentTopicTitle)) r.action = r.action
+                .replace('rushing through the gate and kneeling before the protagonist', 'arriving and bowing respectfully to the protagonist')
+                .replace('staring at the royal token held high', "staring at the proof of the protagonist's true identity");
+            r.action = r.action.replace('bowing quietly to a rude village magnate', 'bowing quietly to the antagonist').replace(/ tucked in his sleeve/, ' tucked in the sleeve')
+                .replace('taking off his official hat with a defeated face', 'lowering the head with a defeated face');
+            r.action = r.action.replace(/ by a stranger/g, ' by the antagonist').replace(/ a stranger\b/g, ' the antagonist')
+                .replace(/ on a (dusty Joseon-era|village) road| in a busy Joseon marketplace| in a public (Korean )?place| in an everyday Korean place| in a tense everyday Korean setting/g, at || '$&');
+            return r;
+        }
         function getUniqueDistributedStep(catKey, index, total, topic) {
             let character = "A Korean protagonist";
             let action = "";
@@ -439,6 +452,7 @@
                 r = topicify(r, index, total, topic, ov);
                 r = angerify(r, index, total, topic, ov);
                 r = seriesify(r, index, total, topic);
+                r = placeify(r);
                 return r;
             }
 
@@ -690,8 +704,8 @@
                 S = "red-uniform staff and two customers";
                 SET = "Korean fast-food restaurant with a self-order kiosk";
             } else if (CHEOLGUK_CLASSIC_SET.has(topic)) {
-                P = "kind Korean villager in white hanbok with a blue sash";
-                A = "arrogant Korean man in maroon silk hanbok, black horsehair hat, jade ornament";
+                P = "kind Korean villager, ~40, short beard, white hanbok with a blue sash";
+                A = "arrogant Korean nobleman, ~55, black mustache, maroon silk hanbok, black horsehair hat, jade ornament";
                 S = "a few villagers in hanbok";
                 SET = "Joseon-era village hanok courtyard";
             } else {
@@ -737,7 +751,7 @@
         function castText(extras = true) {
             const v = id => (document.getElementById(id) || {}).value || '';
             const ty = pickCheolgukType(currentTopicTitle), warm = ty >= 5, t4 = ty === 4;
-            const head = refMode ? 'Cast (the exact same people as in the attached reference image: identical faces, hair and clothes in every scene)' : 'Cast (same faces, hair and clothes in every scene)';
+            const head = refMode ? 'Cast (the exact same people as in the attached reference image: identical age, faces, hair and clothes in every scene)' : 'Cast (same age, face, hair and clothes in every scene)';
             return `${head}: Protagonist = ${v('castP')}; ${warm ? 'Others = ' + v('castS') : 'Antagonist = ' + v('castA') + (extras ? '; Extras = ' + v('castS') : '')}. Place${t4 ? ' (opening)' : ''}: ${v('castSet')}.`;
         }
 
@@ -891,7 +905,7 @@
                 t = `9:16 vertical video, scene ${i}/${total}. ${castText(false)} Now: ${tagRole(st.character)}: ${st.action}. ${vo2}` + (voMode === 'dialogue' ? "Only the quoted line is spoken; " : includeVO ? "Only the narrator speaks; " : "No speech; ") + (subActive() ? (sty.col[0].toUpperCase() + sty.col.slice(1)) + " Korean subtitles at the top." : "no subtitles.") + " Photorealistic.";
                 tagsOn = true;
             }
-            if (t.length > 899) t = t.replace(' Both main characters visible together, same medium eye-level framing in every shot.', '').replace('Cast (same faces, hair and clothes in every scene):', 'Cast:').replace('Cast (the exact same people as in the attached reference image: identical faces, hair and clothes in every scene):', 'Cast (same people as the reference image):');
+            if (t.length > 899) t = t.replace(' Both main characters visible together, same medium eye-level framing in every shot.', '').replace('Cast (same age, face, hair and clothes in every scene):', 'Cast (same age every scene):').replace('Cast (the exact same people as in the attached reference image: identical age, faces, hair and clothes in every scene):', 'Cast (same people as the reference image):');
             return t;
         }
 
@@ -1312,7 +1326,7 @@
             ["소인은 억울합니다. 죄가 없습니다!", "증거를 대 보아라, 증거를!", "여기 이 물건이 증거입니다.", "허허, 이것을 보니 사실이 분명하구나.", "아, 아닙니다! 그건 오해입니다!", "여봐라, 이자를 끌고 가거라!", "진실은 반드시 밝혀지는 법이옵니다."],
             ["이보시오, 그만하시오. 사람들이 보고 있소.", "내가 무엇을 잘못했단 말이냐!", "저 사람, 아까 그 일을 다 봤어요.", "장터에 벌써 소문이 쫙 퍼졌답니다!", "어딜 가도 수군거리니 얼굴을 못 들겠구나.", "마을 어르신들, 제가 잘못했습니다.", "뿌린 대로 거두는 법이지요."],
             ["나리, 그 분부는 법도에 어긋나옵니다.", "내 말이 곧 법이다! 시키는 대로 해라!", "장부와 문서를 다시 살펴보겠습니다.", "여기 이 기록을 보십시오. 분명히 이리 적혀 있사옵니다.", "암행 감사가 출두했으니 조사를 시작하겠소.", "제, 제가 잘못 알고 있었습니다…", "법도 앞에서는 누구도 예외가 없사옵니다."],
-            ["소인은 괜찮습니다. 가던 길 가겠습니다.", "참으로 천한 것이 말이 많구나!", "아이고, 이 큰일을 어찌하면 좋단 말인가…", "그날 길에서 만났던 그 사람이 바로 나요.", "아… 그때 그분이셨구려…", "그때 제가 큰 잘못을 했습니다. 용서하십시오.", "남에게 베푼 예의는 결국 나에게 돌아오는 법이오."]
+            ["허허, 나는 괜찮소. 하던 일을 마저 하겠소.", "참으로 하찮은 사람이 말이 많구려!", "아이고, 이 큰일을 어찌하면 좋단 말인가…", "그날 그대가 업신여긴 사람이 바로 나요.", "아… 그때 그분이셨구려…", "그때 제가 큰 잘못을 했습니다. 용서하십시오.", "남에게 베푼 예의는 결국 나에게 돌아오는 법이오."]
         ];
         const TITLE_KO_RULES = [[/chairman/, '회장님'], [/founder|CEO/, '대표님'], [/store owner/, '사장님'], [/building owner/, '건물주님'], [/interviewer/, '면접관님'], [/judge/, '판사님'], [/doctor/, '선생님'], [/professor/, '교수님'], [/author/, '작가님'], [/executive/, '이사님'], [/inspector/, '감사관님'], [/police/, '경찰관님']];
         // 상황별(장소·기계) 첫 대사 — 주제 키워드로 고름
@@ -1341,6 +1355,22 @@
         const DLG_ROLES_OTHER = ['P', 'A', 'P', 'A', 'P', 'S', 'P'];
         const ROLE_EN_OTHER = { P: 'the main character', A: 'the second character', S: 'a bystander' };
         const DLG_CONNECT = ["그리고요, ", "그런데, ", "그래서요, ", "저기, "];
+
+        function classicLineFix(line, ty, pos, topic) {
+            const P = (document.getElementById('castP') || {}).value || '';
+            const high = /noble|official|magistrate|scholar|schoolmaster|elder|elderly|inspector|doctor|monk|spirit/i.test(P);
+            if (ty === 0) {
+                if (pos === 0) line = high ? "허허, 그리 노여워 마시오. 내 할 말은 따로 있소." : "제발 노여움을 거두어 주십시오.";
+                if (!/어사/.test(topic)) {
+                    const king = /임금/.test(topic);
+                    if (pos === 3) line = king ? "임금님께서 보내신 분이시오! 모두 예를 갖추시오!" : "이분이 누구신 줄 아시오? 모두 예를 갖추시오!";
+                    if (pos === 4) line = "그, 그런 분이셨습니까…";
+                    if (pos === 5) line = "용서해 주십시오! 제가 잘못했습니다!";
+                }
+            }
+            if (ty === 3 && pos === 0) line = "그 말씀은 법도에 어긋나옵니다.";
+            return line;
+        }
         function getDialogue(index, total, topic) {
             if (themeActive(topic)) return themeDialogue(index, total, topic);
             const srd = seriesMode && !seriesWarm();
@@ -1369,6 +1399,7 @@
                 let title = '대표님';
                 for (const r of TITLE_KO_RULES) if (r[0].test(tw)) { title = r[1]; break; }
                 line = line.replace(/\{T\}/g, title);
+                if (classic) line = classicLineFix(line, ty, pos, topic);
                 roleEn = ROLE_EN[role];
             }
             ko = ROLE_KO[role];
@@ -1498,6 +1529,59 @@
         const PLACE_CLASSIC = [[/주막/, "a Joseon-era roadside tavern"], [/장터|시장/, "a busy Joseon market"], [/관아|사또|고을|원님/, "a Joseon county government yard"], [/절|사찰|스님/, "a mountain Buddhist temple"], [/산|숲|골짜기/, "a Joseon mountain village path"], [/양반|가문|마당|대감/, "a yangban house courtyard"], [/서당/, "a Joseon village school"], [/바다|어촌|포구/, "a Joseon fishing village"]];
         const CAST_P_MODERN = [[/할머니/, "kind elderly Korean grandmother, ~75, gray permed hair, purple cardigan"], [/알바생/, "young Korean part-time worker in an apron"], [/아내|며느리|엄마|딸/, "calm Korean woman, 30s, plain clothes, quiet strength"], [/남편|남자|사나이|사위|아들|개발자/, "calm Korean man, 30s, simple suit"], [/회장|대표/, "Korean executive disguised in plain clothes"]];
         const CAST_A_MODERN = [[/시부모|시집|시댁/, "arrogant Korean in-laws, a couple in their 60s, formal clothes"], [/사위/, "arrogant Korean man, 30s, flashy suit"], [/본부장|상사|팀장/, "arrogant Korean executive, 50s, dark suit"], [/동창/, "snobbish Korean classmate, 30s, designer clothes"], [/사채업자|빚/, "intimidating Korean loan shark, 40s, black jacket"], [/남편/, "arrogant Korean husband, 40s, suit"], [/손님/, "rude Korean customer, 50s, loud jacket"]];
+
+        // ===== 제목에서 등장인물 읽기 (나이·생김새 고정) =====
+        const ROLE_CLASSIC = [
+            ['부잣집 도령', "spoiled rich young Korean master, ~20, smooth face, sky-blue silk hanbok, black gat hat"], ['도령', "arrogant young Korean master, ~20, smooth face, sky-blue silk hanbok, black gat hat"],
+            ['양반 자제', "spoiled young Korean nobleman, ~22, smooth face, jade-green silk hanbok, black gat hat"],
+            ['방랑 선비', "wandering Korean scholar, ~50, gray-streaked beard, worn white hanbok, straw hat"], ['가난한 선비', "poor Korean scholar, ~30, thin mustache, worn white hanbok, black gat hat"], ['선비', "Korean scholar, ~30, thin mustache, white hanbok, black gat hat"], ['서생', "poor young Korean student-scholar, ~25, clean-shaven, white hanbok, black gat hat"],
+            ['훈장', "elderly Korean village schoolmaster, ~65, long white beard, white hanbok, black horsehair cap"], ['문하생', "young Korean pupil, ~22, clean-shaven, light-gray hanbok, topknot"],
+            ['탐관오리', "corrupt Korean official, ~55, black beard, crimson official robe, black official hat"], ['사또', "Korean county magistrate, ~55, black beard, crimson official robe, black official hat"], ['원님', "Korean county magistrate, ~55, black beard, crimson official robe, black official hat"], ['관리', "Korean government official, ~50, black beard, dark-blue official robe, black official hat"],
+            ['암행어사', "Korean royal secret inspector, ~35, neat mustache, shabby gray hanbok, worn gat hat"], ['어사', "Korean royal secret inspector, ~35, neat mustache, shabby gray hanbok, worn gat hat"],
+            ['아전', "sly Korean county clerk, ~45, thin mustache, gray-blue robe, black clerk cap"], ['이방', "sly Korean county clerk, ~45, thin mustache, gray-blue robe, black clerk cap"], ['포졸', "Korean constable, ~35, stubble, black uniform, red-tasseled hat"],
+            ['양반', "arrogant Korean nobleman, ~50, black mustache, maroon silk hanbok, black gat hat"], ['대감', "elderly Korean high official, ~65, white beard, purple silk hanbok, black gat hat"], ['유림', "stern Korean Confucian elder, ~60, gray beard, white robe, black gat hat"], ['원장', "Korean academy head, ~60, gray beard, white robe, black gat hat"], ['내관', "Korean palace eunuch, ~45, beardless face, dark-green robe, black hat"], ['장군', "Korean general, ~50, thick beard, armor"], ['부하', "Korean soldier, ~30, stubble, plain armor"],
+            ['지주', "greedy Korean landowner, ~55, round face, thin mustache, dark-blue silk hanbok, black gat hat"], ['마름', "greedy Korean steward, ~50, stubble, brown hanbok, black gat hat"], ['부자', "greedy rich Korean man, ~55, round face, thin mustache, dark-blue silk hanbok, black gat hat"], ['구두쇠', "stingy rich Korean old man, ~60, sour face, gray goatee, dark hanbok"], ['욕심쟁이', "greedy Korean man, ~45, sly eyes, brown silk hanbok"], ['심술쟁이', "spiteful Korean man, ~40, sneering face, dark hanbok"],
+            ['객주', "greedy Korean merchant broker, ~50, fat face, mustache, brown silk hanbok"], ['약방 주인', "sly Korean apothecary owner, ~50, goatee, gray hanbok"], ['주막 주인', "sly Korean tavern owner, ~45, stubble, faded hanbok, apron"], ['주모', "Korean tavern hostess, ~45, hair in a bun, faded hanbok, apron"], ['주막 할멈', "kind elderly Korean tavern woman, ~70, white hair bun, faded hanbok"], ['주막집 아낙', "kind Korean tavern woman, ~35, hair in a bun, plain hanbok, apron"],
+            ['건달', "Korean street thug, ~30, scar on cheek, disheveled black hanbok"], ['한량', "idle Korean playboy, ~30, smug face, flashy silk hanbok, fan"], ['도적', "Korean bandit, ~35, scruffy beard, ragged dark clothes"], ['산적', "Korean bandit, ~35, scruffy beard, ragged dark clothes"], ['사기꾼', "Korean swindler, ~40, sly grin, borrowed fine hanbok"], ['점쟁이', "Korean fortune-teller, ~50, sly eyes, gray hanbok"], ['마부', "Korean groom, ~35, stubble, coarse hanbok"], ['뱃사공', "Korean ferryman, ~50, sunburned face, straw hat"], ['사공', "Korean ferryman, ~50, sunburned face, straw hat"],
+            ['상인', "Korean merchant, ~40, short beard, faded brown hanbok"], ['장사꾼', "Korean peddler, ~40, short beard, bundle on his back, faded brown hanbok"], ['소금 장수', "Korean salt peddler, ~45, sunburned face, A-frame carrier"], ['소금장수', "Korean salt peddler, ~45, sunburned face, A-frame carrier"],
+            ['소작농', "poor Korean tenant farmer, ~45, sunburned face, patched hemp hanbok, straw headband"], ['농부', "honest Korean farmer, ~45, sunburned face, hemp hanbok, straw headband"], ['어부', "Korean fisherman, ~45, tanned face, rolled-up hemp clothes"], ['나무꾼', "honest Korean woodcutter, ~30, sturdy build, patched hanbok, A-frame carrier"], ['사냥꾼', "Korean hunter, ~40, rugged beard, fur vest, bow"],
+            ['과부', "Korean widow, ~35, hair in a low bun, plain white hanbok"], ['아낙', "kind Korean village woman, ~35, hair in a bun, plain hanbok, apron"], ['효부', "devoted Korean daughter-in-law, ~30, hair in a bun, plain hanbok"], ['며느리', "kind Korean daughter-in-law, ~28, hair in a bun, plain pink hanbok"], ['시어머니', "stern Korean mother-in-law, ~60, gray hair bun, dark hanbok"], ['시댁 어른', "stern Korean elder in-law, ~60, gray beard, dark hanbok"], ['계모', "cruel Korean stepmother, ~45, cold eyes, purple silk hanbok"], ['의붓딸', "kind Korean girl, ~16, long braid, faded pink hanbok"], ['마님', "haughty Korean noblewoman, ~50, jade hairpin, purple silk hanbok"], ['신부', "Korean bride, ~20, red wedding hanbok"], ['처녀', "kind young Korean woman, ~20, long braid, plain hanbok"], ['기생', "Korean gisaeng, ~25, elaborate hair, bright silk hanbok"],
+            ['효자', "devoted young Korean son, ~25, topknot, simple white hanbok"], ['총각', "honest young Korean bachelor, ~25, long braid, simple hanbok"], ['아들', "Korean son, ~35, topknot, plain hanbok"], ['아우', "kind Korean younger brother, ~30, topknot, patched hanbok"], ['형', "greedy Korean elder brother, ~40, mustache, fine silk hanbok"], ['장인', "stern Korean father-in-law, ~60, gray beard, silk hanbok"], ['서자', "Korean illegitimate son, ~22, clean-shaven, plain gray hanbok"],
+            ['노부부', "elderly Korean couple, ~70, white hair, faded hanbok"], ['노인', "elderly Korean man, ~75, white beard, faded hanbok"], ['할아버지', "elderly Korean man, ~75, white beard, faded hanbok"], ['영감', "elderly Korean man, ~70, gray beard, silk hanbok"], ['할머니', "elderly Korean woman, ~75, white hair bun, faded hanbok"], ['할멈', "elderly Korean woman, ~75, white hair bun, faded hanbok"], ['노파', "elderly Korean woman, ~75, white hair bun, faded hanbok"],
+            ['의원', "Korean village doctor, ~50, neat beard, gray robe, medicine box"], ['어린 의원', "young Korean doctor, ~22, clean-shaven, gray robe, medicine box"], ['스님', "Korean Buddhist monk, ~55, shaved head, gray robes"], ['승려', "Korean Buddhist monk, ~55, shaved head, gray robes"], ['충신', "loyal Korean official, ~50, gray beard, white robe"],
+            ['나그네', "weary Korean traveler, ~40, short beard, straw hat, dusty gray hanbok"], ['길손', "weary Korean traveler, ~40, short beard, straw hat, dusty gray hanbok"], ['백성', "poor Korean villager, ~40, plain white hanbok"], ['이웃', "Korean neighbor, ~45, mustache, plain hanbok"], ['마을 사람들', "a few Korean villagers in hanbok"], ['노비', "young Korean servant, ~18, coarse hemp hanbok"], ['어린 종', "young Korean servant boy, ~13, coarse hemp hanbok"], ['여종', "young Korean maidservant, ~18, braid, coarse hanbok"], ['아이', "young Korean child, ~8, plain hanbok"], ['남매', "Korean brother and sister, ~10, plain hanbok"], ['의병', "Korean volunteer soldier, ~30, headband, plain hanbok"], ['죄인', "Korean prisoner, ~30, white prison clothes"],
+            ['도둑', "Korean thief, ~35, scruffy beard, ragged dark clothes"], ['효녀', "devoted young Korean daughter, ~18, long braid, plain hanbok"], ['온달', "kind simple Korean young man, ~25, messy hair, ragged hanbok"], ['도깨비', "mischievous Korean goblin (dokkaebi), one horn, wild hair, club"], ['호랑이', "big Korean tiger"], ['구미호', "Korean nine-tailed fox spirit as a beautiful woman, ~25, white hanbok"], ['산신령', "Korean mountain spirit, white long beard, white robe, staff"], ['선녀', "Korean heavenly maiden, ~20, flowing pastel hanbok"], ['저승사자', "Korean grim reaper, pale face, black robe, black gat hat"], ['용왕', "Korean Dragon King, ~60, golden crown, blue royal robe"]
+        ];
+        const ROLE_MODERN = [
+            ['시부모', "arrogant Korean in-laws, a couple ~65, formal clothes"], ['시어머니', "arrogant Korean mother-in-law, ~65, permed hair, pearl necklace"], ['시누이', "snobbish Korean sister-in-law, ~35, designer dress"], ['며느리', "calm Korean daughter-in-law, ~32, long black hair, beige knit"], ['사위', "humble Korean son-in-law, ~35, short hair, navy suit"], ['장인', "arrogant Korean father-in-law, ~65, gray hair, golf wear"], ['장모', "arrogant Korean mother-in-law, ~62, permed hair, pearl necklace"], ['신부', "Korean bride, ~30, white wedding dress"], ['남편', "arrogant Korean husband, ~45, slicked hair, dark suit"], ['아내', "calm Korean wife, ~40, shoulder-length hair, cream blouse"],
+            ['대표', "arrogant Korean company CEO, ~55, gray-streaked hair, dark suit"], ['사장', "greedy Korean shop owner, ~55, bald patch, polo shirt"], ['업주', "greedy Korean business owner, ~55, bald patch, polo shirt"], ['부장', "arrogant Korean department manager, ~50, glasses, gray suit"], ['팀장', "arrogant Korean team leader, ~45, slicked hair, navy suit"], ['상사', "arrogant Korean boss, ~50, glasses, gray suit"], ['직원', "Korean employee, ~30, short hair, office shirt"], ['선배', "arrogant Korean senior coworker, ~38, slicked hair, gray suit"], ['과장', "arrogant Korean manager, ~42, glasses, gray suit"], ['차장', "arrogant Korean deputy manager, ~45, slicked hair, navy suit"], ['대리', "arrogant Korean assistant manager, ~35, slicked hair, blue shirt"], ['인턴', "young Korean intern, ~24, neat hair, white shirt, ID badge"], ['팀원', "Korean team member, ~30, short hair, office shirt"], ['친척', "snobbish Korean relative, ~55, flashy jacket"], ['첫사랑', "Korean woman, ~40, gentle smile, long hair, camel coat"], ['선생님', "Korean teacher, ~45, glasses, cardigan"], ['신입', "Korean new employee, ~26, neat hair, white shirt"],
+            ['동창', "snobbish Korean classmate, ~40, designer clothes"], ['친구', "Korean friend, ~40, casual jacket"], ['사촌', "Korean cousin, ~40, flashy jacket"], ['형제', "Korean brothers, ~45, suits"], ['형', "greedy Korean elder brother, ~50, dark suit"], ['동생', "Korean younger sibling, ~40, plain clothes"], ['거래처', "Korean business partner, ~50, gray suit"], ['건설사', "Korean construction executive, ~55, dark suit"], ['집주인', "greedy Korean landlord, ~60, gray hair, vest"], ['이웃', "rude Korean neighbor, ~50, tracksuit"], ['손님', "rude Korean customer, ~50, loud flashy jacket"], ['할머니', "elderly Korean grandmother, ~75, gray permed hair, purple cardigan"], ['할아버지', "elderly Korean grandfather, ~75, white hair, beige jacket"], ['어머니', "Korean mother, ~65, short permed hair, plain cardigan"], ['엄마', "Korean mother, ~60, short permed hair, plain cardigan"], ['아버지', "Korean father, ~65, gray hair, plain jacket"], ['아들', "Korean son, ~35, short hair, plain shirt"], ['딸', "Korean daughter, ~30, long hair, plain blouse"], ['알바생', "young Korean part-timer, ~22, ponytail, apron"], ['학생', "Korean student, ~17, school uniform"], ['교사', "Korean teacher, ~40, glasses, cardigan"], ['학부모', "demanding Korean parent, ~45, designer coat"], ['의사', "Korean doctor, ~45, white coat"], ['기사', "Korean driver, ~50, cap, vest"], ['경비원', "elderly Korean security guard, ~65, gray uniform"], ['소년', "Korean boy, ~12, striped T-shirt"], ['소녀', "Korean girl, ~12, pigtails, yellow dress"]
+        ];
+        const ROLE_FAIRY = [['아기 곰', "cute baby bear with a red scarf"], ['곰', "cute brown bear with a red scarf"], ['토끼', "cute white rabbit with a blue vest"], ['고슴도치', "cute little hedgehog with a green backpack"], ['개구리', "cute green frog with a yellow raincoat"], ['요정', "tiny flower fairy with glowing wings"], ['다람쥐', "cute squirrel siblings with acorn hats"], ['병아리', "cute yellow chick"], ['아기 거북', "cute baby sea turtle"], ['거북', "cute sea turtle"], ['갈매기', "friendly white seagull"], ['등대지기', "kind lighthouse keeper, ~70, white beard, navy coat"], ['소년', "Korean boy, ~8, red sweater"], ['소녀', "Korean girl, ~8, pigtails, yellow dress"], ['꼬마 화가', "little Korean painter boy, ~8, beret, paint-stained apron"], ['병정', "small toy soldier"], ['인형', "old rag doll with button eyes"], ['눈사람', "smiling snowman with a carrot nose"], ['고양이', "cute orange kitten"], ['강아지', "cute white puppy"], ['여우', "clever little fox"], ['부엉이', "wise owl with round glasses"], ['꼬마 비행사', "little Korean astronaut boy, ~8, white spacesuit"], ['꼬마 마녀', "little witch girl, ~8, purple hat"], ['마녀', "little witch girl, ~8, purple hat"]];
+        function findRoles(text, dict) {
+            const hits = [];
+            dict.forEach(([k, d]) => { let i = text.indexOf(k); while (i >= 0) { hits.push({ i, e: i + k.length, k, d }); i = text.indexOf(k, i + 1); } });
+            hits.sort((a, b) => a.i - b.i || (b.e - b.i) - (a.e - a.i));
+            const out = []; let end = -1;
+            hits.forEach(h => { if (h.i >= end) { out.push(h); end = h.e; } });
+            return out;
+        }
+        function readCast(setup, warm, dict) {
+            const hits = findRoles(setup, dict), n = setup.length;
+            if (!hits.length) return {};
+            const after = h => setup.slice(h.e, h.e + 3);
+            const atEnd = hits.filter(h => h.e >= n - 1);
+            const subj = hits.find(h => /^(이|가|은|는) /.test(after(h)));
+            const obj = hits.find(h => /^(을|를|의|에게|께|과|와)/.test(after(h)));
+            if (warm) {
+                const hero = atEnd[0] || subj || hits[0];
+                const other = hits.find(h => h !== hero);
+                return { P: hero.d, S: other ? other.d : '' };
+            }
+            const off = subj || atEnd[0];
+            let vic = obj && obj !== off ? obj : hits.find(h => h !== off);
+            return { P: vic ? vic.d : '', A: off ? off.d : '' };
+        }
         function deriveOtherCard(topic) {
             const base = splitBM(topic).base, classic = CLASSICAL_CATS.includes(currentCategory);
             const pick = (rules, d) => { for (const r of rules) if (r[0].test(base)) return r[1]; return d; };
@@ -1511,9 +1595,18 @@
                 A = pick(CAST_A_MODERN, "arrogant Korean man, 50s, slicked hair, bold green jacket, gold watch");
                 SET = firstRule(PLACE_RULES, base) || "an everyday Korean location fitting the story";
             }
+            const setupT = SERIES_META[topic] ? splitTitle(topic)[0] : base;
+            const warmT = (SERIES_META[topic] && SERIES_META[topic].warm) || currentCategory === 'daily' || currentCategory === 'fairytale';
+            const rc = readCast(setupT, warmT, currentCategory === 'fairytale' ? ROLE_FAIRY : (classic ? ROLE_CLASSIC : ROLE_MODERN));
+            if (!rc.P && currentCategory === 'fairytale') P = "cheerful little Korean child, ~8, yellow raincoat";
+            if (rc.P) P = rc.P;
+            if (rc.A && rc.A !== P) A = rc.A;
+            let Sx = rc.S || '';
             let T = firstRule(TWIST_RULES, base.slice(-16));
             if (!T && classic && /정체|암행|어사|방랑|선비|떠돌|변장|숨/.test(base)) T = "the disguised hero's true identity and proof of the offender's crimes";
-            return { P, A, S: classic ? "a few villagers in hanbok" : "two or three bystanders in everyday clothes", SET, T };
+            if (/Korean/.test(P) && !/~\d|\d0s/.test(P)) P += ', ~40';
+            if (/Korean/.test(A) && !/~\d|\d0s/.test(A)) A += ', ~50';
+            return { P, A, S: Sx || (classic ? "a few villagers in hanbok" : "two or three bystanders in everyday clothes"), SET, T };
         }
         // ===== /전체 카테고리 스토리 엔진 =====
 
