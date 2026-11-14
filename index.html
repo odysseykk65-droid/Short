@@ -287,7 +287,7 @@
                 </div>
             </div>
 
-            <button onclick="retroOpen()" id="retroOpenBtn" style="width:100%;border:4px solid #7f1d1d;border-radius:24px;padding:16px 12px;background:linear-gradient(90deg,#dc2626,#facc15);color:#fff;font-weight:900;font-size:18px;text-shadow:1px 1px 2px #7f1d1d;box-shadow:0 4px 10px rgba(0,0,0,.25)">📻 7080 추억 댄스·풍경<br><span style="font-size:13px">영상 + 음성 + 자막 (별도 항목)</span></button>
+            <button onclick="retroOpen()" id="retroOpenBtn" style="width:100%;border:4px solid #7f1d1d;border-radius:24px;padding:16px 12px;background:linear-gradient(90deg,#dc2626,#facc15);color:#fff;font-weight:900;font-size:18px;text-shadow:1px 1px 2px #7f1d1d;box-shadow:0 4px 10px rgba(0,0,0,.25)">📻 7080 추억 · 🌍 세계 춤(내가 주인공)<br><span style="font-size:13px">영상 + 음성 + 자막 (별도 항목)</span></button>
             <!-- 주제 검색 및 카테고리 탭 -->
             <div class="bg-white border-4 border-amber-500 rounded-3xl p-5 sm:p-6 shadow-xl flex flex-col flex-grow card-box">
                 <input type="text" id="searchInput" oninput="filterTopics()" placeholder="🔍 1,400선 전체 주제 검색" class="w-full p-3.5 bg-amber-50 border-3 border-amber-400 rounded-2xl text-sm font-black text-slate-950 placeholder-slate-500 mb-3 focus:outline-none focus:ring-4 focus:ring-amber-300 shadow-inner">
@@ -2143,10 +2143,10 @@
 #retroOverlay .rlabel{font-weight:900;font-size:13px;color:#7c2d12;margin:10px 0 4px}
 #retroOverlay .rbox{background:#fffbeb;border:2px solid #fcd34d;border-radius:12px;padding:10px;font-size:14px;line-height:1.55;color:#111;word-break:keep-all;white-space:pre-wrap}
 #retroOverlay .rcopy{background:#dc2626;color:#fff;margin-top:6px;padding:10px 14px;font-size:14px}
-#retroOverlay .rsub{display:block;text-align:center;font-weight:900;font-size:22px;line-height:1.35;color:#facc15;background:#b91c1c;border-radius:12px;padding:10px 8px;text-shadow:-1.5px -1.5px 0 #450a0a,1.5px -1.5px 0 #450a0a,-1.5px 1.5px 0 #450a0a,1.5px 1.5px 0 #450a0a,0 3px 4px rgba(0,0,0,.45)}
+#retroOverlay .rsub{word-break:keep-all;display:block;text-align:center;font-weight:900;font-size:22px;line-height:1.35;color:#facc15;background:#b91c1c;border-radius:12px;padding:10px 8px;text-shadow:-1.5px -1.5px 0 #450a0a,1.5px -1.5px 0 #450a0a,-1.5px 1.5px 0 #450a0a,1.5px 1.5px 0 #450a0a,0 3px 4px rgba(0,0,0,.45)}
 </style>
 <div style="position:sticky;top:0;background:#7c2d12;color:#fff;padding:12px 14px;z-index:2;display:flex;align-items:center;gap:10px">
-<div style="font-weight:900;font-size:18px;flex:1">📻 7080 추억 · 영상+음성+자막</div>
+<div style="font-weight:900;font-size:18px;flex:1">📻 추억·세계 춤 · 영상+음성+자막</div>
 <button class="rbtn" style="background:#fff;color:#7c2d12" onclick="retroClose()">✕ 닫기</button>
 </div>
 <div style="max-width:760px;margin:0 auto;padding:12px 14px 60px">
@@ -2154,6 +2154,8 @@
 <button id="rtabD" class="rbtn" style="flex:1" onclick="retroTab('D')">🕺 댄스 (<span id="rcntD"></span>)</button>
 <button id="rtabS" class="rbtn" style="flex:1" onclick="retroTab('S')">🏘️ 풍경 (<span id="rcntS"></span>)</button>
 </div>
+<div style="margin-bottom:8px"><button id="rtabW" class="rbtn" style="width:100%" onclick="retroTab('W')">🌍 세계 춤 · 내가 주인공 (<span id="rcntW"></span>)</button></div>
+<div id="rphoto" style="display:none;background:#dbeafe;border:2px solid #2563eb;border-radius:14px;padding:10px;font-size:14px;font-weight:800;color:#1e3a8a;line-height:1.6;margin-bottom:8px">📸 사용법<br>① 유튜브 크리에이트에 <b>내 사진(얼굴이 잘 나온 전신·상반신)</b>을 먼저 올립니다.<br>② 이 화면에서 영상 프롬프트를 복사해 붙여넣습니다.<br>③ 자막·음성 대본은 따로 복사해 넣으면 내가 주인공인 춤 영상이 됩니다.<div style="margin-top:8px;border-top:2px dashed #2563eb;padding-top:8px">💃 <b>짝춤(왈츠·탱고·살사 등) 파트너</b> — 모두 한국인으로 나옵니다<br><span id="rpbtns" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></span></div></div>
 <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
 <span style="font-weight:900;font-size:13px;color:#7c2d12">화면 비율</span>
 <button id="rr169" class="rbtn" style="padding:8px 12px;font-size:13px" onclick="retroRatio('16:9')">16:9 가로</button>
@@ -2246,11 +2248,61 @@ var RETRO_SCENE=[
 ['여름 개울 멱감기','Korean children swimming and splashing in a clear village stream in the summer of the 1970s, laughing, watermelon on the rocks','한여름이면 개울가에서 물장구치며 놀던 멱감기의 추억입니다!']
 ];
 
+var RETRO_WORLD=[
+['살사 댄스','쿠바·콜롬비아','a lively salsa dance floor in a Latin club, fast spins, ruffled red dress or open-collar shirt, warm colorful lights, live band','뜨거운 라틴 리듬에 맞춰 빙글빙글 도는 살사 댄스'],
+['왈츠','오스트리아','a grand Viennese ballroom with crystal chandeliers, elegant long gown or tailcoat, graceful waltz turns across a polished floor','샹들리에 아래에서 우아하게 원을 그리는 빈의 왈츠'],
+['플라멩코','스페인','a Spanish tablao stage in Andalusia, a black-and-red ruffled flamenco dress or fitted vest, stomping heels, hand clapping, a guitarist beside','발을 구르고 손뼉을 치며 정열을 쏟아내는 스페인의 플라멩코'],
+['탱고','아르헨티나','a vintage Buenos Aires milonga at night, close tango embrace, elegant black outfit, dim amber street lamps, bandoneon music','골목 불빛 아래 깊이 안고 걷는 아르헨티나 탱고'],
+['삼바','브라질','a bright Rio de Janeiro carnival parade, feathered costume and sequins, fast samba steps, confetti, cheering crowd','화려한 깃털과 반짝이로 카니발을 달구는 브라질 삼바'],
+['룸바','쿠바','a sunny Havana courtyard with colorful old buildings, romantic rumba with swaying hips, flowing shirt or dress','부드러운 허리 움직임이 매력인 쿠바의 룸바'],
+['차차차','쿠바','a retro ballroom with bright lights, playful cha-cha-cha steps, sparkling outfit, cheerful smile','경쾌한 박자에 장난스럽게 스텝을 밟는 차차차'],
+['자이브','영국·미국','a 1950s-style dance hall, fast jive kicks and flicks, polka-dot dress or suspenders and bow tie, energetic crowd','통통 튀는 발차기가 신나는 자이브'],
+['파소 도블레','스페인','a dramatic bullfighting-inspired stage, bold red cape movement, proud posture, matador-style costume, spotlight','투우사처럼 당당하게 걷는 스페인의 파소 도블레'],
+['바차타','도미니카','a seaside Caribbean bar at dusk, sensual bachata steps with small hip sways, lanterns and palm trees, acoustic guitar music','카리브 바다 노을 아래 감성적인 바차타'],
+['메렝게','도미니카','a Caribbean beach party, quick small steps and hip rotations, colorful shirts and dresses, laughing friends','빠른 발걸음으로 흥겹게 흔드는 카리브의 메렝게'],
+['벨리댄스','이집트·중동','an elegant Middle Eastern hall with lanterns and silk drapes, a sparkling belly dance costume with coin belt, flowing veils','반짝이는 장신구와 부드러운 허리 움직임의 벨리댄스'],
+['발레','러시아·프랑스','a grand theater stage with a velvet curtain, white tutu or classical ballet outfit, graceful leaps and pirouettes, soft spotlight','토슈즈로 사뿐히 날아오르는 우아한 발레'],
+['캉캉','프랑스','a Parisian cabaret stage with red curtains, layered ruffled skirts, high kicks in a line, festive lights','치마를 휘날리며 다리를 높이 차올리는 파리의 캉캉'],
+['폴카','체코·폴란드','a cheerful European village festival, folk costumes, lively polka hops and spins, wooden stage with garlands','경쾌하게 콩콩 뛰며 도는 유럽 마을 축제의 폴카'],
+['하와이 훌라','하와이','a Hawaiian beach at sunset, flower lei and grass skirt, gentle hula hand movements, palm trees and ocean waves','파도 소리에 맞춰 손끝으로 이야기하는 하와이의 훌라'],
+['타히티안 댄스','타히티','a tropical Tahitian island beach, fast hip shaking, woven coconut-fiber costume and flower crown, drums, bonfire','북소리에 맞춰 엉덩이를 빠르게 흔드는 타히티의 춤'],
+['볼리우드 댄스','인도','a colorful Indian film set with vibrant saris or kurtas, expressive hand gestures and joyful group choreography, marigold decorations','화려한 색과 활기찬 동작이 가득한 인도 볼리우드 댄스'],
+['바라타나티암','인도','an ancient Indian temple hall with oil lamps, traditional classical dance costume, expressive eyes and precise hand mudras','손짓과 눈빛으로 이야기를 전하는 인도의 전통 무용'],
+['아이리시 스텝댄스','아일랜드','an Irish pub stage, rapid footwork with a stiff upper body, green embroidered costume, fiddle and tin whistle musicians','상체는 곧게, 발은 번개처럼 움직이는 아일랜드 스텝댄스'],
+['코사크 댄스','러시아','a snowy Russian festival stage, deep squat kicking dance, red boots and embroidered tunic, fast drum music','쪼그려 앉아 다리를 차 내는 러시아 코사크 댄스'],
+['시르타키','그리스','a white-and-blue Greek island taverna by the sea, line dance with arms on shoulders, bouzouki music, sunny terrace','어깨동무하고 바다 앞에서 추는 그리스의 시르타키'],
+['하카','뉴질랜드','a dramatic New Zealand coastal cliff at dawn, powerful haka stance with stomping feet, traditional Maori-inspired outfit, intense expression','발을 구르며 힘을 보여 주는 뉴질랜드의 하카'],
+['탭댄스','미국','a vintage Broadway stage, shiny tap shoes, black vest and hat, rhythmic tapping, golden spotlight','구두 소리로 리듬을 만드는 브로드웨이 탭댄스'],
+['재즈 댄스','미국','a stylish jazz theater stage, bold dramatic poses, black outfit, dynamic spins and kicks, smoky stage light','재즈 선율에 맞춰 멋을 부리는 재즈 댄스'],
+['린디합 스윙','미국','a 1940s swing dance hall, big band music, high-waisted skirt or suspenders, lively swing-outs and lifts','빅밴드 음악에 맞춰 신나게 도는 스윙 댄스'],
+['힙합 댄스','미국','an urban street dance studio with graffiti walls, baggy streetwear and sneakers, groovy hip-hop moves, boom box beat','비트에 몸을 맡기는 자유로운 힙합 댄스'],
+['컨트리 라인댄스','미국','a rustic American barn party, cowboy hat and boots, a line of dancers stepping in sync, country music, string lights','카우보이 부츠로 줄 맞춰 추는 컨트리 라인댄스'],
+['봉오도리','일본','a Japanese summer festival at night with paper lanterns, a yukata, a circle dance around a drum tower, fireworks glow','등불 아래 둥글게 모여 추는 일본의 봉오도리'],
+['한국 부채춤','한국','a Korean traditional stage, a colorful hanbok, large decorated folding fans opening like flowers, elegant slow movements, soft light','꽃처럼 펼쳐지는 부채와 고운 한복의 한국 부채춤'],
+['아프리칸 댄스','아프리카','an African village at golden hour, vibrant patterned clothing, energetic drumming, powerful jumps and ground stomps, joyful crowd','북소리에 온몸을 맡기는 힘찬 아프리카 춤'],
+['타란텔라','이탈리아','a sunny Italian seaside village square, tambourines, a folk dress or vest, fast spinning folk dance, strings of lights','탬버린 소리에 맞춰 빠르게 도는 이탈리아의 타란텔라'],
+['수피 회전춤','튀르키예','a historic Turkish hall with stone arches, a long white flowing skirt and tall hat, slow endless spinning with arms open, soft light','두 팔을 펼치고 끝없이 도는 튀르키예의 수피 회전춤']
+];
+
+var RETRO_WEN=['salsa', 'waltz', 'flamenco', 'tango', 'samba', 'rumba', 'cha-cha-cha', 'jive', 'paso doble', 'bachata', 'merengue', 'belly dance', 'ballet', 'cancan', 'polka', 'Hawaiian hula', 'Tahitian dance', 'Bollywood dance', 'Bharatanatyam', 'Irish step dance', 'Cossack dance', 'Greek Sirtaki', 'haka', 'tap dance', 'jazz dance', 'lindy hop swing dance', 'hip-hop dance', 'country line dance', 'Japanese Bon Odori', 'Korean fan dance', 'African dance', 'tarantella', 'Sufi whirling dance'];
+var RETRO_COUPLE={'살사 댄스':1,'왈츠':1,'탱고':1,'룸바':1,'차차차':1,'자이브':1,'파소 도블레':1,'바차타':1,'메렝게':1,'폴카':1,'린디합 스윙':1,'타란텔라':1};
+var rPartner='auto';
 var rTab='D',rRatio='16:9';
 var CIR='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿';
 function num(i){return i<CIR.length?CIR.charAt(i):'('+(i+1)+')';}
 function ratioTxt(){return rRatio==='16:9'?'16:9 widescreen':'9:16 vertical';}
+function partnerTxt(n){
+ if(!RETRO_COUPLE[n])return 'all other people in the scene are Korean,';
+ if(rPartner==='solo')return 'dancing alone as a solo performance, all other people in the scene are Korean,';
+ var who=rPartner==='male'?'a Korean male':rPartner==='female'?'a Korean female':'a Korean';
+ var extra=rPartner==='auto'?' of the opposite gender':'';
+ return 'dancing together with '+who+' dance partner'+extra+' of similar age, an elegant Korean-looking partner (not foreign), holding each other in proper dance hold, all other people in the scene are Korean,';
+}
 function build(kind,i){
+ if(kind==='W'){var w=RETRO_WORLD[i];return {
+  vid:'The main dancer is the person from my uploaded reference photo: keep exactly the same face, hairstyle, skin tone, age and body type, and make that person the star of the video. Scene: '+w[2]+'. The person dances the '+RETRO_WEN[i]+' with confident, natural, joyful movement, '+partnerTxt(w[0])+' full body visible, '+ratioTxt()+', cinematic, photorealistic, no text or letters in the picture.',
+  sub:'세계의 춤 '+num(i)+' '+w[0]+'! 내가 주인공!',
+  voi:w[3]+', 이 무대의 주인공은 바로 나입니다!',name:w[0]+' ('+w[1]+')'};}
  var arr=kind==='D'?RETRO_DANCE:RETRO_SCENE,it=arr[i];
  var word=kind==='D'?'댄스':'풍경';
  return {
@@ -2270,7 +2322,7 @@ window.retroCopy=function(kind,i,part,btn){
 };
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function render(){
- var arr=rTab==='D'?RETRO_DANCE:RETRO_SCENE,h='';
+ var arr=rTab==='D'?RETRO_DANCE:(rTab==='W'?RETRO_WORLD:RETRO_SCENE),h='';
  for(var i=0;i<arr.length;i++){
   var d=build(rTab,i);
   h+='<div class="rcard"><div style="font-weight:900;font-size:17px;color:#7c2d12">'+num(i)+' '+esc(d.name)+'</div>'
@@ -2282,13 +2334,17 @@ function render(){
  document.getElementById('retroList').innerHTML=h;
  var on='background:#b45309;color:#fff',off='background:#e5e7eb;color:#111';
  document.getElementById('rtabD').style.cssText=rTab==='D'?on:off;
- document.getElementById('rtabS').style.cssText=rTab==='S'?on:off;
+ document.getElementById('rtabS').style.cssText=rTab==='S'?on:off;document.getElementById('rtabW').style.cssText=rTab==='W'?on:off;document.getElementById('rphoto').style.display=rTab==='W'?'block':'none';
+ var pb=[['auto','자동(반대 성별)'],['male','남성 파트너'],['female','여성 파트너'],['solo','혼자 춤추기']],ph='';
+ pb.forEach(function(x){var a=rPartner===x[0];ph+='<button class="rbtn" style="padding:8px 12px;font-size:13px;'+(a?'background:#1d4ed8;color:#fff':'background:#fff;color:#1e3a8a;border:2px solid #2563eb')+'" onclick="retroPartner(\''+x[0]+'\')">'+x[1]+'</button>';});
+ document.getElementById('rpbtns').innerHTML=ph;
  document.getElementById('rr169').style.cssText=(rRatio==='16:9'?on:off)+';padding:8px 12px;font-size:13px';
  document.getElementById('rr916').style.cssText=(rRatio==='9:16'?on:off)+';padding:8px 12px;font-size:13px';
 }
 window.retroTab=function(k){rTab=k;render();document.getElementById('retroOverlay').scrollTop=0;};
 window.retroRatio=function(r){rRatio=r;render();};
-window.retroOpen=function(){document.getElementById('rcntD').textContent=RETRO_DANCE.length;document.getElementById('rcntS').textContent=RETRO_SCENE.length;document.getElementById('retroOverlay').style.display='block';document.body.style.overflow='hidden';render();};
+window.retroPartner=function(p){rPartner=p;render();};
+window.retroOpen=function(){document.getElementById('rcntD').textContent=RETRO_DANCE.length;document.getElementById('rcntS').textContent=RETRO_SCENE.length;document.getElementById('rcntW').textContent=RETRO_WORLD.length;document.getElementById('retroOverlay').style.display='block';document.body.style.overflow='hidden';render();};
 window.retroClose=function(){document.getElementById('retroOverlay').style.display='none';document.body.style.overflow='';};
 })();
 </script>
