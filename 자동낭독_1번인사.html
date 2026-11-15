@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>자동 낭독 · 1번 인사</title>
+<style>
+html,body{margin:0;height:100%;background:var(--bg,#000);color:#fff;font-family:system-ui,"Malgun Gothic",sans-serif;overflow:hidden}
+#v{position:absolute;inset:0 0 auto 0;height:calc(100% - 150px);overflow:hidden}
+#t{padding:0 7%;font-size:46px;line-height:1.7;font-weight:900;text-align:center;will-change:transform}
+#t p{margin:0 0 1em;color:var(--on,#fde047);-webkit-text-stroke:7px var(--ol,#991b1b);paint-order:stroke fill;opacity:.8;transition:opacity .5s,transform .5s}
+#t p.on{opacity:1;transform:scale(1.07)}
+body.fade #t p{opacity:.3}body.fade #t p.on{opacity:1}
+#c{position:absolute;left:0;right:0;bottom:0;min-height:150px;background:#111;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;padding:8px;box-sizing:border-box}
+button,.fl{border:0;border-radius:12px;padding:10px 13px;font-size:15px;font-weight:900;cursor:pointer;color:#fff}
+#go{background:#16a34a}#tts{background:#2563eb}#man{background:#7c3aed}#rs{background:#475569}.fl{background:#b45309;display:inline-block}
+label,.sp{font-size:13px;color:#cbd5e1;display:flex;align-items:center;gap:4px}
+#st{width:100%;text-align:center;font-size:13px;color:#fbbf24}
+.sw{width:28px;height:28px;border-radius:50%;border:3px solid #fff;padding:0;cursor:pointer}
+#co,#cl,#cc{width:36px;height:30px;border:0;padding:0;background:none;cursor:pointer}
+#spv{min-width:48px;font-weight:900;color:#fff}
+body.hide #c{display:none}body.hide #v{height:100%}
+</style></head><body>
+<div id="v"><div id="t"></div></div>
+<div id="c">
+<label class="fl">🎙️ 음성 파일 불러오기<input id="f" type="file" accept="audio/*" multiple style="display:none"></label>
+<button id="sv" style="background:#0e7490">💾 음성 포함해서 저장</button><button id="go">▶ 시작</button><button id="tts">🔊 임시 목소리</button><button id="man">📜 글만 올리기</button><button id="rs">⏮ 처음</button>
+<span class="sp">속도 <input id="sp" type="range" min="0.6" max="1.5" step="0.05" value="1"><b id="spv">1.0×</b></span>
+<label>글자 <input id="fs" type="range" min="28" max="80" value="46"></label>
+<span class="sp">배경
+<button class="sw" data-c="#000000" style="background:#000"></button><button class="sw" data-c="#0f2a5c" style="background:#0f2a5c"></button><button class="sw" data-c="#14532d" style="background:#14532d"></button><button class="sw" data-c="#581c87" style="background:#581c87"></button><button class="sw" data-c="#7f1d1d" style="background:#7f1d1d"></button><button class="sw" data-c="#fef3c7" style="background:#fef3c7"></button><input id="cc" type="color" value="#000000" title="원하는 색 고르기"></span>
+<span class="sp">글자색<input id="co" type="color" value="#fde047"> 테두리<input id="cl" type="color" value="#991b1b"><button id="ca" style="padding:6px 9px;font-size:12px;background:#475569">자동</button></span>
+<label><input id="fd" type="checkbox"> 다른 줄 흐리게</label>
+<label><input id="hd" type="checkbox"> 버튼 숨기기(녹화용) · 스페이스바=시작/멈춤</label>
+<div id="st">음성 파일을 불러오거나, 파일 없이 '글만 올리기·임시 목소리'로 연습해 보세요.</div>
+</div>
+<script>
+var L=["오늘은 추억의 7080 댄스와 그 시절 풍경을,|내 손으로 영상으로 만들어 보는 시간입니다.","어렵지 않습니다.|사진 한 장을 올리고, 글을 붙여넣고, 버튼만 누르면 됩니다.","처음이라 걱정되시죠? 괜찮습니다.|저도 처음엔 그랬습니다.","천천히 하나씩 같이 해 볼 테니,|편하게 따라와 주세요.","틀려도 됩니다. 다시 하면 됩니다.","오늘 수업이 끝나면,|내가 주인공인 나만의 추억 영상이 완성됩니다.","자, 함께 시작해 볼까요?"];
+var $=function(i){return document.getElementById(i)},t=$('t'),v=$('v'),st=$('st'),ps,files=[],aud=null,mode=null,spd=1,raf=0,last=0,hl=-1;
+t.innerHTML=L.map(function(s){return '<p>'+s.split('|').join('<br>')+'</p>'}).join('');ps=[].slice.call(t.children);
+function say(m){st.textContent=m}
+var forceK=-1,D=[],TT=[],BB=[];function recalc(){TT=ps.map(function(p){return p.offsetTop});BB=ps.map(function(p,i){return TT[i]+p.offsetHeight})}
+function T(k){return TT[k]}function B(k){return BB[k]}
+function lerp(a,b,f){return a+(b-a)*Math.max(0,Math.min(1,f))}
+function setPtr(y){t.style.transform='translate3d(0,'+(v.clientHeight*.45-y).toFixed(2)+'px,0)';
+ var k=0;for(var i=0;i<ps.length;i++){if(T(i)<=y+2)k=i}if(forceK>=0)k=forceK;
+ if(k!==hl){hl=k;ps.forEach(function(p,j){p.className=j===k?'on':''})}}
+function startPos(){return T(0)}
+var S={},cy=0,ctLast=-1,ctWall=0;
+function ct(){if(!aud)return 0;var c=aud.currentTime,n=performance.now();if(c!==ctLast){ctLast=c;ctWall=n}
+ var ex=aud.paused?0:Math.min((n-ctWall)/1000*aud.playbackRate,0.25);return Math.min(aud.duration||1e9,c+ex)}
+function smooth(target,dt,tau){cy+=(target-cy)*(1-Math.exp(-dt/tau));return cy}
+function stop(){mode=null;forceK=-1;cancelAnimationFrame(raf);if(aud){aud.pause();aud=null}try{speechSynthesis.cancel()}catch(e){}$('go').textContent='▶ 시작'}
+function reset(){stop();recalc();hl=-1;ps.forEach(function(p){p.className=''});cy=startPos();setPtr(cy);hl=-1}
+function finish(){forceK=-1;cy=B(ps.length-1);setPtr(cy);mode=null;$('go').textContent='▶ 다시';say('✅ 끝까지 읽었습니다')}
+$('rs').onclick=reset;
+// ---- 매 프레임
+function frame(ts){if(!mode)return;var dt=(ts-last)/1000;last=ts;var y;
+ if(mode==='multi'){
+  var gf=0;if(S.phase==='gap'){gf=(ts-S.gs)/S.gd}
+  if(S.phase==='audio'){y=lerp(T(S.i),B(S.i),aud&&aud.duration?ct()/aud.duration:0)}
+  else{y=lerp(B(S.i),T(Math.min(S.i+1,ps.length-1)),gf)}
+  if(durOk()){var sum=0,bef=0;for(var q=0;q<D.length;q++){sum+=D[q];if(q<S.i)bef+=D[q]}
+   var G=0.6,tot=sum+G*(D.length-1),within=S.phase==='audio'?(aud?ct():0):D[S.i]+Math.min(1,gf)*G;
+   var yl=lerp(T(0),B(ps.length-1),(bef+S.i*G+within)/tot),sl=Math.max(110,v.clientHeight*0.25),hi=S.phase==='audio'?B(S.i)+sl:T(Math.min(S.i+1,ps.length-1))+sl,lo=T(S.i)-sl;
+   y=Math.max(lo,Math.min(hi,yl))}
+  forceK=S.i;
+  if(S.phase==='gap'&&gf>=1){S.i++;startAudio()}
+ }else if(mode==='one'){
+  var w=S.w,sum=S.sum,p=aud&&aud.duration?ct()/aud.duration*sum:0,a=0,k=0;
+  for(;k<w.length;k++){if(p<a+w[k])break;a+=w[k]}if(k>=w.length){k=w.length-1;a=sum-w[k]}
+  var f2=(p-a)/w[k],yL=lerp(T(k),k<ps.length-1?T(k+1):B(k),f2);
+  if(aud&&aud.duration){var yl2=lerp(T(0),B(ps.length-1),ct()/aud.duration);y=Math.max(yL-90,Math.min(yL+90,yl2))}else y=yL;
+ }else if(mode==='tts'){
+  if(S.phase==='say'){var el=(ts-S.ts)/1000,est=S.len*0.16/S.rate,fr=S.bf>=0?S.bf:Math.min(.97,el/est);y=lerp(T(S.i),B(S.i),fr)}
+  else{var g=(ts-S.gs)/S.gd;y=lerp(B(S.i),T(Math.min(S.i+1,ps.length-1)),g);if(g>=1){S.i++;speak()}}
+ }else if(mode==='man'){S.y+=dt*45*spd;y=S.y;if(y>=B(ps.length-1)){finish();return}}
+ if(mode!=='man')y=smooth(y,dt,0.7);else cy=y;
+ setPtr(y);raf=requestAnimationFrame(frame)}
+function run(m){mode=m;last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);$('go').textContent='⏹ 멈춤'}
+// ---- 줄별 음성
+function startAudio(){if(S.i>=L.length){finish();return}
+ S.phase='audio';ctLast=-1;aud=new Audio(URL.createObjectURL(files[S.i]));aud.playbackRate=spd;
+ aud.onended=function(){if(S.i>=L.length-1){S.i=L.length-1;finish()}else{S.phase='gap';S.gs=performance.now();S.gd=600/spd}};
+ aud.play().catch(function(){say('재생 실패: 화면을 한 번 누르고 다시 시작하세요')})}
+$('go').onclick=function(){if(mode){reset();return}
+ if(!files.length){say('음성 파일이 없습니다. 📜 글만 올리기나 🔊 임시 목소리를 쓰세요');return}
+ reset();
+ if(files.length===L.length){S={i:0};run('multi');startAudio()}
+ else if(files.length===1){S={w:L.map(function(s){return s.replace(/\|/g,'').length})};S.sum=S.w.reduce(function(a,b){return a+b},0);
+  ctLast=-1;aud=new Audio(URL.createObjectURL(files[0]));aud.playbackRate=spd;aud.onended=finish;aud.play().catch(function(){say('재생 실패: 화면을 한 번 누르고 다시 시작하세요')});run('one')}
+ else say('음성 파일 개수를 확인하세요')};
+// ---- 임시 목소리
+function speak(){if(S.i>=L.length){finish();return}
+ var txt=L[S.i].replace(/\|/g,' ').replace(/…/g,',');var u=new SpeechSynthesisUtterance(txt);u.lang='ko-KR';u.rate=Math.min(1.5,spd*0.95);
+ S.phase='say';S.ts=performance.now();S.len=txt.length;S.rate=u.rate;S.bf=-1;
+ u.onboundary=function(e){if(typeof e.charIndex==='number'&&e.charIndex>0)S.bf=e.charIndex/txt.length};
+ u.onend=function(){if(S.i>=L.length-1){finish()}else{S.phase='gap';S.gs=performance.now();S.gd=600/spd}};
+ u.onerror=u.onend;speechSynthesis.speak(u)}
+$('tts').onclick=function(){if(!window.speechSynthesis){say('이 브라우저는 소리 읽기를 지원하지 않습니다');return}
+ reset();S={i:0};say('🔊 기기 목소리로 읽는 중 (연습용)');run('tts');speak()};
+// ---- 글만 올리기(연속 스크롤)
+$('man').onclick=function(){reset();S={y:startPos()};say('📜 글만 올라갑니다. 속도 슬라이더로 조절하세요');run('man')};
+// ---- 속도
+$('sp').oninput=function(){spd=parseFloat(this.value);$('spv').textContent=spd.toFixed(1)+'×';if(aud)aud.playbackRate=spd};
+function loadDur(){D=[];var n=files.length;Promise.all(files.map(function(f){return new Promise(function(res){var a=new Audio(URL.createObjectURL(f));a.preload='metadata';a.onloadedmetadata=function(){res(a.duration||0)};a.onerror=function(){res(0)};setTimeout(function(){res(0)},4000)})})).then(function(d){if(files.length===n)D=d})}
+function durOk(){return D.length===L.length&&D.every(function(x){return x>0&&isFinite(x)})}
+// ---- 파일
+function norm(s){try{s=decodeURIComponent(s.replace(/\+/g,' '))}catch(e){s=s.replace(/\+/g,' ')}return s.replace(/\.[a-z0-9]+$/i,'').replace(/[^0-9A-Za-z가-힣]/g,'')}
+function matchOrder(fl){var keys=L.map(function(s){return norm(s.replace(/\|/g,'')).slice(0,6)}),out=[],used={};
+ for(var i=0;i<keys.length;i++){var f=null;for(var j=0;j<fl.length;j++){if(!used[j]&&norm(fl[j].name).indexOf(keys[i])===0){f=j;break}}if(f===null)return null;used[f]=1;out.push(fl[f])}return out}
+function setFiles(raw,emb){files=raw.slice().sort(function(a,b){return a.name.localeCompare(b.name,'ko',{numeric:true})});D=[];
+ var m=raw.length===L.length?matchOrder(raw):null;if(m)files=m;if(files.length===L.length)loadDur();
+ if(files.length===L.length)say(emb?'✅ 저장된 음성 '+files.length+'개가 들어 있습니다. 바로 ▶ 시작을 누르세요':(m?'✅ 음성 '+files.length+'개 = 파일 이름의 글을 보고 줄 순서에 맞췄습니다':'✅ 음성 '+files.length+'개 = 파일 이름 번호 순서대로 읽습니다 (1,2,3…으로 시작해야 함)'));
+ else if(files.length===1)say(emb?'✅ 저장된 음성 1개가 들어 있습니다':'✅ 음성 1개 = 글자 수에 맞춰 글이 따라갑니다');
+ else say('⚠️ 음성이 '+files.length+'개입니다. 1개 또는 '+L.length+'개로 불러오세요.')}
+$('f').onchange=function(){setFiles([].slice.call(this.files),false)};
+// ---- 음성 포함해서 저장 / 저장본 불러오기
+function rd(f){return new Promise(function(r){var x=new FileReader();x.onload=function(){r(x.result)};x.readAsDataURL(f)})}
+$('sv').onclick=function(){if(!files.length){say('먼저 🎙️ 음성 파일을 불러오세요');return}
+ say('💾 저장 준비 중… (잠시만요)');var order=files.slice();
+ Promise.all(order.map(function(f){return rd(f).then(function(d){return {n:f.name,d:d}})})).then(function(arr){
+  reset();var cl=document.documentElement.cloneNode(true),old=cl.querySelector('#emb');if(old)old.parentNode.removeChild(old);
+  var sc=document.createElement('script');sc.id='emb';sc.textContent='window.EMB='+JSON.stringify(arr)+';';cl.querySelector('head').appendChild(sc);
+  var html='<!DOCTYPE html>'+cl.outerHTML;
+  var bl=new Blob([html],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='자동낭독_1번인사_음성포함.html';a.style.display='none';document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a)},1500);
+  say('✅ "자동낭독_1번인사_음성포함.html"로 저장했습니다. 다음부터는 이 파일만 여세요 (다운로드 폴더 확인)')})};
+if(window.EMB&&window.EMB.length){Promise.all(window.EMB.map(function(e){return fetch(e.d).then(function(r){return r.blob()}).then(function(b){return new File([b],e.n,{type:b.type})})})).then(function(fl){setFiles(fl,true)}).catch(function(){say('저장된 음성을 불러오지 못했습니다. 🎙️ 음성 파일 불러오기를 쓰세요')})}
+// ---- 보기 설정
+$('fs').oninput=function(){t.style.fontSize=this.value+'px';recalc();if(!mode){cy=startPos();setPtr(cy)}};
+var cur=0;function ptrNow(){return startPos()}
+$('fd').onchange=function(){document.body.classList.toggle('fade',this.checked)};
+$('hd').onchange=function(){document.body.classList.toggle('hide',this.checked)};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){$('hd').checked=false;document.body.classList.remove('hide')}
+ if(e.code==='Space'){e.preventDefault();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+  if(mode){reset()}else if(files.length){$('go').onclick()}else{$('man').onclick()}}});
+window.onresize=function(){recalc();if(!mode){cy=startPos();setPtr(cy)}};
+var uOn=null,uOl=null;
+function applyText(){var R=document.documentElement.style;if(uOn)R.setProperty('--on',uOn);if(uOl)R.setProperty('--ol',uOl);try{localStorage.setItem('uOn',uOn||'');localStorage.setItem('uOl',uOl||'')}catch(e){}}
+function syncPickers(){var cs=getComputedStyle(document.documentElement);function hx(x){x=x.trim();return /^#[0-9a-f]{6}$/i.test(x)?x:null}var a=hx(cs.getPropertyValue('--on')),b=hx(cs.getPropertyValue('--ol'));if(a)$('co').value=a;if(b)$('cl').value=b}
+function setBg(c){var r=parseInt(c.substr(1,2),16),g=parseInt(c.substr(3,2),16),b=parseInt(c.substr(5,2),16),lum=(0.299*r+0.587*g+0.114*b)/255,R=document.documentElement.style;R.setProperty('--bg',c);
+ if(lum>0.6){R.setProperty('--on','#b91c1c');R.setProperty('--ol','#fff')}else{R.setProperty('--on','#fde047');R.setProperty('--ol','#991b1b')}
+ $('cc').value=c;try{localStorage.setItem('bg',c)}catch(e){}applyText();syncPickers()}
+$('co').oninput=function(){uOn=this.value;applyText()};$('cl').oninput=function(){uOl=this.value;applyText()};
+$('ca').onclick=function(){uOn=null;uOl=null;try{localStorage.removeItem('uOn');localStorage.removeItem('uOl')}catch(e){}setBg($('cc').value)};
+[].forEach.call(document.querySelectorAll('.sw'),function(b){b.onclick=function(){setBg(b.getAttribute('data-c'))}});
+$('cc').oninput=function(){setBg(this.value)};
+try{uOn=localStorage.getItem('uOn')||null;uOl=localStorage.getItem('uOl')||null;var sb=localStorage.getItem('bg');if(sb)setBg(sb);else{applyText();syncPickers()}}catch(e){}
+reset();
+</script></body></html>
