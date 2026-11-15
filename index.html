@@ -2317,7 +2317,7 @@ function copyText(t,btn){
 }
 window.retroCopy=function(kind,i,part,btn){
  var d=build(kind,i);
- var t=part==='all'?('[영상 프롬프트]\n'+d.vid+'\n\n[자막 - 화면 상단, 노랑 글씨+빨강(왕대비 컬러)]\n'+d.sub+'\n\n[음성 대본]\n"'+d.voi+'"'):d[part];
+ var t=part==='vv'?(d.vid+' Audio: a warm Korean narrator says in Korean: "'+d.voi+'" with soft nostalgic background music.'):part==='all'?('[영상 프롬프트]\n'+d.vid+'\n\n[자막 - 화면 상단, 노랑 글씨+빨강(왕대비 컬러)]\n'+d.sub+'\n\n[음성 대본]\n"'+d.voi+'"'):d[part];
  copyText(t,btn);
 };
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
@@ -2329,7 +2329,7 @@ function render(){
   +'<div class="rlabel">🎬 영상 프롬프트</div><div class="rbox">'+esc(d.vid)+'</div><button class="rbtn rcopy" onclick="retroCopy(\''+rTab+'\','+i+',\'vid\',this)">📋 영상 프롬프트 복사</button>'
   +'<div class="rlabel">🔤 자막 (상단 · 왕대비 컬러)</div><span class="rsub">'+esc(d.sub)+'</span><button class="rbtn rcopy" onclick="retroCopy(\''+rTab+'\','+i+',\'sub\',this)">📋 자막 복사</button>'
   +'<div class="rlabel">🎙️ 음성 대본</div><div class="rbox">"'+esc(d.voi)+'"</div><button class="rbtn rcopy" onclick="retroCopy(\''+rTab+'\','+i+',\'voi\',this)">📋 음성 대본 복사</button>'
-  +'<button class="rbtn" style="width:100%;margin-top:10px;background:#1d4ed8;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'all\',this)">📋 3가지 한 번에 복사</button></div>';
+  +'<button class="rbtn" style="width:100%;margin-top:10px;background:#16a34a;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'vv\',this)">🎬+🎙️ 영상+음성 한 번에 복사 (유튜브 크리에이트용)</button><button class="rbtn" style="width:100%;margin-top:8px;background:#1d4ed8;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'all\',this)">📋 3가지 한 번에 복사</button></div>';
  }
  document.getElementById('retroList').innerHTML=h;
  var on='background:#b45309;color:#fff',off='background:#e5e7eb;color:#111';
