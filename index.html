@@ -1049,7 +1049,7 @@
             const prompts = getAllPrompts();
             let i = prompts.findIndex((_, k) => !copiedIdx.has(k));
             if (i < 0) { copiedIdx = new Set(); i = 0; }
-            copyTextDirect(prompts[i].text, prompts[i].name + ' 프롬프트가 복사되었습니다!');
+            copyPrompt(prompts[i].text, prompts[i].name + ' 프롬프트가 복사되었습니다!');
             markCopied(i);
         }
         function coverNarration(t) { return `모두를 경악게 한 그 이야기, "${t}". 지금 그 서막이 열립니다.`; }
@@ -1102,7 +1102,11 @@
             tip.innerText = "💡 유튜브 크리에이트는 그림 첨부가 안 됩니다. 인물이 달라지면 ① 같은 장면을 2~3번 다시 만들어 옷 색깔이 가장 비슷한 것을 고르고 ② 캐릭터 시트의 옷 색·소품을 더 또렷하게 고치세요. (얼굴은 조금씩 달라져도 옷 색이 같으면 같은 인물로 보입니다)";
             row.appendChild(b1); row.appendChild(b2); row.appendChild(b5); row.appendChild(b8); row.appendChild(b6); row.appendChild(b7); row.appendChild(sec); row.appendChild(b4); row.appendChild(b3);
             if (seriesMode) bar.appendChild(buildSeriesRow());
-            bar.appendChild(nb); bar.appendChild(row); bar.appendChild(tip);
+            const yb = document.createElement('button');
+            yb.className = "w-full " + (ycAuto ? "bg-red-600 text-white" : "bg-slate-300 text-slate-900") + " font-black text-xs sm:text-sm py-3 px-3 rounded-2xl shadow-md";
+            yb.innerText = ycAuto ? "📲 복사하면 유튜브 크리에이트 자동 열기: 켬 (눌러서 끄기)" : "📲 복사하면 유튜브 크리에이트 자동 열기: 끔 (눌러서 켜기)";
+            yb.onclick = toggleYcAuto;
+            bar.appendChild(nb); bar.appendChild(yb); bar.appendChild(row); bar.appendChild(tip);
             container.appendChild(bar);
         }
 
@@ -1987,7 +1991,7 @@
             `;
             coverBtn.onclick = () => {
                 let text = buildCoverPrompt();
-                copyTextDirect(text, '표지 프롬프트(한국인 전용)가 복사되었습니다!');
+                copyPrompt(text, '표지 프롬프트(한국인 전용)가 복사되었습니다!');
                 markCopied(0);
             };
             btnContainer.appendChild(coverBtn);
@@ -2015,7 +2019,7 @@
                 
                 b.onclick = (function(promptText, idx) {
                     return function() {
-                        copyTextDirect(promptText, '한국인 배우 중심의 고유 서사 프롬프트가 복사되었습니다!');
+                        copyPrompt(promptText, '한국인 배우 중심의 고유 서사 프롬프트가 복사되었습니다!');
                         markCopied(idx);
                     };
                 })(scenePromptText, i);
@@ -2076,6 +2080,14 @@
             renderUploadSet();
         }
 
+        var ycAuto = (function(){try{return localStorage.getItem('ycAuto')!=='0';}catch(e){return true;}})();
+        function toggleYcAuto(){ ycAuto=!ycAuto; try{localStorage.setItem('ycAuto',ycAuto?'1':'0');}catch(e){} updateInterface(); }
+        function copyPrompt(text, alertMsg) {
+            if (!ycAuto) { copyTextDirect(text, alertMsg); return; }
+            const go = () => { try{ if(window.openYC) openYC(); }catch(e){} };
+            if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(() => setTimeout(go, 300), () => { copyTextDirect(text, alertMsg); }); }
+            else { copyTextDirect(text, alertMsg); setTimeout(go, 300); }
+        }
         function copyTextDirect(text, alertMsg) {
             if(navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(() => {
@@ -2315,7 +2327,18 @@ function copyText(t,btn){
  function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');done();}catch(e){btn.innerText='길게 눌러 직접 복사';}document.body.removeChild(ta);}
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();
 }
+window.openYC=function(){
+ var ua=navigator.userAgent||'';
+ var play='https://play.google.com/store/apps/details?id=com.google.android.apps.youtube.producer';
+ if(/Android/i.test(ua)){location.href='intent://#Intent;package=com.google.android.apps.youtube.producer;S.browser_fallback_url='+encodeURIComponent(play)+';end';}
+ else if(/iPhone|iPad|iPod/i.test(ua)){location.href='https://apps.apple.com/app/id6476327393';}
+ else{window.open(play,'_blank');}
+};
 window.retroCopy=function(kind,i,part,btn){
+ if(part==='vvgo'){var d0=build(kind,i);var t0=d0.vid+' Audio: a warm Korean narrator says in Korean: "'+d0.voi+'" with soft nostalgic background music.';
+  var go=function(){btn.innerText='✅ 복사됨! 앱을 엽니다…';setTimeout(function(){openYC();btn.innerText='📋 복사하고 → 유튜브 크리에이트 열기';},700);};
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t0).then(go,function(){copyText(t0,btn);});}else{copyText(t0,btn);setTimeout(openYC,900);}
+  return;}
  var d=build(kind,i);
  var t=part==='vv'?(d.vid+' Audio: a warm Korean narrator says in Korean: "'+d.voi+'" with soft nostalgic background music.'):part==='all'?('[영상 프롬프트]\n'+d.vid+'\n\n[자막 - 화면 상단, 노랑 글씨+빨강(왕대비 컬러)]\n'+d.sub+'\n\n[음성 대본]\n"'+d.voi+'"'):d[part];
  copyText(t,btn);
@@ -2329,7 +2352,7 @@ function render(){
   +'<div class="rlabel">🎬 영상 프롬프트</div><div class="rbox">'+esc(d.vid)+'</div><button class="rbtn rcopy" onclick="retroCopy(\''+rTab+'\','+i+',\'vid\',this)">📋 영상 프롬프트 복사</button>'
   +'<div class="rlabel">🔤 자막 (상단 · 왕대비 컬러)</div><span class="rsub">'+esc(d.sub)+'</span><button class="rbtn rcopy" onclick="retroCopy(\''+rTab+'\','+i+',\'sub\',this)">📋 자막 복사</button>'
   +'<div class="rlabel">🎙️ 음성 대본</div><div class="rbox">"'+esc(d.voi)+'"</div><button class="rbtn rcopy" onclick="retroCopy(\''+rTab+'\','+i+',\'voi\',this)">📋 음성 대본 복사</button>'
-  +'<button class="rbtn" style="width:100%;margin-top:10px;background:#16a34a;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'vv\',this)">🎬+🎙️ 영상+음성 한 번에 복사 (유튜브 크리에이트용)</button><button class="rbtn" style="width:100%;margin-top:8px;background:#1d4ed8;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'all\',this)">📋 3가지 한 번에 복사</button></div>';
+  +'<button class="rbtn" style="width:100%;margin-top:10px;background:#dc2626;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'vvgo\',this)">📋 복사하고 → 유튜브 크리에이트 열기</button><button class="rbtn" style="width:100%;margin-top:8px;background:#16a34a;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'vv\',this)">🎬+🎙️ 영상+음성 한 번에 복사 (유튜브 크리에이트용)</button><button class="rbtn" style="width:100%;margin-top:8px;background:#1d4ed8;color:#fff" onclick="retroCopy(\''+rTab+'\','+i+',\'all\',this)">📋 3가지 한 번에 복사</button></div>';
  }
  document.getElementById('retroList').innerHTML=h;
  var on='background:#b45309;color:#fff',off='background:#e5e7eb;color:#111';
