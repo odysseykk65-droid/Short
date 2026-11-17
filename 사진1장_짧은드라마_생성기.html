@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#6d28d9">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>사진 1장으로 짧은 드라마 만들기 (영상+음성+자막)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Noto Sans KR','Malgun Gothic',sans-serif;background:#f4f1ff;color:#111;font-size:18px;line-height:1.5}
+header{background:linear-gradient(90deg,#6d28d9,#4338ca);color:#fff;padding:18px 16px;border-bottom:5px solid #fbbf24}
+header h1{margin:0;font-size:24px;font-weight:900}
+header p{margin:4px 0 0;font-size:15px;color:#fde68a;font-weight:700}
+main{max-width:900px;margin:0 auto;padding:14px}
+.card{background:#fff;border:4px solid #7c3aed;border-radius:22px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.card h2{margin:0 0 10px;font-size:20px;font-weight:900;color:#4c1d95}
+.badge{display:inline-block;background:#6d28d9;color:#fff;border-radius:999px;padding:2px 12px;font-size:14px;margin-right:8px}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.opt{flex:1 1 120px;border:3px solid #a78bfa;background:#f5f3ff;border-radius:16px;padding:12px 8px;font-size:18px;font-weight:900;color:#3b0764;cursor:pointer;text-align:center;font-family:inherit}
+.opt.on{background:#6d28d9;color:#fff;border-color:#4c1d95}
+.opt small{display:block;font-weight:700;font-size:13px;opacity:.9}
+input[type=text]{width:100%;padding:12px;font-size:18px;border:3px solid #a78bfa;border-radius:14px;font-family:inherit;font-weight:700}
+.btn{display:block;width:100%;border:0;border-radius:18px;padding:16px;font-size:20px;font-weight:900;cursor:pointer;color:#fff;font-family:inherit;margin-top:8px}
+.green{background:linear-gradient(90deg,#059669,#0f766e)}
+.red{background:#dc2626}
+.violet{background:#6d28d9}
+.amber{background:#f59e0b;color:#111}
+.box{background:#f5f3ff;border:3px solid #c4b5fd;border-radius:14px;padding:12px;font-size:15px;white-space:pre-wrap;word-break:keep-all;max-height:260px;overflow:auto;font-weight:600}
+.info{background:#fff7d6;border:3px solid #f59e0b;border-radius:14px;padding:10px 12px;font-weight:800;font-size:16px;margin:8px 0}
+.scene{display:flex;gap:8px;align-items:stretch;margin:8px 0}
+.scene button.cp{flex:none;width:130px;border:0;border-radius:14px;background:#6d28d9;color:#fff;font-weight:900;font-size:16px;cursor:pointer;font-family:inherit;padding:8px}
+.scene button.cp.done{background:#047857}
+.scene .t{flex:1;background:#faf9ff;border:2px solid #ddd6fe;border-radius:14px;padding:8px 12px;font-size:16px;font-weight:700}
+.scene .t b{color:#6d28d9}
+ol.steps{padding-left:0;list-style:none;margin:0}
+ol.steps li{display:flex;gap:10px;margin:8px 0;font-weight:800;font-size:18px}
+ol.steps li span.n{flex:none;width:34px;height:34px;border-radius:50%;background:#4338ca;color:#fff;text-align:center;line-height:34px;font-weight:900}
+details summary{cursor:pointer;font-size:20px;font-weight:900;color:#065f46}
+.green-card{border-color:#10b981}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#111;color:#fff;padding:16px 26px;border-radius:999px;font-size:20px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:9;text-align:center}
+.toast.show{opacity:1}
+.vv{background:#faf9ff;border:2px solid #ddd6fe;border-radius:14px;padding:10px;margin:10px 0}
+.vv .tx{font-size:15px;font-weight:700;margin:6px 0}.vv .tx b{color:#15803d}
+.vv .mini{display:flex;gap:6px;margin-top:6px}.vv .mini button{flex:1;border:0;border-radius:10px;padding:9px 4px;font-weight:800;font-size:14px;background:#e0e7ff;color:#312e81;font-family:inherit;cursor:pointer}
+.vv .all{width:100%;border:0;border-radius:14px;padding:13px;font-size:17px;font-weight:900;color:#fff;background:#15803d;font-family:inherit;cursor:pointer}.vv .all.done{background:#065f46}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{word-break:keep-all;overflow-wrap:anywhere;-webkit-tap-highlight-color:transparent;padding-bottom:env(safe-area-inset-bottom)}
+button{touch-action:manipulation}
+.opt{flex:1 1 140px}
+@media (max-width:480px){
+ header{padding:14px 12px}header h1{font-size:20px}header p{font-size:13px}
+ main{padding:8px}.card{padding:12px;border-width:3px;border-radius:18px}
+ .card h2{font-size:18px}.opt{font-size:16px;padding:10px 6px}
+ .scene button.cp{width:96px;font-size:14px}.scene .t{font-size:15px}
+ .vv .all{font-size:15px}.btn{font-size:18px}
+ .toast{width:88%;font-size:17px;bottom:24px}
+}
+footer{text-align:center;padding:16px;font-size:13px;color:#555}
+</style>
+</head>
+<body>
+<header>
+  <h1>📸 사진 1장으로 짧은 드라마 만들기</h1>
+  <p>내 이야기가 이어지는 짧은 드라마 · 영상 + 음성 + 자막 · 유튜브 크리에이트 / 구글 플로우</p>
+</header>
+<main>
+
+<div class="card">
+  <h2><span class="badge">1단계</span>기본 정하기</h2>
+  <div style="font-weight:900;margin:4px 0">이름 (자막 문구에 들어갑니다)</div>
+  <input type="text" id="nm" placeholder="예: 김영희" oninput="refresh()">
+  <div style="font-weight:900;margin:12px 0 4px">성별</div>
+  <div class="row" id="sexRow"></div>
+  <div style="font-weight:900;margin:12px 0 4px">의상 스타일 (모든 장면에 적용)</div>
+  <div class="row" id="styleRow"></div>
+  <div style="font-weight:900;margin:12px 0 4px">내가 원하는 옷 직접 쓰기 (쓰면 모든 장면에 이 옷으로 나옵니다 · 비워 두면 위 스타일)</div>
+  <input type="text" id="myOutfit" placeholder="예: 연보라 한복, 남색 정장과 빨간 넥타이" oninput="st.done={};st.vdone={};refresh()">
+  <div style="font-weight:900;margin:12px 0 4px">만드는 방식 (영상 길이가 달라집니다)</div>
+  <div class="row" id="modeRow"></div>
+</div>
+
+<div class="card">
+  <h2><span class="badge">2단계</span>테마 고르기</h2>
+  <div class="row" id="themeRow"></div>
+  <div class="info" id="themeInfo" style="background:#f5f3ff;border-color:#a78bfa"></div>
+</div>
+
+<div class="card">
+  <h2><span class="badge">3단계</span>몇 장으로 만들까요?</h2>
+  <div class="row" id="cntRow"></div>
+  <div class="info" id="timeInfo"></div>
+</div>
+
+<div class="card" id="gemCard" style="border-color:#f59e0b">
+  <h2><span class="badge" style="background:#d97706" id="gemBadge">4단계</span><span id="gemTitle">제미나이에 사진 올리고 붙여넣기</span></h2>
+  <div class="info" id="gemHow"></div>
+  <div id="gcntBox"><div style="font-weight:900;margin:6px 0 4px">변신 사진 몇 장 만들까요? (장수 선택)</div><div class="row" id="gcntRow"></div><div class="info" id="gcntInfo" style="margin-top:8px"></div></div>
+  <div class="info">📎 제미나이에 <b>내 사진 1장을 먼저 올린 뒤</b>, 아래 버튼을 눌러 복사하고 붙여넣으세요.</div>
+
+  <div style="font-weight:900;font-size:19px;margin-top:6px">방법 A · 한 번에 붙여넣고 "다음"만 쓰기 (쉬운 방법)</div>
+  <button class="btn green" onclick="copyText(masterPrompt(),'전체 프롬프트를 복사했습니다')">📋 전체 프롬프트 복사 (한 번만)</button>
+  <details style="margin-top:8px"><summary style="font-size:16px;color:#4c1d95">복사될 내용 미리 보기</summary><div class="box" id="masterBox"></div></details>
+  <div class="info" style="background:#ecfdf5;border-color:#10b981">붙여넣은 뒤 제미나이가 1번 사진을 만들면 <b>"다음"</b>이라고 쓰세요. 마지막 장까지 반복하고, 사진마다 <b>저장(다운로드)</b>을 누릅니다.</div>
+
+  <div style="font-weight:900;font-size:19px;margin-top:14px">방법 B · 장면별로 한 장씩 복사 (잘 안 될 때)</div>
+  <button class="btn violet" id="nextBtn" onclick="copyNext()">▶ 다음 장면 복사</button>
+  <button class="btn amber" style="font-size:16px;padding:10px" onclick="resetDone()">↺ 체크 초기화</button>
+  <div id="sceneList"></div>
+</div>
+
+<div class="card" id="vvCard" style="border-color:#16a34a">
+  <h2><span class="badge" style="background:#15803d" id="vvBadge">5단계</span><span id="vvTitle"></span></h2>
+  <div class="info" id="vvHow" style="background:#ecfdf5;border-color:#10b981"></div>
+  <div class="info" id="creditInfo" style="display:none"></div>
+  <button class="btn green" id="vvNext" onclick="vvCopyNext()">▶ 다음 장면 복사</button>
+  <button class="btn amber" style="font-size:16px;padding:10px" onclick="vvReset()">↺ 체크 초기화</button>
+  <div id="vvList"></div>
+</div>
+
+<div class="card" id="faceCard" style="border-color:#ef4444">
+  <h2><span class="badge" style="background:#dc2626">도움말</span>얼굴이 달라졌을 때</h2>
+  <button class="btn red" onclick="copyText(fixPrompt(),'복사했습니다')">📋 "얼굴 그대로 다시" 문구 복사</button>
+  <div class="info">원본 사진을 <b>매번 다시 올려서</b> 만들면 얼굴이 덜 변합니다. 만든 사진을 다시 고치면 점점 달라져요.</div>
+</div>
+
+<div class="card green-card">
+  <h2><span class="badge" style="background:#059669">5단계</span>자막 문구 (유튜브 크리에이트)</h2>
+  <div class="row">
+    <button class="btn green" style="flex:1 1 220px" onclick="copyText(titleText(),'첫 장 자막을 복사했습니다')">📋 첫 장 자막<br><span id="tFirst" style="font-size:15px"></span></button>
+    <button class="btn green" style="flex:1 1 220px" onclick="copyText(lastText(),'마지막 자막을 복사했습니다')">📋 마지막 자막<br><span id="tLast" style="font-size:15px"></span></button>
+  </div>
+</div>
+
+<div class="card green-card">
+  <details open>
+    <summary>🎬 유튜브 크리에이트로 동영상 완성하기 (내보내기·공유까지)</summary>
+    <ol class="steps" id="makeSteps" style="margin-top:10px"></ol>
+    <div class="info">💡 "오디오 길이 초과"가 나오면 안내에 따라 음악 길이를 줄이세요. 사진은 <b>본인 사진만</b> 사용하세요.</div>
+  </details>
+</div>
+
+</main>
+<footer>© 변신 앨범 생성기 · 제미나이 이미지 생성은 하루 횟수 제한이 있을 수 있습니다</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+// 장면 [표정, 여성 옷, 남성 옷, 배경]
+var THEMES={"mix": {"name": "📖 다시 펼친 사진첩", "desc": "낡은 사진첩 속 내 인생 이야기", "title": "다시 펼친 사진첩", "style": "", "log": "낡은 사진첩을 펼친 주인공이 어린 시절, 청춘, 사랑, 가족을 돌아보고 \"오늘도 멋진 나\"로 마무리하는 이야기", "drop": [2, 8, 12, 9, 11, 7, 3, 10, 4, 1], "sc": [["호기심 어린 미소", "단정한 흰 블라우스", "단정한 흰 셔츠", "밝은 거실 창가", "어느 오후, 서랍 깊은 곳에서 낡은 사진첩을 꺼냈다. 첫 장을 넘기자 가슴이 두근거렸다.", "낡은 사진첩을 펼쳤다.", "낡은 사진첩"], ["천진난만한 웃음", "물방울무늬 원피스", "멜빵바지", "시골집 마당", "사진 속 나는 시골 마당을 뛰어다니던 개구쟁이였다. 세상 걱정이라곤 없던 시절이었다.", "걱정 없던 어린 시절.", "개구쟁이 시절"], ["수줍은 미소", "흰 칼라 교복", "흰 칼라 교복", "오래된 학교 운동장", "교복을 입고 친구들과 웃던 날들. 작은 일에도 깔깔 웃음이 터졌다.", "교복 입던 친구들.", "교복 입던 날"], ["설레면서도 긴장한 표정", "두툼한 코트와 가방", "두툼한 코트와 가방", "기차역 플랫폼", "스무 살 무렵, 가방 하나 들고 기차에 올랐다. 낯선 도시가 두렵고도 설렜다.", "낯선 도시로 떠났다.", "낯선 도시로"], ["즐거운 표정", "70년대 나팔바지와 물방울무늬 블라우스", "70년대 나팔바지와 무늬 셔츠", "7080 다방", "도시의 다방에서 음악을 들으며 꿈을 키웠다. 가난해도 마음만은 부자였다.", "꿈을 키우던 청춘.", "다방의 청춘"], ["두근거리는 표정", "연분홍 가디건", "베이지 가디건", "활짝 핀 벚꽃길", "벚꽃이 흩날리던 봄날, 평생 잊지 못할 사람을 만났다.", "벚꽃 아래 운명의 만남.", "벚꽃 아래 만남"], ["행복한 미소", "고운 한복", "단정한 한복", "한옥 마당 예식 장면", "그날 우리는 약속했다. 어떤 날에도 서로의 손을 놓지 않겠다고.", "평생을 약속한 날.", "평생의 약속"], ["다정한 표정", "앞치마를 두른 모습", "앞치마를 두른 모습", "따뜻한 주방", "아이들이 태어나고 집 안엔 웃음이 가득했다. 바쁘고 고단했지만 행복한 날들이었다.", "웃음 가득한 우리 집.", "웃음 가득한 집"], ["단단한 표정", "우산과 레인코트", "우산과 레인코트", "비 오는 골목길", "비바람 치던 날도 많았다. 그래도 가족을 생각하며 한 걸음씩 걸었다.", "비바람도 견뎠다.", "비바람도 견뎠다"], ["뿌듯한 미소", "단정한 재킷과 꽃다발", "단정한 정장과 꽃다발", "졸업식장 앞", "아이가 졸업하던 날, 꽃다발을 안고 눈시울이 붉어졌다. 참 잘 살아왔구나 싶었다.", "뿌듯한 졸업식 날.", "뿌듯한 졸업식"], ["여유로운 표정", "흰 원피스", "린넨 셔츠", "바닷가 노을", "이제야 여유가 생겨 바다를 찾았다. 노을 앞에서 오래 서 있었다.", "노을 앞에 선 나.", "노을 앞에서"], ["활기찬 표정", "등산복과 모자", "등산복과 모자", "단풍 가득한 가을 산", "요즘은 산을 오르며 건강을 챙긴다. 단풍보다 내 마음이 더 붉게 물든다.", "단풍 속을 걷는다.", "단풍 속 걷기"], ["우아한 표정", "연보라 블라우스", "네이비 재킷", "은은한 조명의 카페", "오랜 친구들과 모이면 우리는 다시 학창 시절로 돌아간다. 수다가 끝날 줄 모른다.", "오랜 친구와 수다.", "오랜 친구들"], ["따뜻한 미소", "평소 즐겨 입는 편한 옷", "평소 즐겨 입는 편한 옷", "노을빛이 가득한 창가", "사진첩을 덮으며 생각했다. 힘든 날도 모두 나를 키운 소중한 시간이었다고.", "모든 날이 소중했다.", "모든 날이 소중해"], ["활짝 웃는 얼굴", "알록달록 스웨터", "알록달록 스웨터", "파스텔 꽃밭", "그리고 오늘, 나는 또 한 장의 추억을 만든다. 지금도, 앞으로도 멋진 나로.", "오늘도 멋진 나.", "오늘도 멋진 나"]]}, "s7080": {"name": "📻 7080 청춘 극장", "desc": "시골 소년·소녀의 상경과 사랑", "title": "7080 청춘 극장", "style": "빛바랜 70~80년대 필름 사진 느낌으로,", "log": "시골에서 상경해 다방과 디스코장을 거치며 사랑을 만나 가정을 이루는 7080 청춘 드라마", "drop": [1, 8, 11, 3, 12, 9, 6, 5, 13, 2], "sc": [["소박한 웃음", "단정한 흰 블라우스", "흰 셔츠와 검은 바지", "시골 들판 길", "1970년대, 나는 작은 시골 마을에서 큰 꿈을 품고 자랐다.", "시골 마을의 꿈.", "시골 마을의 꿈"], ["설레는 표정", "흰 칼라 교복", "흰 칼라 교복", "교실 창가", "교복 입던 시절, 라디오에서 흘러나오는 노래 하나에도 가슴이 뛰었다.", "라디오에 설레던 때.", "라디오 속 노래"], ["설레면서도 긴장한 표정", "체크 원피스와 작은 가방", "체크 남방과 작은 가방", "시골 기차역 플랫폼", "큰 도시에서 꿈을 이루겠다며 완행열차에 몸을 실었다.", "완행열차에 올랐다.", "완행열차를 타다"], ["떨리는 표정", "단정한 흰 블라우스", "단정한 흰 셔츠", "옛날 사진관", "첫 취직을 앞두고 사진관에서 증명사진을 찍었다. 떨리는 마음을 꾹 눌렀다.", "사진관의 떨림.", "사진관에서"], ["뿌듯한 미소", "단정한 유니폼 블라우스", "와이셔츠와 넥타이", "70년대 사무실", "첫 월급을 받던 날, 세상을 다 가진 것 같았다.", "첫 월급의 기쁨.", "첫 월급 받던 날"], ["감성 어린 표정", "긴 치마와 니트 조끼", "니트 조끼와 청바지", "통기타가 있는 다방", "퇴근 후엔 다방에서 친구들과 음악을 들었다. 그 시간이 하루의 보상이었다.", "다방에서의 음악.", "다방의 음악"], ["신나는 표정", "나팔바지와 반짝이 블라우스", "나팔바지와 화려한 무늬 셔츠", "7080 디스코 조명", "주말이면 반짝이는 조명 아래서 밤새 춤을 췄다. 청춘은 눈부셨다.", "밤새 춤추던 청춘.", "밤새 춤추던 청춘"], ["두근거리는 표정", "체크 원피스", "청재킷과 청바지", "영화 포스터가 붙은 극장 앞", "극장 앞에서 마주친 그 사람, 내 심장이 먼저 대답했다.", "극장 앞의 설렘.", "극장 앞의 설렘"], ["다정한 미소", "가죽 재킷과 선글라스", "가죽 재킷과 선글라스", "한강 유람선 갑판", "강바람 맞으며 손을 잡았다. 말하지 않아도 마음이 통했다.", "강바람 속 데이트.", "강바람 속 데이트"], ["간절한 표정", "코트와 목도리", "코트와 목도리", "기차역 플랫폼", "기차역에서 헤어질 뻔한 날, 서로를 붙잡았다. 그렇게 우리는 하나가 되었다.", "역에서 붙잡은 손.", "역에서 붙잡은 손"], ["행복한 미소", "연분홍 한복", "검정 양복과 나비넥타이", "오래된 예식장", "소박한 예식장에서 올린 결혼식. 하객 모두가 박수를 보내 주었다.", "소박한 결혼식.", "소박한 결혼식"], ["즐거운 표정", "체크 남방과 청바지", "체크 남방과 청바지", "불빛 따뜻한 포장마차", "가난한 신혼, 포장마차 어묵 하나도 꿀맛이었다.", "꿀맛 같던 신혼.", "꿀맛 같은 신혼"], ["환하게 웃는 얼굴", "줄무늬 티셔츠와 청바지", "줄무늬 티셔츠와 청바지", "소풍 나온 잔디밭", "아이 손을 잡고 소풍 가던 날, 웃음소리가 온 들판에 퍼졌다.", "아이와 떠난 소풍.", "아이와 소풍"], ["그리운 듯한 미소", "카디건과 긴 치마", "카디건과 면바지", "노을 지는 옥상", "세월이 흘러 머리카락은 희어졌지만, 그 시절의 반짝임은 여전히 내 안에 있다.", "여전히 반짝이는 나.", "여전히 반짝이는 나"], ["따뜻한 미소", "평소 즐겨 입는 편한 옷", "평소 즐겨 입는 편한 옷", "노을빛 가득한 창가", "그 시절의 나에게 말해 주고 싶다. 참 잘했다고, 지금도 멋지다고.", "그 시절의 나에게.", "그 시절의 나에게"]]}, "travel": {"name": "🌍 세계 일주의 꿈", "desc": "세계지도를 펴고 떠나는 여행", "title": "세계 일주의 꿈", "style": "", "log": "낡은 세계지도를 꺼내 용기를 내어 떠나, 세계 곳곳을 돌아보고 돌아와 또 다른 꿈을 꾸는 여행 이야기", "drop": [3, 6, 12, 10, 4, 7, 8, 13, 1, 11], "sc": [["설레는 표정", "단정한 니트", "단정한 니트", "낡은 세계지도가 펼쳐진 거실", "서랍 속 오래된 세계지도. 젊은 날의 나는 언젠가 세상을 돌아보겠다고 다짐했었다.", "접어 둔 세계지도.", "접어 둔 세계지도"], ["결심에 찬 표정", "가벼운 재킷과 스카프", "가벼운 재킷과 모자", "공항 출국장", "더는 미루지 않기로 했다. 가방을 꾸리고 공항으로 향했다.", "드디어 떠나는 날.", "드디어 출발"], ["차분한 미소", "고운 기모노", "남성 유카타", "일본 교토 골목", "첫 도착지는 교토. 고즈넉한 골목에서 마음이 차분해졌다.", "고즈넉한 교토.", "고즈넉한 교토"], ["즐거운 표정", "꽃무늬 원피스와 밀짚모자", "하와이안 셔츠", "하와이 해변", "따뜻한 하와이 해변. 파도 소리가 걱정을 모두 씻어 갔다.", "하와이의 파도.", "하와이 해변"], ["환호하는 표정", "선글라스와 셔츠", "선글라스와 셔츠", "호주 시드니 오페라하우스 앞", "시드니 항구에서 오페라하우스를 바라보며 환호성을 질렀다.", "시드니의 환호.", "시드니 항구"], ["호기심 가득한 표정", "탐험가 모자와 베이지 셔츠", "탐험가 모자와 베이지 셔츠", "이집트 피라미드 앞", "수천 년을 서 있던 피라미드 앞에서, 내 걱정쯤은 아무것도 아니구나 싶었다.", "피라미드 앞에서.", "피라미드 앞"], ["감탄하는 표정", "밝은 원피스", "린넨 셔츠", "로마 콜로세움 앞", "로마의 콜로세움에서 옛 사람들의 숨결을 느꼈다.", "로마의 숨결.", "로마 콜로세움"], ["시원한 미소", "등산복과 선글라스", "등산복과 선글라스", "스위스 알프스 초원", "알프스 초원에선 그저 숨만 쉬어도 행복했다.", "알프스의 초원.", "알프스 초원"], ["낭만적인 미소", "스카프와 원피스", "스카프와 재킷", "베네치아 곤돌라 위", "곤돌라를 타고 물길을 따라 흘러갔다. 시간이 천천히 흘렀다.", "물길 위의 여유.", "베네치아 물길"], ["신나게 웃는 얼굴", "빨간 스카프와 베레모", "빨간 스카프와 베레모", "파리 에펠탑 앞", "파리의 에펠탑 앞에서 오래 꿈꿨던 사진을 찍었다.", "꿈꾸던 에펠탑.", "파리 에펠탑"], ["행복한 표정", "흰 원피스", "흰 셔츠", "그리스 산토리니 하얀 마을", "하얀 마을과 푸른 바다, 눈에 담는 모든 것이 그림이었다.", "그림 같은 산토리니.", "산토리니"], ["감동한 표정", "두꺼운 패딩과 털모자", "두꺼운 패딩과 털모자", "북유럽 오로라 밤하늘 아래", "밤하늘에 오로라가 펼쳐졌을 때, 나는 말없이 눈물을 흘렸다.", "오로라 아래서.", "오로라"], ["고운 미소", "단풍색 스카프와 코트", "단풍색 스카프와 코트", "캐나다 붉은 단풍길", "붉게 물든 단풍길을 걸으며 지나온 날들을 돌아보았다.", "붉은 단풍길.", "캐나다 단풍길"], ["단정한 미소", "곱게 차린 한복", "단정한 한복", "서울 경복궁 앞", "돌고 돌아 다시 고국. 경복궁 앞에 서니 마음이 가장 편안했다.", "다시 고국으로.", "다시 고국으로"], ["편안하고 행복한 미소", "평소 즐겨 입는 편한 옷", "평소 즐겨 입는 편한 옷", "노을 지는 창가", "여행은 끝났지만 마음속 세계지도엔 새 길이 가득하다. 나는 또 떠날 것이다.", "또 떠날 거예요.", "또 떠날 거예요"]]}, "season": {"name": "🍂 사계절 한 해 이야기", "desc": "봄·여름·가을·겨울 한 해의 드라마", "title": "사계절 이야기", "style": "", "log": "겨울 끝 봄 설렘에서 시작해 여름, 가을, 겨울을 지나 새해 희망까지 한 해를 보내며 감사하는 이야기", "drop": [3, 5, 8, 10, 2, 12, 6, 13, 0, 9], "sc": [["잔잔한 미소", "포근한 니트", "포근한 니트", "봄 햇살이 드는 창가", "길고 추운 겨울이 지나가던 아침, 창밖에서 봄 냄새가 났다.", "봄 냄새가 났다.", "봄 냄새"], ["설레는 표정", "연분홍 가디건", "연한 베이지 재킷", "활짝 핀 벚꽃길", "벚꽃이 피자 마음도 함께 피어났다. 괜히 웃음이 났다.", "마음에도 봄이 왔다.", "마음에도 봄이"], ["환한 미소", "노란 카디건", "노란 셔츠", "제주 유채꽃밭", "노란 유채꽃밭에서 어린아이처럼 사진을 찍었다.", "노란 유채꽃밭.", "노란 유채꽃밭"], ["낭만적인 표정", "우산과 레인코트", "우산과 레인코트", "봄비 내리는 거리", "봄비가 내리는 날엔 우산 하나로도 낭만이 되었다.", "봄비 내리는 날.", "봄비 내리는 날"], ["시원한 웃음", "밀짚모자와 반팔 원피스", "밀짚모자와 반팔 셔츠", "푸른 여름 해변", "여름이 오자 바다로 달려갔다. 파도에 모든 근심을 맡겼다.", "여름 바다.", "여름 바다"], ["장난스러운 웃음", "시원한 반팔 차림", "시원한 반팔 차림", "계곡 물가 수박 파티", "시원한 계곡물에 발을 담그고 수박을 나눠 먹었다.", "계곡의 수박 파티.", "계곡의 수박"], ["여유로운 미소", "베이지 트렌치코트", "베이지 트렌치코트", "노랗게 물든 은행나무길", "노랗게 물든 은행나무 길. 한 해가 익어 가고 있었다.", "노란 은행나무길.", "은행나무길"], ["사색하는 표정", "가을 스웨터", "가을 스웨터", "코스모스와 억새밭", "바람에 흔들리는 억새밭에서 지나온 시간을 떠올렸다.", "억새밭의 바람.", "억새밭의 바람"], ["푸근한 미소", "연한 색 한복", "연한 색 한복", "보름달이 뜬 한옥 마당", "둥근 보름달 아래 가족이 모였다. 이보다 큰 선물은 없다.", "보름달 뜬 추석.", "보름달 뜬 추석"], ["동심 가득한 표정", "두꺼운 코트와 목도리", "두꺼운 코트와 목도리", "눈 내리는 겨울 공원", "첫눈이 내리던 날, 어린아이처럼 하늘을 올려다보았다.", "첫눈이 내린다.", "첫눈이 내린다"], ["기쁜 표정", "빨간 니트와 산타 모자", "빨간 니트와 산타 모자", "반짝이는 크리스마스 트리 앞", "반짝이는 트리 앞에서 올 한 해 고마웠던 얼굴들이 떠올랐다.", "반짝이는 크리스마스.", "크리스마스"], ["정중한 미소", "고운 한복", "단정한 한복", "설날 한옥 마당", "새해 아침 한복을 곱게 입고 가족에게 덕담을 건넸다.", "새해 첫 인사.", "새해 첫 인사"], ["희망찬 표정", "목도리와 패딩", "목도리와 패딩", "새해 첫 일출이 보이는 바닷가", "바닷가에서 해돋이를 보며 소원을 빌었다. 올해도 건강하게.", "새해 첫 일출.", "새해 첫 일출"], ["기쁜 표정", "화사한 원피스", "깔끔한 셔츠와 재킷", "생일 케이크와 풍선이 있는 파티", "한 살 더 먹는 생일, 촛불 앞에서 활짝 웃었다.", "생일 축하해요.", "생일 축하해요"], ["편안하고 행복한 미소", "평소 즐겨 입는 편한 옷", "평소 즐겨 입는 편한 옷", "노을빛이 가득한 창가", "사계절을 지나 다시 창가에 섰다. 한 해가 이렇게 고마울 수가 없다.", "고마운 한 해.", "고마운 한 해"]]}};
+var STYLES={"suit": {"name": "👔 정장·단정", "desc": "깔끔한 정장 위주", "pool": {"f": ["네이비 정장 재킷과 블라우스", "베이지 투피스 정장", "검정 정장과 진주 목걸이", "회색 재킷과 스카프", "연보라 정장 원피스", "흰 블라우스와 정장 조끼"], "m": ["네이비 정장과 넥타이", "회색 정장과 줄무늬 넥타이", "검정 정장과 흰 셔츠", "베이지 재킷과 면바지", "남색 블레이저와 흰 셔츠", "조끼를 입은 정장"]}}, "casual": {"name": "👕 캐주얼", "desc": "편안한 평상복", "pool": {"f": ["청바지와 흰 티셔츠", "꽃무늬 블라우스와 면바지", "줄무늬 티셔츠와 청치마", "연한 니트와 청바지", "체크 셔츠와 베이지 바지", "카디건과 롱스커트"], "m": ["청바지와 흰 티셔츠", "체크 셔츠와 면바지", "폴로 셔츠와 베이지 바지", "니트와 청바지", "청재킷과 흰 티셔츠", "후드 집업과 면바지"]}}, "hanbok": {"name": "🎎 한복·전통", "desc": "고운 한복 위주", "pool": {"f": ["고운 분홍 한복", "연두 저고리와 남색 치마", "노란 저고리와 다홍 치마", "은은한 하늘색 한복", "연보라 한복", "흰 저고리와 쪽빛 치마"], "m": ["단정한 회색 한복", "남색 두루마기", "연한 하늘색 한복", "베이지 한복 조끼", "흰 바지저고리", "쪽빛 한복"]}}, "sport": {"name": "🥾 등산·운동", "desc": "활동적인 차림", "pool": {"f": ["등산복과 모자", "운동복 트레이닝복", "바람막이 재킷과 운동화", "요가복과 가벼운 재킷", "등산 조끼와 선글라스", "시원한 스포츠 티셔츠와 레깅스"], "m": ["등산복과 모자", "운동복 트레이닝복", "바람막이 재킷과 운동화", "가벼운 운동복 재킷", "등산 조끼와 선글라스", "시원한 스포츠 티셔츠"]}}, "retro": {"name": "📻 7080 레트로", "desc": "나팔바지·땡땡이", "pool": {"f": ["70년대 나팔바지와 물방울무늬 블라우스", "땡땡이 원피스와 헤어밴드", "체크 원피스", "긴 치마와 니트 조끼", "통 넓은 청바지와 줄무늬 티", "베이지 트렌치코트와 스카프"], "m": ["나팔바지와 화려한 무늬 셔츠", "청재킷과 청바지", "니트 조끼와 나팔바지", "가죽 재킷과 선글라스", "체크 남방과 청바지", "줄무늬 티셔츠와 멜빵바지"]}}, "party": {"name": "✨ 화사한 파티", "desc": "드레스·턱시도", "pool": {"f": ["화사한 꽃무늬 원피스", "연분홍 드레스", "푸른 새틴 원피스", "레이스 블라우스와 롱스커트", "빨간 원피스와 진주 목걸이", "화이트 드레스"], "m": ["턱시도와 나비넥타이", "연회색 양복과 포켓스퀘어", "남색 정장과 꽃 브로치", "조끼와 나비넥타이", "흰 셔츠와 멜빵과 중절모", "검정 양복과 빨간 넥타이"]}}};
+var STYLE_ORDER=['story','suit','casual','hanbok','sport','retro','party'];
+var st={theme:'mix',sex:'f',mode:'create',style:'story',cnt:10,gcnt:10,done:{},vdone:{},next:0};
+var SEX=[['f','여성',''],['m','남성','']];
+var MODES=[['create','🎬 유튜브 크리에이트','내 사진 올려서 · 1장면 10초 · 10장부터'],['flow','🌊 구글 플로우','영상 1개당 4초 · 10장부터']];
+var CNTS={create:[[10,'10장','1분 40초'],[12,'12장','2분'],[15,'15장','2분 30초']],flow:[[10,'10장','40초'],[12,'12장','48초'],[15,'15장','1분 ★']]};
+var SECS={create:10,flow:4};
+var GCNTS=[[5,'5장','맛보기'],[8,'8장','수업용'],[10,'10장',''],[12,'12장',''],[15,'15장','전체 이야기']];
+var MOTIONS=['살짝 미소 지으며 카메라가 천천히 다가옵니다','고개를 천천히 돌려 정면을 바라봅니다','손을 들어 반갑게 인사합니다','바람에 머리카락과 옷자락이 가볍게 흔들립니다','활짝 웃으며 고개를 끄덕입니다','카메라가 천천히 옆으로 이동하며 배경이 살짝 움직입니다'];
+function fmt(sec){var m=Math.floor(sec/60),r=sec%60;return ((m?m+'분':'')+(m&&r?' ':'')+(r?r+'초':''))||'0초';}
+
+function idxs(n){var T=THEMES[st.theme];n=n||st.cnt;var out=[],dr=T.drop.slice(0,Math.max(0,15-n));for(var i=0;i<15;i++)if(dr.indexOf(i)<0)out.push(i);return out;}
+function outfit(x,k){var c=document.getElementById('myOutfit');var custom=c&&c.value.trim();
+ if(custom)return custom;
+ if(st.style!=='story'){var p=STYLES[st.style].pool[st.sex];return p[k%p.length];}
+ return st.sex==='f'?x[1]:x[2];}
+function scenes(n){var T=THEMES[st.theme];return idxs(n).map(function(i,k){var x=T.sc[i];return {e:x[0],o:outfit(x,k),b:x[3],L:x[4],S:x[5],C:x[6]};});}
+function gn(){return st.mode==='flow'?st.cnt:st.gcnt;}
+function line(s){return s.e+', '+s.o+', '+s.b;}
+function RULES(){var T=THEMES[st.theme];
+ return '얼굴, 나이, 이목구비, 머리 모양은 첨부 사진과 똑같이 유지합니다. 옷, 표정, 배경, 분위기만 장면마다 바꿉니다. 화면 비율은 9:16 세로이고, 얼굴과 상반신이 크게 보이게 합니다. '+(T.style?T.style+' ':'')+'사진처럼 자연스럽고 밝게 만들고, 글자나 로고는 넣지 않습니다.';}
+function masterPrompt(){var sc=scenes(gn()),n=sc.length;
+ var t='첨부한 사진 속 인물을 주인공으로, 한 편의 짧은 드라마 「'+THEMES[st.theme].title+'」의 장면 사진 '+n+'장을 만들어 주세요. 장면은 번호 순서대로 이야기가 이어집니다.\n\n[지킬 규칙]\n- '+RULES().replace(/\. /g,'.\n- ')+'\n- 한 번에 한 장씩 만들고, 제가 "다음"이라고 쓰면 다음 번호를 만듭니다.\n- 1번부터 '+n+'번까지 순서대로 진행합니다.\n\n[장면 목록]\n';
+ sc.forEach(function(s,i){t+=(i+1)+'. '+line(s)+'\n';});return t.trim();}
+function singlePrompt(i){var s=scenes(gn())[i];
+ return '첨부한 사진 속 인물의 얼굴, 나이, 이목구비, 머리 모양을 그대로 유지하고, 아래 장면의 사진 1장을 만들어 주세요.\n장면: '+line(s)+'\n'+RULES();}
+function fixPrompt(){return '방금 사진은 얼굴이 달라졌어요. 첨부한 원본 사진의 얼굴과 똑같이 다시 만들어 주세요.';}
+function nm(){var v=document.getElementById('nm').value.trim();return v||'OOO';}
+function titleText(){return '「'+THEMES[st.theme].title+'」 주연 '+nm();}
+function lastText(){return '- 끝 -  지금도 멋져요';}
+
+function copyText(t,msg){
+ function ok(){toast(msg||'복사했습니다');}
+ function fb(){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy');ok();}catch(e){toast('복사 실패 - 직접 선택해서 복사해 주세요');}document.body.removeChild(a);}
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb);}else fb();}
+var tt;function toast(m){var e=document.getElementById('toast');e.textContent='✅ '+m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){e.classList.remove('show');},1800);}
+
+function copySingle(i){copyText(singlePrompt(i),(i+1)+'번 장면을 복사했습니다');st.done[i]=1;st.next=Math.min(i+1,scenes(gn()).length);renderList();}
+function copyNext(){var n=scenes(gn()).length,i=0;while(i<n&&st.done[i])i++;if(i>=n){toast('모두 복사했습니다. 처음부터 하려면 체크 초기화');return;}copySingle(i);}
+function resetDone(){st.done={};renderList();toast('체크를 초기화했습니다');}
+
+var castEdited=false;
+var CLOSE=['그 미소가 참 따뜻합니다.','오래오래 간직하고 싶은 순간이에요.','그날의 웃음이 지금도 눈에 선합니다.','마음까지 환해지는 장면입니다.','세월이 흘러도 변함없이 멋집니다.','가슴 속에 고이 담아 둡니다.','행복이 가득 묻어납니다.','이 순간, 참 소중합니다.','언제 봐도 정말 멋져요.','오늘도 빛나는 우리의 하루입니다.'];
+function defCast(){return st.sex==='f'?'70세 전후 한국인 여성, 단정한 짧은 파마머리':'70세 전후 한국인 남성, 단정한 짧은 흰머리';}
+function castText(){var c=document.getElementById('cast');return (c&&c.value.trim())||defCast();}
+function subText(i){return scenes()[i].C;}
+function voiText(i){var s=scenes()[i];return st.mode==='flow'?s.S:s.L;}
+function vidText(i){var s=scenes()[i],f=st.mode==='flow',sec=SECS[st.mode];
+ var t='첨부한 사진 속 인물의 얼굴과 모습은 그대로 유지하고, 옷과 배경은 아래 장면에 맞게 바꿉니다.\n';
+ t+='한 편의 짧은 드라마 「'+THEMES[st.theme].title+'」의 '+(i+1)+'/'+scenes().length+'번째 장면. 세로 9:16, 길이 '+sec+'초, 사진 같은 밝고 따뜻한 영상.\n장면 배경: '+s.b+'. 옷차림: '+s.o+'. 표정: '+s.e+'.\n움직임: '+MOTIONS[i%MOTIONS.length]+'.\n';
+ return t;}
+function voiPart(i){return '음성 나레이션(화면 밖 해설, 한국어, 따뜻하고 차분한 목소리): "'+voiText(i)+'"';}
+function subPart(i){return '자막: 화면 하단에 굵은 노란색 한글 자막(검은 테두리)으로 정확히 이 글자만 표시합니다: "'+subText(i)+'"';}
+function allText(i){return vidText(i)+voiPart(i)+'\n'+subPart(i);}
+function lenTag(t){return t.length+'자'+(t.length>900?' ⚠️':'');}
+function vvCopy(i,k){var t=k==='all'?allText(i):k==='vid'?vidText(i).trim():k==='voi'?voiText(i):subText(i);
+ copyText(t,(i+1)+'번 '+({all:'영상+음성+자막',vid:'영상',voi:'음성 대본',sub:'자막'})[k]+' 복사했습니다');
+ if(k==='all'){st.vdone[i]=1;renderVV();}}
+function vvCopyNext(){var n=scenes().length,i=0;while(i<n&&st.vdone[i])i++;if(i>=n){toast('모두 복사했습니다. 처음부터 하려면 체크 초기화');return;}vvCopy(i,'all');}
+function vvReset(){st.vdone={};renderVV();toast('체크를 초기화했습니다');}
+function renderVV(){var sc=scenes(),n=sc.length,h='',d=0;
+ sc.forEach(function(s,i){if(st.vdone[i])d++;var t=allText(i);
+  h+='<div class="vv"><button class="all'+(st.vdone[i]?' done':'')+'" onclick="vvCopy('+i+',\'all\')">'+(st.vdone[i]?'✅ ':'')+(i+1)+'번 🎬+🎙️+🔤 한 번에 복사 ('+lenTag(t)+')</button>'
+  +'<div class="tx"><b>🎙️ 음성</b> '+voiText(i)+'</div><div class="tx"><b>🔤 자막</b> '+subText(i)+'</div>'
+  +'<div class="mini"><button onclick="vvCopy('+i+',\'vid\')">🎬 영상만</button><button onclick="vvCopy('+i+',\'voi\')">🎙️ 음성만</button><button onclick="vvCopy('+i+',\'sub\')">🔤 자막만</button></div></div>';});
+ document.getElementById('vvList').innerHTML=h;
+ document.getElementById('vvNext').textContent=d>=n?'✅ 모두 복사했습니다':'▶ 다음 장면 복사 ('+(d+1)+'/'+n+'번 · 영상+음성+자막)';}
+function renderList(){var sc=scenes(gn()),h='';
+ sc.forEach(function(s,i){h+='<div class="scene"><button class="cp'+(st.done[i]?' done':'')+'" onclick="copySingle('+i+')">'+(st.done[i]?'✅ ':'')+(i+1)+'번 복사</button><div class="t"><b>'+(i+1)+'.</b> '+line(s)+'</div></div>';});
+ document.getElementById('sceneList').innerHTML=h;
+ var n=sc.length,d=0;for(var i=0;i<n;i++)if(st.done[i])d++;
+ document.getElementById('nextBtn').textContent=d>=n?'✅ 모두 복사했습니다':'▶ 다음 장면 복사 ('+(d+1)+'/'+n+'번)';}
+function steps(){var n=scenes().length,f=st.mode==='flow',sec=SECS[st.mode],tot=n*sec,a=[];
+ if(f){
+  a.push('<b>제미나이로 내 사진 '+n+'장</b>을 만들어 저장합니다. (4단계)');
+  a.push('<b>구글 플로우</b>에서 <b>Frames to Video</b>로 사진을 올리고, 5단계의 <b>🎬+🎙️+🔤 한 번에 복사</b> 문구를 붙여넣어 <b>4초 영상(음성·자막 포함)</b>을 만들고 저장합니다. ('+n+'개 × 4초 = '+fmt(tot)+')');
+  a.push('유튜브 크리에이트에서 <b>프로젝트 만들기</b> → 갤러리에서 영상 '+n+'개를 <b>1번부터 순서대로</b> 고르고 <b>가져오기</b>를 누릅니다.');
+  a.push('타임라인에서 <b>순서</b>를 확인합니다.');
+  a.push('<b>사운드 → 음악 선택</b>에서 곡을 고르고 <b>음악 볼륨</b>을 낮춰 나레이션이 잘 들리게 합니다.');
+  a.push('자막 글자가 깨졌다면 크리에이트의 <b>자막</b> 기능에 위 <b>🔤 자막만</b> 문구를 복사해 넣습니다.');
+ }else{
+  a.push('크리에이트에서 <b>동영상 생성</b>을 누르고, 하단의 <b>➕</b>를 눌러 <b>내 사진 1장</b>을 올립니다. (모든 장면에 같은 사진을 씁니다)');
+  a.push('4단계에서 <b>▶ 다음 장면 복사</b>를 눌러 1번 장면(영상+음성+자막)을 복사하고 <b>붙여넣기</b> → <b>생성하기</b>를 누릅니다.');
+  a.push('하단 <b>자막</b> 터치 → 글꼴 선택 → <b>완료</b>를 누릅니다.');
+  a.push('영상에 <b>음성 나레이션 + 자막</b>이 보이면 <b>동영상 사용 → 보내기 → 기기에 저장</b>을 누릅니다.');
+  a.push('2번부터 '+n+'번까지 같은 방법으로 <b>반복</b>합니다. ('+n+'개 × 10초 = '+fmt(tot)+')');
+  a.push('<b>프로젝트 만들기</b> → 갤러리에서 영상 '+n+'개를 <b>1번부터 순서대로</b> 고르고 <b>가져오기</b>를 누릅니다.');
+  a.push('<b>사운드 → 음악 선택</b>에서 곡을 고르고 <b>음악 볼륨</b>을 낮춰 나레이션이 잘 들리게 합니다.');
+ }
+ a.push('▶ <b>재생</b>해서 확인합니다.');
+ a.push('오른쪽 위 <b>내보내기 → 기기에 저장</b>을 누릅니다. (갤러리에 저장됩니다)');
+ a.push('갤러리에서 영상을 열고 <b>공유</b>를 눌러 가족에게 보냅니다.');
+ return a.map(function(x,i){return '<li><span class="n">'+(i+1)+'</span><div>'+x+'</div></li>';}).join('');}
+function refresh(){
+ var sc=scenes(),n=sc.length,f=st.mode==='flow',sec=SECS[st.mode],tot=n*sec;
+ document.getElementById('timeInfo').innerHTML='🎞️ <b>'+n+'장</b> × <b>'+sec+'초</b> = <b>'+fmt(tot)+'</b> 동영상'+(tot===60?' (1분 완성)':'')+'<br><span style="font-size:14px">모든 장면에 <b>영상 + 음성 나레이션 + 자막</b>이 들어갑니다.</span>';
+ document.getElementById('themeInfo').innerHTML='🎭 <b>줄거리</b> '+THEMES[st.theme].log;
+  document.getElementById('gcntBox').style.display=f?'none':'block';
+ document.getElementById('gemBadge').textContent=f?'4단계':'선택';
+ document.getElementById('gemTitle').textContent=f?'제미나이로 내 사진 변신 이미지 만들기 (플로우에 넣을 사진)':'제미나이로 내 사진 변신 이미지 만들기 (추가 사진 앨범)';
+ var gl=scenes(gn()).length;
+ document.getElementById('gemHow').innerHTML=f?'📎 플로우 영상 '+gl+'개에 쓸 사진입니다. 제미나이에 <b>내 사진 1장을 먼저 올린 뒤</b>, 아래 버튼으로 복사해 붙여넣으세요. (사진 수는 영상 수와 같습니다)':'📎 영상과 별도로 <b>변신 사진 앨범</b>을 만들 때 씁니다. 만든 사진은 크리에이트 <b>프로젝트 만들기</b>로 가져와 영상 앞뒤에 넣을 수 있습니다. 제미나이에 <b>내 사진 1장을 먼저 올린 뒤</b> 복사해 붙여넣으세요.';
+ document.getElementById('gcntInfo').innerHTML='🖼️ 변신 사진 <b>'+gl+'장</b> · 한 장씩 만들고 저장합니다. (사진 한 장을 영상에 넣으면 길이를 원하는 초로 조절할 수 있습니다)';
+ document.getElementById('vvBadge').textContent=f?'5단계':'4단계';
+ document.getElementById('vvTitle').textContent=f?'플로우에 붙여넣기 · 영상+음성+자막':'크리에이트에 사진 올리고 붙여넣기 · 영상+음성+자막';
+ document.getElementById('vvHow').innerHTML=f?'🌊 플로우에 <b>제미나이로 만든 내 사진</b>을 올린 뒤(<b>Frames to Video</b>), 아래 문구를 붙여넣어 <b>4초 영상</b>을 만듭니다. 플로우에서 자막 글자가 깨지면 크리에이트에서 <b>🔤 자막만</b> 문구로 넣으세요.':'🎬 크리에이트의 <b>동영상 생성</b>에서 하단 <b>➕</b>로 <b>내 사진 1장</b>을 올린 뒤, 아래 문구를 붙여넣으면 <b>10초 영상 + 음성 나레이션 + 자막</b>이 한 번에 만들어집니다. 글자 수가 900자를 넘으면 ⚠️가 뜹니다.';
+ var ci=document.getElementById('creditInfo');ci.style.display=f?'block':'none';
+ if(f){var lo=Math.ceil(n*7/50),hi=Math.ceil(n*10/50);ci.innerHTML='💳 영상 1개당 약 7~10크레딧(생성 버튼에 표시된 숫자 기준) → '+n+'개는 하루 50크레딧으로 약 <b>'+(lo===hi?lo:lo+'~'+hi)+'일</b>이 걸립니다. 집에서 미리 나눠서 만들어 오세요.';}
+ document.getElementById('makeSteps').innerHTML=steps();
+ document.getElementById('masterBox').textContent=masterPrompt();
+ document.getElementById('tFirst').textContent='"'+titleText()+'"';
+ document.getElementById('tLast').textContent='"'+lastText()+'"';
+ renderList();renderVV();}
+function pick(kind,v){if(kind==='sex')st.sex=v;if(kind==='style')st.style=v;if(kind==='theme')st.theme=v;if(kind==='cnt')st.cnt=v;if(kind==='gcnt')st.gcnt=v;if(kind==='mode'){st.mode=v;st.cnt=10;}st.done={};st.vdone={};build();}
+function build(){
+ var h='';SEX.forEach(function(x){h+='<button class="opt'+(st.sex===x[0]?' on':'')+'" onclick="pick(\'sex\',\''+x[0]+'\')">'+x[1]+'<small>'+x[2]+'</small></button>';});document.getElementById('sexRow').innerHTML=h;
+ h='';STYLE_ORDER.forEach(function(k){var nmv=k==='story'?'📖 이야기에 맞게':STYLES[k].name,dv=k==='story'?'장면마다 알맞은 옷(기본)':STYLES[k].desc;h+='<button class="opt'+(st.style===k?' on':'')+'" onclick="pick(\'style\',\''+k+'\')">'+nmv+'<small>'+dv+'</small></button>';});document.getElementById('styleRow').innerHTML=h;
+ h='';MODES.forEach(function(x){h+='<button class="opt'+(st.mode===x[0]?' on':'')+'" onclick="pick(\'mode\',\''+x[0]+'\')">'+x[1]+'<small>'+x[2]+'</small></button>';});document.getElementById('modeRow').innerHTML=h;
+ h='';Object.keys(THEMES).forEach(function(k){var T=THEMES[k];h+='<button class="opt'+(st.theme===k?' on':'')+'" onclick="pick(\'theme\',\''+k+'\')">'+T.name+'<small>'+T.desc+'</small></button>';});document.getElementById('themeRow').innerHTML=h;
+ h='';GCNTS.forEach(function(x){h+='<button class="opt'+(st.gcnt===x[0]?' on':'')+'" onclick="pick(\'gcnt\','+x[0]+')">'+x[1]+'<small>'+x[2]+'</small></button>';});document.getElementById('gcntRow').innerHTML=h;
+ h='';CNTS[st.mode].forEach(function(x){h+='<button class="opt'+(st.cnt===x[0]?' on':'')+'" onclick="pick(\'cnt\','+x[0]+')">'+x[1]+'<small>'+x[2]+'</small></button>';});document.getElementById('cntRow').innerHTML=h;
+ refresh();}
+build();
+</script>
+</body>
+</html>
