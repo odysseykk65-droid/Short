@@ -80,6 +80,8 @@ footer{text-align:center;padding:16px;font-size:13px;color:#555}
   <div style="font-weight:900;margin:12px 0 4px">기준 인물 (선택)</div>
   <div class="row" id="refRow"></div>
   <div id="refBox" class="refbox" style="display:none"></div>
+  <div style="font-weight:900;margin:12px 0 4px">내 얼굴 특징 (선택 · 쓰면 얼굴이 덜 달라집니다)</div>
+  <input type="text" id="feat" placeholder="예: 50대 한국 남성, 풍성한 웨이브 검은 머리, 갸름한 얼굴, 짙은 눈썹" oninput="st.done={};st.vdone={};refresh()">
   <div style="font-weight:900;margin:12px 0 4px">의상 스타일 (모든 장면에 적용)</div>
   <div class="row" id="styleRow"></div>
   <div style="font-weight:900;margin:12px 0 4px">내가 원하는 옷 직접 쓰기 (쓰면 모든 장면에 이 옷으로 나옵니다 · 비워 두면 위 스타일)</div>
@@ -106,15 +108,16 @@ footer{text-align:center;padding:16px;font-size:13px;color:#555}
   <div id="gcntBox"><div style="font-weight:900;margin:6px 0 4px">변신 사진 몇 장 만들까요? (장수 선택)</div><div class="row" id="gcntRow"></div><div class="info" id="gcntInfo" style="margin-top:8px"></div></div>
   <div class="info">📎 제미나이에 <b><span class="rw">내 사진</span> 1장을 먼저 올린 뒤</b>, 아래 버튼을 눌러 복사하고 붙여넣으세요.</div>
 
-  <div style="font-weight:900;font-size:19px;margin-top:6px">방법 A · 한 번에 붙여넣고 "다음"만 쓰기 (쉬운 방법)</div>
+  <div style="font-weight:900;font-size:19px;margin-top:6px">방법 A ★ 권장 · 장면별로 한 장씩 복사 (얼굴 정확도 높음)</div>
+    <div class="info" style="background:#ecfdf5;border-color:#10b981">✅ <b>한 장 만들 때마다 새 대화</b>를 열고, <b><span class="rw">내 사진</span>을 다시 올린 뒤</b> 복사한 문구를 붙여넣으세요. 대화가 길어질수록 얼굴이 달라집니다.</div>
+  <button class="btn violet" id="nextBtn" onclick="copyNext()">▶ 다음 장면 복사</button>
+  <button class="btn amber" style="font-size:16px;padding:10px" onclick="resetDone()">↺ 체크 초기화</button>
+  <div id="sceneList"></div>
+  <div style="font-weight:900;font-size:19px;margin-top:18px">방법 B · 한 번에 붙여넣고 "다음"만 쓰기 (빠르지만 얼굴이 달라질 수 있음)</div>
   <button class="btn green" onclick="copyText(masterPrompt(),'전체 프롬프트를 복사했습니다')">📋 전체 프롬프트 복사 (한 번만)</button>
   <details style="margin-top:8px"><summary style="font-size:16px;color:#4c1d95">복사될 내용 미리 보기</summary><div class="box" id="masterBox"></div></details>
   <div class="info" style="background:#ecfdf5;border-color:#10b981">붙여넣은 뒤 제미나이가 1번 사진을 만들면 <b>"다음"</b>이라고 쓰세요. 마지막 장까지 반복하고, 사진마다 <b>저장(다운로드)</b>을 누릅니다.</div>
 
-  <div style="font-weight:900;font-size:19px;margin-top:14px">방법 B · 장면별로 한 장씩 복사 (잘 안 될 때)</div>
-  <button class="btn violet" id="nextBtn" onclick="copyNext()">▶ 다음 장면 복사</button>
-  <button class="btn amber" style="font-size:16px;padding:10px" onclick="resetDone()">↺ 체크 초기화</button>
-  <div id="sceneList"></div>
 </div>
 
 <div class="card" id="vvCard" style="border-color:#16a34a">
@@ -129,7 +132,13 @@ footer{text-align:center;padding:16px;font-size:13px;color:#555}
 <div class="card" id="faceCard" style="border-color:#ef4444">
   <h2><span class="badge" style="background:#dc2626">도움말</span>얼굴이 달라졌을 때</h2>
   <button class="btn red" onclick="copyText(fixPrompt(),'복사했습니다')">📋 "얼굴 그대로 다시" 문구 복사</button>
-  <div class="info">원본 사진을 <b>매번 다시 올려서</b> 만들면 얼굴이 덜 변합니다. 만든 사진을 다시 고치면 점점 달라져요.</div>
+  <div class="info" style="text-align:left">
+  ① <b>한 장마다 새 대화</b>를 열고 원본을 다시 올립니다.<br>
+  ② 원본은 <b>정면, 밝은 얼굴 사진</b>이 좋습니다.<br>
+  ③ 위 1단계 <b>"내 얼굴 특징"</b>을 꼭 써 보세요.<br>
+  ④ 같은 문구를 <b>2~3번 다시 만들어</b> 가장 닮은 사진을 고릅니다.<br>
+  ⑤ 만든 사진을 다시 고치지 말고, 원본으로 새로 만드세요.<br>
+  ⑥ 춤추는 장면처럼 멀리서 찍힌 사진이 나오면 위 문구로 <b>상반신 클로즈업</b>을 요청하세요.</div>
 </div>
 
 <div class="card green-card">
@@ -176,14 +185,16 @@ function outfit(x,k){var c=document.getElementById('myOutfit');var custom=c&&c.v
 function scenes(n){var T=THEMES[st.theme];return idxs(n).map(function(i,k){var x=T.sc[i];return {e:x[0],o:outfit(x,k),b:x[3],L:x[4],S:x[5],C:x[6]};});}
 function gn(){return st.mode==='flow'?st.cnt:st.gcnt;}
 function line(s){return s.e+', '+s.o+', '+s.b;}
-function RULES(){var T=THEMES[st.theme];
- return '얼굴, 나이, 이목구비, 머리 모양은 첨부 '+RW()+'과 똑같이 유지합니다. 옷, 표정, 배경, 분위기만 장면마다 바꿉니다. 화면 비율은 9:16 세로이고, 얼굴과 상반신이 크게 보이게 합니다. '+(T.style?T.style+' ':'')+(st.ref==='art'?'밝고 따뜻하게':'사진처럼 자연스럽고 밝게')+' 만들고, 글자나 로고는 넣지 않습니다.'+(st.ref==='art'?' 그림체(일러스트 느낌)도 첨부한 그림과 똑같이 유지합니다.':'');}
+function featLine(){var f=document.getElementById('feat');var v=f&&f.value.trim();return v?'인물 특징: '+v+'. ':'';}
+function RULES(){var T=THEMES[st.theme],art=st.ref==='art';
+ return featLine()+'얼굴, 나이, 이목구비, 머리 모양은 첨부 '+RW()+'과 똑같이 유지합니다. 얼굴을 새로 그리거나 바꾸지 않습니다. 옷, 표정, 배경, 분위기만 장면마다 바꿉니다. 화면 비율은 9:16 세로이고, 원본처럼 정면을 바라보는 상반신 클로즈업으로 얼굴이 화면에서 크게 보이게 합니다. 전신이나 멀리서 찍은 구도, 얼굴이 작게 나오는 구도는 쓰지 않습니다. '+(T.style?T.style+' ':'')+(art?'밝고 따뜻하게':'사진처럼 자연스럽고 밝게')+' 만들고, 글자나 로고는 넣지 않습니다.'+(art?' 그림체(일러스트 느낌)도 첨부한 그림과 똑같이 유지합니다.':'');}
 function masterPrompt(){var sc=scenes(gn()),n=sc.length;
  var t='첨부한 '+RW()+' 속 인물을 주인공으로, 한 편의 짧은 드라마 「'+THEMES[st.theme].title+'」의 장면 사진 '+n+'장을 만들어 주세요. 장면은 번호 순서대로 이야기가 이어집니다.\n\n[지킬 규칙]\n- '+RULES().replace(/\. /g,'.\n- ')+'\n- 한 번에 한 장씩 만들고, 제가 "다음"이라고 쓰면 다음 번호를 만듭니다.\n- 1번부터 '+n+'번까지 순서대로 진행합니다.\n\n[장면 목록]\n';
  sc.forEach(function(s,i){t+=(i+1)+'. '+line(s)+'\n';});return t.trim();}
 function singlePrompt(i){var s=scenes(gn())[i];
- return '첨부한 '+RW()+' 속 인물의 얼굴, 나이, 이목구비, 머리 모양을 그대로 유지하고, 아래 장면의 사진 1장을 만들어 주세요.\n장면: '+line(s)+'\n'+RULES();}
-function fixPrompt(){return '방금 사진은 얼굴이 달라졌어요. 첨부한 원본 사진의 얼굴과 똑같이 다시 만들어 주세요.';}
+ var head=st.ref==='art'?'첨부한 그림 속 인물의 얼굴, 나이, 이목구비, 머리 모양을 그대로 유지하고, 아래 장면의 그림 1장을 만들어 주세요.':'첨부한 사진을 편집해 주세요. 인물의 얼굴은 건드리지 말고 원본 그대로 사용하고, 옷과 배경만 아래 장면으로 바꿔서 사진 1장을 만들어 주세요.';
+ return head+'\n장면: '+line(s)+'\n'+RULES();}
+function fixPrompt(){return '방금 사진은 얼굴이 원본과 달라요. 첨부한 원본 사진의 얼굴을 다시 그리지 말고 그대로 사용해서, 같은 옷과 배경으로 상반신 클로즈업(얼굴을 크게)으로 다시 만들어 주세요.';}
 function nm(){var v=document.getElementById('nm').value.trim();return v||'OOO';}
 function titleText(){return '「'+THEMES[st.theme].title+'」 주연 '+nm();}
 function lastText(){return '- 끝 -  지금도 멋져요';}
