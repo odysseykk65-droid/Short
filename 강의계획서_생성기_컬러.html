@@ -29,6 +29,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hint{font-size:15px;color:#667;margin-top:6px}
 .big{display:block;width:100%;padding:17px;font-size:22px;font-weight:800;border:0;border-radius:16px;background:linear-gradient(135deg,#f76707,#e03131 60%,#d6336c);color:#fff;cursor:pointer;font-family:inherit;margin-top:16px;box-shadow:0 6px 14px rgba(224,49,49,.35)}
+.srcb{background:#e7f5ff;border:2px solid #1c7ed6;border-radius:12px;padding:12px 14px;margin:10px 0;font-size:15.5px;line-height:1.6}.srcb b.h{color:#1864ab;font-size:16.5px}.srcb .u{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0;background:#fff;border-radius:9px;padding:7px 9px}.srcb .u code{word-break:break-all;font-size:14px;color:#1b2a5c}.srcb button{border:0;background:#1c7ed6;color:#fff;font:inherit;font-weight:700;font-size:13.5px;border-radius:8px;padding:5px 11px;cursor:pointer}
 .spb{background:#fff0f6;border:2px dashed #d6336c;border-radius:12px;padding:9px 11px;margin:8px 0}
 .spb .l{font-weight:800;color:#c2255c;margin-bottom:7px}
 .spb .n{font-size:15px;color:#666;margin-top:6px}
@@ -90,7 +91,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 <div class="gb">
 <div class="what">🎯 이 생성기는? 강의 주제·대상·일수·시간만 고르면 <b>일차별 강의계획서</b>(목표·시간 배분·준비물·과제)를 만들고, 일차마다 <b>노트북LM용 슬라이드 프롬프트</b>(15장씩 나눔)까지 복사해 주는 강사용 도구입니다.</div>
 <div class="st"><div class="nb">1</div><div class="tx"><b>① 강의 정보를 고릅니다</b><div>강의 이름은 비워 둬도 됩니다. <b>강의 주제</b>(스마트폰+AI 종합, 스마트폰 기초, 생활 속 AI, AI 창작, 직접 입력), <b>수강 대상</b>(시니어/전 연령), <b>수강생 수준</b>을 눌러 선택합니다. 선택한 버튼은 색이 채워집니다. "직접 입력"을 고르면 주제 칸이 나타납니다.</div></div></div>
-<div class="st"><div class="nb">2</div><div class="tx"><b>② 강의 일수와 시간을 고릅니다</b><div><b>총 강의 일수</b>(4~24일, 또는 직접 입력 4~30일), <b>하루 수업 시간</b>(60·90·120분), <b>하루 슬라이드 장수</b>(15·30·45·60장), 수강생 수, 사용 기기를 고릅니다. 슬라이드는 노트북LM 제한 때문에 15장씩 1부, 2부, 3부로 나뉩니다. (예: 45장 = 3부)</div></div></div>
+<div class="st"><div class="nb">2</div><div class="tx"><b>② 강의 일수와 시간을 고릅니다</b><div><b>총 강의 일수</b>(1~24일, 또는 직접 입력 1~30일), <b>하루 수업 시간</b>(60·90·120분), <b>하루 슬라이드 장수</b>(15·30·45·60장), 수강생 수, 사용 기기를 고릅니다. 슬라이드는 노트북LM 제한 때문에 15장씩 1부, 2부, 3부로 나뉩니다. (예: 45장 = 3부)</div></div></div>
 <div class="st"><div class="nb">3</div><div class="tx"><b>「강의계획서 만들기」를 누릅니다</b><div>아래에 <b>일차별 카드</b>가 나옵니다. 카드마다 목표, 시간 배분(복습·설명·실습·정리·쉬는 시간), 내용, 준비물, 다음 시간까지 과제가 들어 있고 맨 아래에 <b>강사 운영 팁</b>이 붙습니다.</div></div></div>
 <div class="st"><div class="nb">4</div><div class="tx"><b>저장하거나 복사합니다</b><div><b>전체 복사</b>: 계획서 전체를 복사 / <b>텍스트 저장</b>: 파일로 저장 / <b>인쇄·PDF 저장</b>: 종이나 PDF로 / <b>AI에게 다듬기 요청 복사</b>: 제미나이·챗GPT에 붙여넣으면 제목과 멘트를 더 좋게 다듬어 줍니다.</div></div></div>
 <div class="st"><div class="nb">5</div><div class="tx"><b>일수를 늘리고 싶을 때</b><div>계획서 맨 아래 <b>「강의 일수 늘리기」</b>를 누르면 4일씩 늘어나고, 새로 생긴 일차에 <b>NEW</b> 표시가 붙습니다. 준비된 주제가 모자라면 복습·자유 실습 일차가 끼어듭니다.</div></div></div>
@@ -106,7 +107,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 <input type="text" id="cname" placeholder="예) 시니어 스마트폰·AI 활용반">
 <label class="t">📚 강의 주제</label>
 <div class="chips" id="g_topic"></div>
-<div id="customBox" class="hide"><label class="t">✍️ 직접 입력한 주제</label><input type="text" id="ctopic" placeholder="예) 유튜브 시작하기"></div>
+<div id="customBox" class="hide"><label class="t">✍️ 직접 입력한 주제</label><input type="text" id="ctopic" placeholder="예) 구글 플레이북"><div id="srcHint"></div></div>
 <label class="t">👥 수강 대상</label>
 <div class="chips" id="g_aud"></div>
 <label class="t">🌱 수강생 수준</label>
@@ -118,7 +119,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 <label class="t">🔢 총 강의 일수</label>
 <div class="chips" id="g_n"></div>
 <div class="row2">
-<div><label class="t">⌨️ 직접 입력 (4~30일)</label><input type="number" id="nin" min="4" max="30" placeholder="예) 15"></div>
+<div><label class="t">⌨️ 직접 입력 (1~30일)</label><input type="number" id="nin" min="1" max="30" placeholder="예) 1"></div>
 <div></div></div>
 <label class="t">🕐 하루 수업 시간</label>
 <div class="chips" id="g_time"></div>
@@ -197,7 +198,7 @@ var G={
 g_topic:{k:"topic",o:[["all","스마트폰+AI 종합"],["phone","스마트폰 기초"],["life","생활 속 AI"],["create","AI 창작(사진·영상)"],["custom","직접 입력"]]},
 g_aud:{k:"aud",o:[["senior","시니어"],["all","전 연령"]]},
 g_lvl:{k:"lvl",o:[["처음","처음 배움"],["조금","조금 해 봄"],["섞임","수준이 섞여 있음"]]},
-g_n:{k:"n",o:[[4,"4일"],[8,"8일"],[12,"12일"],[16,"16일"],[20,"20일"],[24,"24일"]]},
+g_n:{k:"n",o:[[1,"1일 특강"],[4,"4일"],[8,"8일"],[12,"12일"],[16,"16일"],[20,"20일"],[24,"24일"]]},
 g_time:{k:"time",o:[[60,"60분"],[90,"90분"],[120,"120분"]]},
 g_slide:{k:"slide",o:[[15,"15장 (1부)"],[30,"30장 (2부)"],[45,"45장 (3부)"],[60,"60장 (4부)"]]},
 g_head:{k:"head",o:[["10명 이하","10명 이하"],["10~20명","10~20명"],["20명 이상","20명 이상"]]},
@@ -210,6 +211,7 @@ function drawChips(){
   g.o.forEach(function(x){h+='<button type="button" class="chip'+(String(S[g.k])===String(x[0])?" on":"")+'" data-g="'+id+'" data-v="'+x[0]+'">'+x[1]+'</button>'});
   $(id).innerHTML=h}
  $("customBox").className=S.topic==="custom"?"":"hide";
+ if(window.drawSrcHint)drawSrcHint();
 }
 document.addEventListener("click",function(e){
  var b=e.target.closest(".chip");if(!b)return;
@@ -220,7 +222,7 @@ document.addEventListener("click",function(e){
 });
 $("nin").addEventListener("input",function(){
  var v=parseInt(this.value,10);
- if(v>=4&&v<=30){S.n=v;drawChips()}
+ if(v>=1&&v<=30){S.n=v;drawChips()}
 });
 function r5(x){return Math.max(5,Math.round(x/5)*5)}
 function alloc(T,senior){
@@ -232,6 +234,7 @@ function alloc(T,senior){
 function customMods(n,topic){
  var mids=["기초 개념과 준비","핵심 기능 익히기","따라하기 실습 ①","따라하기 실습 ②","응용 · 나만의 작품 만들기","활용 사례 만들기","심화 실습","실생활에 적용하기"];
  var L=[];
+ if(n===1){L.push({id:"c1d",t:topic+" 하루 완성 특강",g:topic+"을(를) 하루 만에 직접 해 보고 생활에서 쓸 수 있게 한다.",c:["수업 안내와 "+topic+" 알아보기","핵심 기능 단계별 따라하기 실습","나만의 결과물 만들고 서로 나누기"],p:["스마트폰 또는 노트북","실습 안내문"],h:"오늘 배운 것 집에서 한 번 더 해 보기"});return L}
  for(var i=0;i<n;i++){
   if(i===0)L.push({id:"c0",t:"오리엔테이션 · "+topic+" 알아보기",g:topic+"의 전체 그림을 알고 수업 목표를 정한다.",c:["수강생 자기소개와 수업 안내",topic+"가 필요한 이유와 사례","오늘 쓸 도구 준비"],p:["스마트폰 또는 노트북","수업 안내문"],h:"배우고 싶은 점 1가지 메모해 오기"});
   else if(i===n-1)L.push({id:"cL",t:"복습 · 발표회 · 수료",g:"배운 것을 정리하고 작품을 서로 보여 준다.",c:["작품 발표(1~2분)","소감 나누기","수료증과 앞으로의 학습 안내"],p:["각자 작품","수료증"],h:"배운 것 중 가장 쓸모 있었던 것 1가지 말하기"});
@@ -285,6 +288,9 @@ function slidePrompt(m,k){
  var sn=last.snap,sp=SP[sn.slide],pt=sp[k],o=[],tot=sp.length,x=m.tm,T=tot*15,a=k*15+1,z=k*15+15;
  o.push("【"+m.no+"일차 슬라이드 "+(k+1)+"부 / 총 "+tot+"부】  전체 "+T+"장 중 "+a+"~"+z+"번");
  o.push("강의 주제: "+m.t);
+ if(sn.custom){var ss=findSrc(sn.topic);o.push("");o.push("[먼저 할 일 — 공식 도움말을 소스로]");o.push("- 이 프롬프트를 붙여넣기 전에 노트북LM [소스 추가 → 웹사이트]로 '"+sn.topic+"' 공식 도움말 웹 주소를 먼저 추가했습니다. 슬라이드 내용은 그 공식 도움말 소스에 있는 내용만으로 만들어 주세요.");
+  if(ss.length)ss.forEach(function(s){o.push("- 추가한 공식 도움말: "+s.n+" "+s.u)});
+  else o.push("- 공식 도움말 소스가 없으면 따라하기 단계를 지어내지 말고 '[확인 필요]'로 표시해 주세요.");}
  o.push("이번 부: "+pt.t+" — 슬라이드는 정확히 15장으로 만들어 주세요. (15장을 넘기지 마세요)");
  o.push("대상: "+(sn.aud==="senior"?"시니어 (큰 글씨, 쉬운 말, 천천히)":"전 연령")+" / 수강생 수준: "+sn.lvl+" / 사용 기기: "+sn.dev);
  o.push("");
@@ -292,9 +298,19 @@ function slidePrompt(m,k){
  o.push("- 이 묶음은 하루 전체 "+T+"장 중 "+a+"번부터 "+z+"번까지입니다.");
  o.push("- 모든 슬라이드 오른쪽 위 모서리에 흰색 동그라미 안에 진한 글씨로 '"+a+"/"+T+"', '"+(a+1)+"/"+T+" … "+z+"/"+T+"'처럼 전체 번호를 반드시 표시해 주세요. (번호 없는 슬라이드가 없어야 합니다) 번호는 "+a+"부터 시작합니다.");
  o.push("- 모든 슬라이드 제목 앞에 '["+m.no+"일차-"+(k+1)+"부]'를 붙여 주세요.");
+ o.push("- 모든 슬라이드 왼쪽 아래 모서리에도 '"+m.no+"일차 "+(k+1)+"부 · "+a+"번'처럼 일차·부·번호를 작게(20pt, 검정) 한 번 더 적어 주세요.");
+ if(k>0)o.push("- 첫 장("+a+"번) 위쪽에 작은 띠로 '⬅ "+k+"부("+(a-15)+"~"+(a-1)+"번)에서 이어집니다'라고 적어 주세요.");
+ if(k<tot-1)o.push("- 마지막 장("+z+"번) 아래쪽에 작은 띠로 '"+(k+2)+"부("+(z+1)+"번부터)로 이어집니다 ➡'라고 적어 주세요.");
+ else o.push("- 마지막 장("+z+"번)에 '"+m.no+"일차 끝 · 전체 "+T+"장'이라고 적어 주세요.");
  o.push("");
  o.push("[이번 부 슬라이드 구성]");
- var c=a;pt.rows.forEach(function(r,i){var p=c,q=c+r[1]-1;var rn=(m.no===1)?r[0].replace("지난 시간 복습·질문","준비물·시작 확인 (첫날이라 지난 시간 복습 대신)"):r[0];o.push((i+1)+") "+rn+" — "+r[1]+"장 ("+(p===q?p+"번":p+"~"+q+"번")+")");c+=r[1]});
+ var c=a,per=[];pt.rows.forEach(function(r,i){var p=c,q=c+r[1]-1;var rn=(m.no===1)?r[0].replace("지난 시간 복습·질문","준비물·시작 확인 (첫날이라 지난 시간 복습 대신)"):r[0];o.push((i+1)+") "+rn+" — "+r[1]+"장 ("+(p===q?p+"번":p+"~"+q+"번")+")");
+  var nm=rn.replace(/\s*\(.*\)\s*$/,"");
+  for(var j=0;j<r[1];j++){var lab=nm;if(r[1]>1){if(/따라하기/.test(nm))lab=nm+" — "+(j+1)+"단계";else if(/개념/.test(nm))lab=nm+" — 포인트 "+(j+1);else lab=nm+" ("+(j+1)+"/"+r[1]+")"}per.push((c+j)+"번 ["+m.no+"일차-"+(k+1)+"부] "+lab)}
+  c+=r[1]});
+ o.push("");
+ o.push("[장별 번호표 — 이 번호와 순서를 그대로 지켜 주세요]");
+ per.forEach(function(s){o.push("- "+s)});
  o.push("");
  o.push("[오늘 강의 정보]");
  o.push("- 목표: "+m.g);
@@ -310,8 +326,8 @@ function slidePrompt(m,k){
  o.push("[슬라이드 한 장의 레이아웃 — 모든 장 동일]");
  o.push("1) 맨 위: 큰 제목 (오른쪽 위에 전체 번호 "+a+"/"+T+" 형식).");
  o.push("2) 가운데: 설명하려는 화면·버튼·아이콘을 그림으로 보여 줍니다. 슬라이드 그림만 봐도 이해되게 하고, 긴 문장 설명은 피합니다.");
- o.push("3) 아래쪽: 제목에 대한 자세하고 구체적인 설명. 따라하기(실습) 장은 '1단계, 2단계…'로, 개념 설명 장은 '포인트 ①, ②, ③'으로 씁니다. (개념 장에 '단계'라는 말은 쓰지 않습니다)");
- o.push("4) 맨 아래 띠: '🎤 강사 멘트' — 강사가 수강생에게 그대로 말할 1~2문장 (시니어 눈높이, 다정한 말투). 위 설명을 그대로 되풀이하지 말고, 쉬운 비유·확인 질문·격려의 말을 넣습니다. 수강생을 부르는 말은 반드시 '수강생 여러분'으로 씁니다.");
+ o.push("3) 아래쪽: 짧고 정확한 설명 — 한 장에 최대 3줄, 한 줄은 짧은 한 문장. 따라하기(실습) 장은 '1단계, 2단계…'로, 개념 설명 장은 '포인트 ①, ②, ③'으로 씁니다. (개념 장에 '단계'라는 말은 쓰지 않습니다) 긴 설명문은 쓰지 말고, 그림과 번호만 보고도 따라 할 수 있게 합니다.");
+ o.push("4) 맨 아래 띠: 표지·퀴즈·마무리를 포함한 모든 장에 빠짐없이 '🎤 강사 멘트' — 강사가 수강생에게 그대로 말할 1~2문장 (시니어 눈높이, 다정한 말투). 위 설명을 그대로 되풀이하지 말고, 쉬운 비유·확인 질문·격려의 말을 넣습니다. 수강생을 부르는 말은 반드시 '수강생 여러분'으로 씁니다.");
  o.push("");
  o.push("[아이콘 강조 규칙 — 매우 중요]");
  o.push("- 가리키거나 지칭하는 아이콘·버튼은 모두 '빨간 원'으로 감싸서 강조합니다. (흰색 테두리를 두르면 더 잘 보입니다)");
@@ -347,9 +363,10 @@ function slidePrompt(m,k){
  o.push("- 마지막 장의 '기종·앱 버전에 따라 화면이 다를 수 있음'과 '참고 자료' 문구는 작더라도 읽을 수 있는 크기로 씁니다.");
  o.push("");
  o.push("[정확성 규칙 — 반드시 지켜 주세요]");
- o.push("- 2026년 기준 최신 정보만 사용합니다. 앱 이름, 메뉴 이름, 버튼 위치는 현재 실제 화면과 같아야 합니다.");
+ o.push("- "+(function(){var d=new Date();return d.getFullYear()+"년 "+(d.getMonth()+1)+"월"})()+" 현재 기준 최신 정보만 사용합니다. 앱 이름, 메뉴 이름, 버튼 위치는 현재 실제 화면과 같아야 합니다.");
  o.push("- 소스로 함께 추가한 삼성·구글·카카오 등 공식 도움말 자료가 있으면, 그 자료를 가장 먼저 근거로 삼아 만들어 주세요. 공식 자료와 내용이 다르면 공식 자료를 따릅니다.");
  o.push("- 공식 도움말 소스에 없는 메뉴 이름·버튼 위치·기능은 임의로 만들어 쓰지 않습니다.");
+ if(/^c/.test(String(m.id)))o.push("- 이 강의는 직접 입력한 주제('"+m.t.replace(/ 하루 완성 특강$/,"").replace(/^오리엔테이션 · | 알아보기$/g,"").split(" · ")[0]+"')입니다. 따라하기 단계(앱 이름, 메뉴, 버튼 순서)는 반드시 함께 추가한 공식 도움말 소스에 적힌 순서 그대로 쓰고, 소스에 없는 단계는 만들지 말고 '[확인 필요]'로 남겨 주세요.");
  o.push("- 슬라이드 마지막 장 하단에 '참고 자료: 사용한 공식 도움말 이름'을 작은 글씨로 적어 주세요.");
  o.push("- 상상하거나 추측해서 쓰지 않습니다. 자료나 공식 안내에서 확인되지 않는 메뉴명·기능·가격·숫자는 쓰지 말고 '[확인 필요]'로 표시해 주세요.");
  o.push("- 기종(갤럭시)이나 앱 버전에 따라 화면이 다를 수 있는 부분은 '기종에 따라 다를 수 있음'이라고 적어 주세요.");
@@ -382,11 +399,40 @@ function tips(){
 function spBox(ix){
  var sn=last.snap,sp=SP[sn.slide],b="";
  sp.forEach(function(p,k){b+='<button type="button" class="sp k'+k+'" data-i="'+ix+'" data-k="'+k+'">'+(k+1)+'부 복사<br><span style="font-size:13px;font-weight:600">'+p.t+'</span></button>'});
- return '<div class="spb noprint"><div class="l">🎞️ 슬라이드 프롬프트 · 하루 '+sn.slide+'장 = 15장 × '+sp.length+'부</div><div class="spbtn">'+b+'</div><div class="n">버튼을 누르면 복사됩니다 → 노트북LM에 붙여넣어 슬라이드 만들기 (부마다 새로 만드세요). <b>먼저 노트북LM 소스에 삼성·구글 등 공식 도움말 주소를 추가</b>하면 더 정확합니다. 완성 후 1부→2부→3부 순서로 이어 붙이세요. 장마다 전체 번호(예: 16/45)가 찍혀 순서를 확인할 수 있습니다.</div></div>';
+ return (sn.custom?srcHtml(sn.topic):'')+'<div class="spb noprint"><div class="l">🎞️ 슬라이드 프롬프트 · 하루 '+sn.slide+'장 = 15장 × '+sp.length+'부</div><div class="spbtn">'+b+'</div><div class="n">버튼을 누르면 복사됩니다 → 노트북LM에 붙여넣어 슬라이드 만들기 (부마다 새로 만드세요). <b>먼저 노트북LM 소스에 삼성·구글 등 공식 도움말 주소를 추가</b>하면 더 정확합니다. 완성 후 1부→2부→3부 순서로 이어 붙이세요. 장마다 전체 번호(예: 16/45)가 찍혀 순서를 확인할 수 있습니다.</div></div>';
 }
+
+var SRC=[
+ {k:["플레이북","플레이 북","play books","playbook","play 북","구글 북","전자책 읽"],n:"Google Play 북 고객센터(읽기·구매)",u:"https://support.google.com/googleplay/topic/2999725?hl=ko"},
+ {k:["플레이북","플레이 북","play books","playbook","전자책 출판","전자책 판매","파트너 센터","출판"],n:"Google Play 북 파트너 센터 고객센터(출판·판매)",u:"https://support.google.com/books/partner/?hl=ko"},
+ {k:["구글 플레이","구글플레이","플레이스토어","플레이 스토어","play store","google play"],n:"Google Play 고객센터",u:"https://support.google.com/googleplay/?hl=ko"},
+ {k:["제미나이","gemini"],n:"Gemini 앱 고객센터",u:"https://support.google.com/gemini/?hl=ko"},
+ {k:["노트북lm","노트북 lm","노트북엘엠","노트북 엘엠","notebooklm"],n:"NotebookLM 고객센터",u:"https://support.google.com/notebooklm/?hl=ko"},
+ {k:["유튜브","youtube"],n:"YouTube 고객센터",u:"https://support.google.com/youtube/?hl=ko"},
+ {k:["구글 포토","구글포토","google photos","사진 백업"],n:"Google 포토 고객센터",u:"https://support.google.com/photos/?hl=ko"},
+ {k:["지메일","gmail","구글 메일"],n:"Gmail 고객센터",u:"https://support.google.com/mail/?hl=ko"},
+ {k:["구글 지도","구글지도","google maps"],n:"Google 지도 고객센터",u:"https://support.google.com/maps/?hl=ko"},
+ {k:["구글 드라이브","구글드라이브","google drive"],n:"Google Drive 고객센터",u:"https://support.google.com/drive/?hl=ko"},
+ {k:["크롬","chrome"],n:"Chrome 고객센터",u:"https://support.google.com/chrome/?hl=ko"},
+ {k:["구글 렌즈","구글렌즈","서클 투 서치","google lens"],n:"Google 검색 고객센터",u:"https://support.google.com/websearch/?hl=ko"},
+ {k:["갤럭시","삼성","galaxy","one ui","빅스비"],n:"삼성전자 서비스·고객지원",u:"https://www.samsung.com/sec/support/"},
+ {k:["카카오톡","카톡","카카오"],n:"카카오 고객센터",u:"https://cs.kakao.com/"},
+ {k:["네이버","naver","파파고"],n:"네이버 고객센터",u:"https://help.naver.com/"}
+];
+function findSrc(t){t=String(t||"").toLowerCase().replace(/\s+/g," ");var r=[],seen={};
+ SRC.forEach(function(s){if(seen[s.u])return;if(s.k.some(function(k){return t.indexOf(k)>=0||t.replace(/ /g,"").indexOf(k.replace(/ /g,""))>=0})){seen[s.u]=1;r.push(s)}});return r}
+function srcHtml(t){
+ if(!t)return"";var ss=findSrc(t),h='<div class="srcb noprint"><b class="h">📌 노트북LM에서 먼저 할 일</b><br>노트북LM에서 <b>'+esc(t)+' 공식 도움말 웹 주소를 먼저 소스로 추가</b>한 뒤 프롬프트를 붙여넣으세요. 그렇게 해야 노트북LM이 지어내지 않고 <b>공식 내용대로</b> 만듭니다.<br><span style="font-size:14px;color:#555">노트북LM → [소스 추가] → [웹사이트] → 아래 주소 붙여넣기 → [삽입]</span>';
+ if(ss.length)ss.forEach(function(s){h+='<div class="u"><span>✅ '+esc(s.n)+'</span><code>'+esc(s.u)+'</code><button type="button" class="srcCp" data-u="'+esc(s.u)+'">주소 복사</button></div>'});
+ else h+='<div class="u"><span>🔎 이 주제의 공식 주소는 자동으로 찾지 못했습니다. 검색창에 「'+esc(t)+' 고객센터」 또는 「'+esc(t)+' 도움말」을 검색해 <b>회사 공식 사이트</b> 주소만 추가하세요. (블로그·카페 글은 넣지 마세요)</span></div>';
+ return h+'</div>';
+}
+window.drawSrcHint=function(){$("srcHint").innerHTML=S.topic==="custom"?srcHtml($("ctopic").value.trim()):""}
+$("ctopic").addEventListener("input",window.drawSrcHint);
+document.addEventListener("click",function(e){var b=e.target.closest(".srcCp");if(!b)return;copyText(b.getAttribute("data-u"),"공식 도움말 주소 복사됨 → 노트북LM 소스에 붙여넣기")});
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 function render(){
- var r=build();if(!r)return;r.snap={slide:S.slide,aud:S.aud,lvl:S.lvl,dev:S.dev};last=r;
+ var r=build();if(!r)return;r.snap={slide:S.slide,aud:S.aud,lvl:S.lvl,dev:S.dev,custom:S.topic==="custom",topic:$("ctopic").value.trim()};last=r;
  var n=r.list.length,hrs=(n*S.time/60);
  var title=(r.cname||r.tname+" 강의계획서");
  var h='<div class="sum"><b class="tt">🎓 '+esc(title)+'</b><br>'+
@@ -442,7 +488,12 @@ document.addEventListener("click",function(e){
  var i=+b.getAttribute("data-i"),k=+b.getAttribute("data-k");
  copyText(slidePrompt(last.list[i],k),(i+1)+"일차 "+(k+1)+"부 프롬프트 복사됨 → 노트북LM에 붙여넣기");
 });
-$("mk").onclick=function(){prevSet=null;render()};
+$("mk").onclick=function(){
+ var raw=$("nin").value.trim();
+ if(raw!==""){var v=parseInt(raw,10);
+  if(!(v>=1&&v<=30)){toast("강의 일수는 1~30일 사이로 입력해 주세요");$("nin").focus();return}
+  S.n=v;drawChips()}
+ prevSet=null;render()};
 $("bCopy").onclick=function(){copyText(toText(),"전체 복사되었습니다")};
 $("bDown").onclick=function(){
  var b=new Blob(["﻿"+toText()],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");
