@@ -115,7 +115,10 @@ button:disabled{opacity:.45;cursor:not-allowed}
 <p class="hint" id="audioInfo">노래 파일이 없으면 아래 배경음악이 깔립니다.</p>
 <div class="yt">
 <label for="ytUrl">🎬 유튜브 링크로 함께 듣기</label>
-<div class="seg"><input type="text" id="ytUrl" placeholder="유튜브 주소를 붙여 넣으세요" style="flex:3 1 220px"><button type="button" id="ytLoad">불러오기</button><button type="button" id="ytClear">빼기</button></div>
+<input type="text" id="ytUrl" placeholder="노래 제목(예: 7080 영화음악) 또는 유튜브 주소">
+<div class="seg" style="margin-top:8px"><button type="button" id="ytSearch">🔍 유튜브에서 찾기</button><button type="button" id="ytPaste">📋 복사한 주소 붙여넣고 불러오기</button></div>
+<div class="seg" style="margin-top:8px"><button type="button" id="ytLoad" class="main">▶ 불러오기</button><button type="button" id="ytClear">빼기</button></div>
+<ol class="hint" style="margin:8px 0 0;padding-left:1.3em"><li>칸에 노래 제목을 적고 <b>🔍 유튜브에서 찾기</b>를 누르면 유튜브 검색 화면이 새 창으로 열립니다.</li><li>마음에 드는 영상에서 <b>공유 → 복사</b>(휴대폰은 공유 → 링크 복사)를 누릅니다.</li><li>이 화면으로 돌아와 <b>📋 복사한 주소 붙여넣고 불러오기</b>를 누르면 끝!</li></ol>
 <div id="ytWrap" style="display:none;margin-top:10px;aspect-ratio:16/9;max-width:420px;border-radius:10px;overflow:hidden;background:#000"><div id="ytPlayer"></div></div>
 <p class="hint" id="ytInfo">유튜브 소리는 화면에서만 들리고, 저장하는 영상 파일에는 들어가지 않습니다. Claude 안에서는 열리지 않고 GitHub Pages 주소에서 쓸 수 있습니다.</p>
 </div>
@@ -436,7 +439,7 @@ function ytId(u){u=u.trim();const m=u.match(/(?:youtu\.be\/|v=|\/shorts\/|\/embe
 function loadYTApi(){if(ytApi)return ytApi;ytApi=new Promise((ok,no)=>{if(window.YT&&YT.Player)return ok();window.onYouTubeIframeAPIReady=()=>ok();const sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';sc.onerror=()=>{ytApi=null;no()};document.head.appendChild(sc);setTimeout(()=>{if(!(window.YT&&YT.Player)){ytApi=null;no()}},12000)});return ytApi}
 const yinfo=t=>{$('#ytInfo').textContent=t};
 function ytOff(){if(yt){try{yt.destroy()}catch(e){}}yt=null;ytDur=0;$('#ytWrap').style.display='none';$('#ytWrap').innerHTML='<div id="ytPlayer"></div>'}
-$('#ytLoad').onclick=async()=>{const id=ytId($('#ytUrl').value);if(!id){yinfo('유튜브 주소를 다시 확인해 주세요. 예: https://youtu.be/abcdEFGhijk');return}
+$('#ytLoad').onclick=async()=>{const id=ytId($('#ytUrl').value);if(!id){if($('#ytUrl').value.trim()){$('#ytSearch').click();return}yinfo('노래 제목이나 유튜브 주소를 먼저 적어 주세요.');return}
  stop();yinfo('불러오는 중…');
  try{await loadYTApi()}catch(e){yinfo('이 화면에서는 유튜브를 열 수 없습니다. GitHub Pages에 올린 주소로 열어 주세요.');return}
  ytOff();if(audioDur){au.removeAttribute('src');au.load();audioDur=0;$('#audioFile').value='';$('#audioInfo').textContent='노래 파일이 없으면 아래 배경음악이 깔립니다.'}
@@ -445,6 +448,10 @@ $('#ytLoad').onclick=async()=>{const id=ytId($('#ytUrl').value);if(!id){yinfo('�
   events:{onReady:e=>{ytDur=e.target.getDuration()||0;if(!ytDur){setTimeout(()=>{ytDur=yt&&yt.getDuration()||0;rebuild()},1500)}yinfo('🎬 연결됨'+(ytDur?` · ${fmt(ytDur)}`:'')+'. ▶ 재생을 누르면 가사와 함께 나옵니다. (저장 영상에는 유튜브 소리가 들어가지 않습니다)');rebuild();seek(0)},
    onStateChange:e=>{if(!hasYT())return;if(e.data===1&&!playing){T=yt.getCurrentTime();playing=true;$('#playBtn').textContent='⏸ 멈춤';loop()}else if((e.data===2||e.data===0)&&playing){playing=false;cancelAnimationFrame(raf);$('#playBtn').textContent='▶ 재생'}},
    onError:e=>{const c=e.data;yinfo(c===101||c===150?'이 영상은 주인이 다른 곳에서 틀지 못하게 막아 두었습니다. 다른 영상을 골라 주세요.':c===100||c===2?'영상을 찾을 수 없습니다. 주소를 확인해 주세요.':c===153?'내 컴퓨터 파일로 열면 유튜브가 막습니다. GitHub Pages 주소로 열어 주세요.':'유튜브 영상을 틀 수 없습니다 (오류 '+c+').');ytOff();rebuild()}}})};
+$('#ytSearch').onclick=()=>{const q=$('#ytUrl').value.trim();if(ytId(q)){$('#ytLoad').click();return}const qq=q||[S.title,S.artist].filter(Boolean).join(' ')||'7080 노래';const a=document.createElement('a');a.href='https://www.youtube.com/results?search_query='+encodeURIComponent(qq);a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();yinfo('유튜브 검색 창이 열렸습니다. 영상에서 공유 → 복사를 누른 뒤 이 화면으로 돌아와 📋 버튼을 누르세요.')};
+$('#ytPaste').onclick=async()=>{let t='';try{t=await navigator.clipboard.readText()}catch(e){}if(!t){$('#ytUrl').value='';$('#ytUrl').focus();yinfo('자동 붙여넣기가 막혔습니다. 위 칸을 길게 누르거나 Ctrl+V로 붙여 넣은 뒤 ▶ 불러오기를 누르세요.');return}$('#ytUrl').value=t.trim();if(!ytId(t)){yinfo('복사한 내용이 유튜브 주소가 아닙니다. 유튜브에서 공유 → 복사를 다시 해 주세요.');return}$('#ytLoad').click()};
+$('#ytUrl').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();(ytId($('#ytUrl').value)?$('#ytLoad'):$('#ytSearch')).click()}});
+$('#ytUrl').addEventListener('paste',()=>setTimeout(()=>{if(ytId($('#ytUrl').value))$('#ytLoad').click()},50));
 $('#ytClear').onclick=()=>{stop();ytOff();$('#ytUrl').value='';yinfo('유튜브 연결을 뺐습니다.');rebuild()};
 function now(){if(hasYT())return yt.getCurrentTime()||0;return hasAudio()?au.currentTime:off+(performance.now()-t0)/1000}
 async function play(){if(playing)return;if(T>=total-.05)seek(0);playing=true;$('#playBtn').textContent='⏸ 멈춤';
