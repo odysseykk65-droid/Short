@@ -29,7 +29,6 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hint{font-size:15px;color:#667;margin-top:6px}
 .big{display:block;width:100%;padding:17px;font-size:22px;font-weight:800;border:0;border-radius:16px;background:linear-gradient(135deg,#f76707,#e03131 60%,#d6336c);color:#fff;cursor:pointer;font-family:inherit;margin-top:16px;box-shadow:0 6px 14px rgba(224,49,49,.35)}
-.srcb{background:#e7f5ff;border:2px solid #1c7ed6;border-radius:12px;padding:12px 14px;margin:10px 0;font-size:15.5px;line-height:1.6}.srcb b.h{color:#1864ab;font-size:16.5px}.srcb .u{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0;background:#fff;border-radius:9px;padding:7px 9px}.srcb .u code{word-break:break-all;font-size:14px;color:#1b2a5c}.srcb button{border:0;background:#1c7ed6;color:#fff;font:inherit;font-weight:700;font-size:13.5px;border-radius:8px;padding:5px 11px;cursor:pointer}
 .spb{background:#fff0f6;border:2px dashed #d6336c;border-radius:12px;padding:9px 11px;margin:8px 0}
 .spb .l{font-weight:800;color:#c2255c;margin-bottom:7px}
 .spb .n{font-size:15px;color:#666;margin-top:6px}
@@ -79,6 +78,48 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 .hide{display:none}
 @media(max-width:480px){body{font-size:17px}h1{font-size:25px}.row2,.btns{grid-template-columns:1fr}.chip{font-size:17px;padding:8px 13px}.ses h3{font-size:18px}}
 @media print{body{background:#fff;font-size:12pt}.noprint,.hero,.spb,.guide{display:none!important}.card,.ses{box-shadow:none;break-inside:avoid}.wrap{max-width:none;padding:0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ===== 실습 안내문 (A4 유인물) ===== */
+.hbtn{display:block;width:100%;margin:8px 0 2px;padding:13px 10px;font-size:18px;font-weight:900;color:#fff;border:0;border-radius:12px;cursor:pointer;font-family:inherit;background:linear-gradient(90deg,#0ca678,#1c7ed6);box-shadow:0 3px 8px rgba(0,0,0,.2)}
+#hand{display:none;position:fixed;inset:0;z-index:50;background:#4b5563;overflow:auto;-webkit-overflow-scrolling:touch}
+.hbar{position:sticky;top:0;z-index:2;background:#111827;padding:8px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.hbar button{border:0;border-radius:10px;padding:11px 14px;font-size:16px;font-weight:900;font-family:inherit;cursor:pointer;color:#fff;min-height:44px}
+.hbar .hp{background:#e8590c}.hbar .hn{background:#1c7ed6}.hbar .ha{background:#7c3aed}.hbar .hx{background:#e03131}
+#hsheets{padding:12px 0 30px}
+.hwrap{margin:0 auto 18px;width:297mm}
+.sheet{width:297mm;height:167.0625mm;background:#fff;box-sizing:border-box;padding:5mm 7mm 4.5mm;display:flex;flex-direction:column;gap:2mm;overflow:hidden;font-family:inherit;color:#1b2a5c;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.sheet .top{border-radius:12px;color:#fff;padding:5px 14px 7px;background:linear-gradient(135deg,var(--sc),var(--sd));display:grid;grid-template-columns:1fr auto;gap:0 14px;align-items:center}
+.sheet .top .c{font-size:13px;font-weight:800;grid-column:1}
+.sheet .top .t{font-size:26px;font-weight:900;line-height:1.2;grid-column:1}
+.sheet .who{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:800;min-width:62mm}
+.sheet .who span{border-bottom:3px solid rgba(255,255,255,.85);white-space:nowrap;padding-top:3px}
+.sheet .body{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:.82fr 1.4fr;gap:2.4mm}
+.sheet .col{display:flex;flex-direction:column;gap:2mm;min-height:0}
+.sheet .box{border:3px solid var(--sc);border-radius:12px;padding:4px 11px 5px}
+.sheet .lb{display:inline-block;background:var(--sc);color:#fff;border-radius:99px;padding:0 11px;font-size:13px;font-weight:900;margin-bottom:2px;align-self:flex-start}
+.sheet .goal{font-size:19px;font-weight:800;line-height:1.35}
+.sheet .prep{display:grid;grid-template-columns:1fr;gap:1px;font-size:16px;font-weight:700}
+.sheet .prep div::before{content:"☐ ";color:var(--sc);font-weight:900}
+.sheet .st{display:flex;align-items:center;gap:10px;border:3px solid var(--sc);border-radius:12px;padding:4px 10px;background:#fffdf5;flex:1 1 0;min-height:0}
+.sheet .st .n{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--sc);color:#fff;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.sheet .st .x{flex:1;font-size:20px;font-weight:800;line-height:1.3}
+.sheet .st .ok{flex:0 0 auto;font-size:14px;font-weight:900;color:var(--sc);border:2px solid var(--sc);border-radius:8px;padding:1px 7px;white-space:nowrap}
+.sheet .memo{flex:0 0 28mm;display:flex;flex-direction:column;min-height:0}
+.sheet .memo .lines{flex:1;border:3px dashed var(--sc);border-radius:12px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 6.5mm,#cfd8ee 6.5mm,#cfd8ee calc(6.5mm + 1.5px))}
+.sheet .hw{background:#fff0c2;border:3px solid #f59f00;border-radius:12px;padding:4px 12px;font-size:21px;font-weight:900;line-height:1.4;margin:0;flex:1 1 auto;display:flex;align-items:center}
+.sheet .foot{text-align:center;font-size:11px;font-weight:800;color:#5b6b92}
+@page{size:297mm 167.0625mm;margin:0}
+@media print{
+ body>*:not(#hand){display:none!important}
+ #hand{display:block!important;position:static;background:#fff;overflow:visible}
+ .hbar{display:none!important}
+ #hsheets{padding:0}
+ .hwrap{margin:0;width:auto;zoom:1!important}
+ .sheet{box-shadow:none;page-break-after:always;break-after:page}
+ .sheet:last-child{page-break-after:auto;break-after:auto}
+}
+.srcb{background:#e7f5ff;border:2px solid #1c7ed6;border-radius:12px;padding:12px 14px;margin:10px 0;font-size:15.5px;line-height:1.6}.srcb b.h{color:#1864ab;font-size:16.5px}.srcb .u{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0;background:#fff;border-radius:9px;padding:7px 9px}.srcb .u code{word-break:break-all;font-size:14px;color:#1b2a5c}.srcb button{border:0;background:#1c7ed6;color:#fff;font:inherit;font-weight:700;font-size:13.5px;border-radius:8px;padding:5px 11px;cursor:pointer}
+.srcA{display:inline-block;background:#fff;border:2px solid #1c7ed6;color:#1864ab;font-weight:700;font-size:14px;border-radius:9px;padding:6px 11px;text-decoration:none;margin:2px}.srcA:hover{background:#e7f5ff}
 </style>
 </head>
 <body>
@@ -97,7 +138,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 <div class="st"><div class="nb">5</div><div class="tx"><b>일수를 늘리고 싶을 때</b><div>계획서 맨 아래 <b>「강의 일수 늘리기」</b>를 누르면 4일씩 늘어나고, 새로 생긴 일차에 <b>NEW</b> 표시가 붙습니다. 준비된 주제가 모자라면 복습·자유 실습 일차가 끼어듭니다.</div></div></div>
 <div class="st"><div class="nb">6</div><div class="tx"><b>슬라이드 만들기 (노트북LM)</b><div>① 노트북LM 소스에 <b>삼성·구글·카카오 등 공식 도움말 주소</b>를 먼저 추가합니다. ② 일차 카드 아래 분홍 박스에서 <b>1부 복사</b>를 누릅니다. ③ 노트북LM에 붙여넣어 슬라이드(15장)를 만듭니다. ④ 새로 시작해서 <b>2부, 3부</b>도 같은 방법으로 만듭니다. ⑤ 완성한 뒤 장마다 찍힌 전체 번호(예: 16/45)를 보고 <b>1부→2부→3부 순서로 이어 붙입니다.</b></div></div></div>
 <div class="st"><div class="nb">7</div><div class="tx"><b>처음부터 다시 하려면</b><div><b>「처음 상태로 초기화」</b> 버튼을 누르면 입력한 내용과 선택이 모두 지워지고 맨 위로 돌아갑니다.</div></div></div>
-<div class="gtip"><b>💡 꼭 확인하세요</b><br>· 슬라이드는 한 번에 15장까지만 만들어집니다. 부마다 새로 만드세요.<br>· 만든 슬라이드의 메뉴 이름과 버튼 위치는 강의 전에 <b>실제 스마트폰으로 한 번 대조</b>해 보세요.<br>· 일차별 내용은 기본 틀이니 실제 강의에 맞게 고쳐 쓰세요.</div>
+<div class="gtip"><b>💡 꼭 확인하세요</b><br>· 🖨️ <b>실습 안내문</b>: 일차 카드 맨 아래 초록·파랑 버튼을 누르면 그날의 <b>A4 한 장 유인물</b>(큰 글씨, 단계별 칸, 메모칸)이 열립니다. [인쇄 / PDF 저장]으로 인쇄하세요. 맨 아래 [실습 안내문 전체 일차]는 모든 일차를 한 번에 인쇄합니다.<br>· 슬라이드는 한 번에 15장까지만 만들어집니다. 부마다 새로 만드세요.<br>· 만든 슬라이드의 메뉴 이름과 버튼 위치는 강의 전에 <b>실제 스마트폰으로 한 번 대조</b>해 보세요.<br>· 일차별 내용은 기본 틀이니 실제 강의에 맞게 고쳐 쓰세요.</div>
 </div>
 </details>
 
@@ -107,7 +148,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 <input type="text" id="cname" placeholder="예) 시니어 스마트폰·AI 활용반">
 <label class="t">📚 강의 주제</label>
 <div class="chips" id="g_topic"></div>
-<div id="customBox" class="hide"><label class="t">✍️ 직접 입력한 주제</label><input type="text" id="ctopic" placeholder="예) 구글 플레이북"><div id="srcHint"></div></div>
+<div id="customBox" class="hide"><label class="t">✍️ 직접 입력한 주제</label><input type="text" id="ctopic" placeholder="예) 유튜브 시작하기"><div id="srcHint"></div></div>
 <label class="t">👥 수강 대상</label>
 <div class="chips" id="g_aud"></div>
 <label class="t">🌱 수강생 수준</label>
@@ -119,7 +160,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 <label class="t">🔢 총 강의 일수</label>
 <div class="chips" id="g_n"></div>
 <div class="row2">
-<div><label class="t">⌨️ 직접 입력 (1~30일)</label><input type="number" id="nin" min="1" max="30" placeholder="예) 1"></div>
+<div><label class="t">⌨️ 직접 입력 (1~30일)</label><input type="number" id="nin" min="1" max="30" placeholder="예) 15"></div>
 <div></div></div>
 <label class="t">🕐 하루 수업 시간</label>
 <div class="chips" id="g_time"></div>
@@ -144,6 +185,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 <button class="btn" id="bCopy">📋 전체 복사</button>
 <button class="btn g" id="bDown">💾 텍스트 저장</button>
 <button class="btn p" id="bPrint">🖨️ 인쇄 / PDF 저장</button>
+<button class="btn" id="bHand" data-h="all" style="background:linear-gradient(90deg,#0ca678,#1c7ed6);color:#fff">🖨️ 실습 안내문 전체 일차 (A4)</button>
 <button class="btn o" id="bAi">✨ AI에게 다듬기 요청 복사</button>
 </div>
 <button class="big noprint" id="bExpand" style="background:#2f9e44">➕ 강의 일수 늘리기 (+4일)</button>
@@ -152,6 +194,7 @@ input:focus{outline:3px solid #ffd43b;border-color:#7048e8}
 </div>
 </div>
 </div>
+<div id="hand"><div class="hbar"><button class="hp" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button><button class="hn" id="hPrev">◀ 이전 일차</button><button class="hn" id="hNext">다음 일차 ▶</button><button class="ha" id="hAll">📚 전체 일차 보기</button><button class="hx" id="hClose">✕ 닫기</button></div><div id="hsheets"></div></div>
 <div id="toast"></div>
 
 <script>
@@ -222,7 +265,7 @@ document.addEventListener("click",function(e){
 });
 $("nin").addEventListener("input",function(){
  var v=parseInt(this.value,10);
- if(v>=1&&v<=30){S.n=v;drawChips()}
+ if(v>=1&&v<=30){S.n=v;drawChips()}else if(this.value!==""){toast("1~30 사이 숫자를 입력해 주세요")}
 });
 function r5(x){return Math.max(5,Math.round(x/5)*5)}
 function alloc(T,senior){
@@ -284,6 +327,11 @@ var SP={
  {t:"정리·퀴즈·과제",rows:[["오늘 배운 것 요약",2],["OX 퀴즈",4],["복습 게임·자랑하기",4],["과제 안내",2],["다음 시간 예고·마무리",3]]}]
 };
 var COL=["하늘색 #8FD3FF","연분홍색 #FFB3D1","연두색 #B8F08A","밝은 노란색 #FFE766","연보라색 #C9B6FF","귤색 #FFB36B","민트색 #8FF0D0","연한 자주색 #F2A6F0","연한 파란색 #A9C4FF","연한 금빛 주황색 #FFD27A","아쿠아색 #7FE3E8","연한 라벤더색 #E8B8FF","새싹 초록색 #A5E6A0","연한 청보라색 #B3B8FF","레몬색 #FFF07A"];
+var LVN={"처음":"처음 배움 (스마트폰·앱을 거의 처음 접함)","조금":"조금 해 봄 (기본 조작은 가능)","섞임":"수준이 섞여 있음 (처음~중급 혼합)"};
+var LVG={
+"처음":["처음 배우는 분들입니다. 한 장에 동작 하나만 넣고, 한 문장은 짧게(20자 안팎) 씁니다.","어려운 용어·영어는 쓰지 않고, 꼭 필요하면 괄호로 쉬운 말을 붙입니다. (예: 앱(프로그램), 아이콘(그림 버튼))","중요한 동작은 같은 내용을 한 번 더 다른 장에서 반복해 보여 줍니다.","버튼·아이콘의 위치·모양·색을 매번 빠짐없이 설명하고, 화면 이동 전후 모습을 함께 보여 줍니다.","강사 멘트에는 '천천히 따라 해 보세요', '잘하고 계세요' 같은 격려와 확인 질문('여기까지 되셨나요?')을 넣습니다.","응용 실습은 아주 쉬운 것 1~2개만 넣고, 막힐 때 해결법을 꼭 넣습니다."],
+"조금":["기본 조작(앱 열기·누르기·뒤로 가기)은 설명 없이 짧은 확인 한 장으로 끝내고 바로 핵심 내용으로 들어갑니다.","아주 쉬운 동작은 한 장에 두 가지까지 묶어도 됩니다. 단, 새로 배우는 기능은 한 장에 동작 하나씩 단계별로 설명합니다. (장수 15장은 그대로)","응용·활용 실습 장을 평소보다 늘리고, 실제 생활 예시(가족 사진, 여행, 인사말 등)로 연습하게 합니다.","'알아 두면 좋은 꿀팁' 장을 1~2장 넣어 한 단계 더 나아가게 합니다.","강사 멘트는 '이미 해 보셨죠?'처럼 경험을 인정하는 말투로, 짧은 질문으로 참여를 이끕니다."],
+"섞임":["수준이 섞인 반입니다. 모든 슬라이드는 기본 설명을 먼저 쉬운 말로 보여 줍니다.","실습 장마다 '🌱 기본 따라하기'와 '🚀 도전 과제(빠른 분용)'를 나눠서 표시합니다.","도전 과제는 같은 기능을 응용하는 한 가지 미션으로 하고, 기본 따라하기를 끝낸 분이 이어서 해 보게 합니다.","'짝 도우미' 안내 장을 1장 넣습니다. (빠른 분이 옆 분을 도와주는 방법, 서두르지 않고 알려 주기)","강사 멘트에는 '천천히 하셔도 괜찮습니다', '먼저 끝나신 분은 도전 과제로 가세요' 같은 안내를 넣습니다."]};
 function slidePrompt(m,k){
  var sn=last.snap,sp=SP[sn.slide],pt=sp[k],o=[],tot=sp.length,x=m.tm,T=tot*15,a=k*15+1,z=k*15+15;
  o.push("【"+m.no+"일차 슬라이드 "+(k+1)+"부 / 총 "+tot+"부】  전체 "+T+"장 중 "+a+"~"+z+"번");
@@ -292,7 +340,10 @@ function slidePrompt(m,k){
   if(ss.length)ss.forEach(function(s){o.push("- 추가한 공식 도움말: "+s.n+" "+s.u)});
   else o.push("- 공식 도움말 소스가 없으면 따라하기 단계를 지어내지 말고 '[확인 필요]'로 표시해 주세요.");}
  o.push("이번 부: "+pt.t+" — 슬라이드는 정확히 15장으로 만들어 주세요. (15장을 넘기지 마세요)");
- o.push("대상: "+(sn.aud==="senior"?"시니어 (큰 글씨, 쉬운 말, 천천히)":"전 연령")+" / 수강생 수준: "+sn.lvl+" / 사용 기기: "+sn.dev);
+ o.push("대상: "+(sn.aud==="senior"?"시니어 (큰 글씨, 쉬운 말, 천천히)":"전 연령")+" / 수강생 수준: "+LVN[sn.lvl]+" / 사용 기기: "+sn.dev);
+ o.push("");
+ o.push("[수강생 수준 지침 — 슬라이드 내용·난이도에 반드시 반영]");
+ LVG[sn.lvl].forEach(function(t){o.push("- "+t)});
  o.push("");
  o.push("[번호 규칙 — 나중에 1부·2부·3부를 이어 붙입니다]");
  o.push("- 이 묶음은 하루 전체 "+T+"장 중 "+a+"번부터 "+z+"번까지입니다.");
@@ -399,38 +450,41 @@ function tips(){
 function spBox(ix){
  var sn=last.snap,sp=SP[sn.slide],b="";
  sp.forEach(function(p,k){b+='<button type="button" class="sp k'+k+'" data-i="'+ix+'" data-k="'+k+'">'+(k+1)+'부 복사<br><span style="font-size:13px;font-weight:600">'+p.t+'</span></button>'});
- return (sn.custom?srcHtml(sn.topic):'')+'<div class="spb noprint"><div class="l">🎞️ 슬라이드 프롬프트 · 하루 '+sn.slide+'장 = 15장 × '+sp.length+'부</div><div class="spbtn">'+b+'</div><div class="n">버튼을 누르면 복사됩니다 → 노트북LM에 붙여넣어 슬라이드 만들기 (부마다 새로 만드세요). <b>먼저 노트북LM 소스에 삼성·구글 등 공식 도움말 주소를 추가</b>하면 더 정확합니다. 완성 후 1부→2부→3부 순서로 이어 붙이세요. 장마다 전체 번호(예: 16/45)가 찍혀 순서를 확인할 수 있습니다.</div></div>';
+ return (sn.custom?srcHtml(sn.topic):'')+'<div class="spb noprint"><div class="l">🎞️ 슬라이드 프롬프트 · 하루 '+sn.slide+'장 = 15장 × '+sp.length+'부</div><div class="spbtn">'+b+'</div><div class="n">버튼을 누르면 복사됩니다 → 노트북LM에 붙여넣어 슬라이드 만들기 (부마다 새로 만드세요). <b>먼저 노트북LM 소스에 삼성·구글 등 공식 도움말 주소를 추가</b>하면 더 정확합니다. <b>먼저 노트북LM 소스에 삼성·구글 등 공식 도움말 주소를 추가</b>하면 더 정확합니다. 완성 후 1부→2부→3부 순서로 이어 붙이세요. 장마다 전체 번호(예: 16/45)가 찍혀 순서를 확인할 수 있습니다.</div></div>';
 }
-
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 var SRC=[
  {k:["플레이북","플레이 북","play books","playbook","play 북","구글 북","전자책 읽"],n:"Google Play 북 고객센터(읽기·구매)",u:"https://support.google.com/googleplay/topic/2999725?hl=ko"},
  {k:["플레이북","플레이 북","play books","playbook","전자책 출판","전자책 판매","파트너 센터","출판"],n:"Google Play 북 파트너 센터 고객센터(출판·판매)",u:"https://support.google.com/books/partner/?hl=ko"},
  {k:["구글 플레이","구글플레이","플레이스토어","플레이 스토어","play store","google play"],n:"Google Play 고객센터",u:"https://support.google.com/googleplay/?hl=ko"},
  {k:["제미나이","gemini"],n:"Gemini 앱 고객센터",u:"https://support.google.com/gemini/?hl=ko"},
  {k:["노트북lm","노트북 lm","노트북엘엠","노트북 엘엠","notebooklm"],n:"NotebookLM 고객센터",u:"https://support.google.com/notebooklm/?hl=ko"},
- {k:["유튜브","youtube"],n:"YouTube 고객센터",u:"https://support.google.com/youtube/?hl=ko"},
- {k:["구글 포토","구글포토","google photos","사진 백업"],n:"Google 포토 고객센터",u:"https://support.google.com/photos/?hl=ko"},
+ {k:["유튜브","youtube","동영상 업로드","영상 업로드","동영상 올리","영상 올리","쇼츠","shorts","유튜브 크리에이트","youtube create","동영상 편집","영상 편집"],n:"YouTube 고객센터",u:"https://support.google.com/youtube/?hl=ko"},
+ {k:["구글 포토","구글포토","google photos","사진 백업","사진 올리","사진 정리","사진 공유","앨범 공유"],n:"Google 포토 고객센터",u:"https://support.google.com/photos/?hl=ko"},
  {k:["지메일","gmail","구글 메일"],n:"Gmail 고객센터",u:"https://support.google.com/mail/?hl=ko"},
  {k:["구글 지도","구글지도","google maps"],n:"Google 지도 고객센터",u:"https://support.google.com/maps/?hl=ko"},
  {k:["구글 드라이브","구글드라이브","google drive"],n:"Google Drive 고객센터",u:"https://support.google.com/drive/?hl=ko"},
  {k:["크롬","chrome"],n:"Chrome 고객센터",u:"https://support.google.com/chrome/?hl=ko"},
  {k:["구글 렌즈","구글렌즈","서클 투 서치","google lens"],n:"Google 검색 고객센터",u:"https://support.google.com/websearch/?hl=ko"},
- {k:["갤럭시","삼성","galaxy","one ui","빅스비"],n:"삼성전자 서비스·고객지원",u:"https://www.samsung.com/sec/support/"},
- {k:["카카오톡","카톡","카카오"],n:"카카오 고객센터",u:"https://cs.kakao.com/"},
- {k:["네이버","naver","파파고"],n:"네이버 고객센터",u:"https://help.naver.com/"}
+ {k:["갤럭시","삼성","galaxy","one ui","빅스비","갤러리","카메라 설정","캡처","화면 녹화","삼성 페이","삼성 헬스"],n:"삼성전자 서비스·고객지원",u:"https://www.samsung.com/sec/support/"},
+ {k:["카카오톡","카톡","카카오","보이스톡","페이스톡","오픈채팅","선물하기"],n:"카카오 고객센터",u:"https://cs.kakao.com/"},
+ {k:["네이버","naver","파파고","네이버 지도","네이버 블로그","클로바"],n:"네이버 고객센터",u:"https://help.naver.com/"}
 ];
 function findSrc(t){t=String(t||"").toLowerCase().replace(/\s+/g," ");var r=[],seen={};
  SRC.forEach(function(s){if(seen[s.u])return;if(s.k.some(function(k){return t.indexOf(k)>=0||t.replace(/ /g,"").indexOf(k.replace(/ /g,""))>=0})){seen[s.u]=1;r.push(s)}});return r}
 function srcHtml(t){
  if(!t)return"";var ss=findSrc(t),h='<div class="srcb noprint"><b class="h">📌 노트북LM에서 먼저 할 일</b><br>노트북LM에서 <b>'+esc(t)+' 공식 도움말 웹 주소를 먼저 소스로 추가</b>한 뒤 프롬프트를 붙여넣으세요. 그렇게 해야 노트북LM이 지어내지 않고 <b>공식 내용대로</b> 만듭니다.<br><span style="font-size:14px;color:#555">노트북LM → [소스 추가] → [웹사이트] → 아래 주소 붙여넣기 → [삽입]</span>';
  if(ss.length)ss.forEach(function(s){h+='<div class="u"><span>✅ '+esc(s.n)+'</span><code>'+esc(s.u)+'</code><button type="button" class="srcCp" data-u="'+esc(s.u)+'">주소 복사</button></div>'});
- else h+='<div class="u"><span>🔎 이 주제의 공식 주소는 자동으로 찾지 못했습니다. 검색창에 「'+esc(t)+' 고객센터」 또는 「'+esc(t)+' 도움말」을 검색해 <b>회사 공식 사이트</b> 주소만 추가하세요. (블로그·카페 글은 넣지 마세요)</span></div>';
+ else{var q=encodeURIComponent(t),G="https://www.google.com/search?q=";
+  h+='<div class="u"><span>🔎 이 주제의 공식 주소는 목록에 없습니다. 아래 버튼을 누르면 <b>공식 사이트 안에서만</b> 검색한 결과가 새 창으로 열립니다. 결과에서 주소(주소창)를 복사해 노트북LM에 붙여넣으세요. (블로그·카페 글은 넣지 마세요)</span></div>'
+  +'<div class="u"><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Asupport.google.com">🔍 구글·유튜브 공식 도움말에서 찾기</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Asamsung.com%2Fsec%2Fsupport">🔍 삼성 공식 지원에서 찾기</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Acs.kakao.com">🔍 카카오 고객센터에서 찾기</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Ahelp.naver.com">🔍 네이버 고객센터에서 찾기</a></div>'
+  +'<div class="u"><span>또는 검색어 복사 →</span><code>'+esc(t)+' 고객센터</code><button type="button" class="srcCp" data-u="'+esc(t)+' 고객센터">검색어 복사</button></div>'}
  return h+'</div>';
 }
 window.drawSrcHint=function(){$("srcHint").innerHTML=S.topic==="custom"?srcHtml($("ctopic").value.trim()):""}
 $("ctopic").addEventListener("input",window.drawSrcHint);
-document.addEventListener("click",function(e){var b=e.target.closest(".srcCp");if(!b)return;copyText(b.getAttribute("data-u"),"공식 도움말 주소 복사됨 → 노트북LM 소스에 붙여넣기")});
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+document.addEventListener("click",function(e){var b=e.target.closest(".srcCp");if(!b)return;copyText(b.getAttribute("data-u"),b.textContent==="검색어 복사"?"검색어 복사됨":"공식 도움말 주소 복사됨 → 노트북LM 소스에 붙여넣기")});
+
 function render(){
  var r=build();if(!r)return;r.snap={slide:S.slide,aud:S.aud,lvl:S.lvl,dev:S.dev,custom:S.topic==="custom",topic:$("ctopic").value.trim()};last=r;
  var n=r.list.length,hrs=(n*S.time/60);
@@ -450,7 +504,7 @@ function render(){
   '<div class="tm"><span class="a">복습·도입 '+x.a+'분</span><span class="b">설명 '+x.b+'분</span><span class="c">실습 '+x.c+'분</span><span class="d">정리·과제 '+x.d+'분</span>'+(x.e?'<span class="e">쉬는 시간 '+x.e+'분</span>':'')+'</div>'+
   '<div><span class="lab">📚 내용</span><ul>'+m.c.map(function(c){return'<li>'+esc(c)+'</li>'}).join("")+'</ul></div>'+
   '<div class="pre"><span class="lab">🎒 준비물</span>: '+m.p.map(esc).join(", ")+'</div>'+
-  '<div class="hw"><span class="lab">✏️ 다음 시간까지 과제</span>: '+esc(m.h)+'</div>'+spBox(ix)+'</div></div>';
+  '<div class="hw"><span class="lab">✏️ 다음 시간까지 과제</span>: '+esc(m.h)+'</div>'+spBox(ix)+'<button type="button" class="hbtn noprint" data-h="'+ix+'">🖨️ '+m.no+'일차 실습 안내문 (A4 인쇄용)</button></div></div>';
  });
  $("list").innerHTML=l;
  $("tips").innerHTML='<div class="tipbox"><b>💡 강사 운영 팁</b><ul class="tips">'+tips().map(function(t){return'<li>'+esc(t)+'</li>'}).join("")+'</ul></div>';
@@ -462,7 +516,7 @@ function toText(){
  if(!last)return"";
  var r=last,n=r.list.length,o=[];
  o.push("【"+(r.cname||r.tname+" 강의계획서")+"】");
- o.push("주제: "+r.tname+" / 대상: "+(S.aud==="senior"?"시니어":"전 연령")+" / 수강생 "+S.head+" / 수준: "+S.lvl);
+ o.push("주제: "+r.tname+" / 대상: "+(S.aud==="senior"?"시니어":"전 연령")+" / 수강생 "+S.head+" / 수준: "+LVN[S.lvl]);
  o.push("총 "+n+"일 × 하루 "+S.time+"분 = "+(Math.round(n*S.time/6)/10)+"시간 / 기기: "+S.dev);
  o.push("");
  r.list.forEach(function(m){
@@ -525,6 +579,60 @@ function resetAll(){
 }
 $("rs1").onclick=resetAll;$("rs2").onclick=resetAll;
 drawChips();
+
+/* ===== 실습 안내문 ===== */
+var HC=[["#4f46e5","#7c3aed"],["#e8590c","#f59f00"],["#0ca678","#2b8a3e"],["#d6336c","#ae3ec9"],["#1c7ed6","#1098ad"],["#e03131","#f76707"]];
+var hIx=0,hAll=false;
+function sheetHTML(m,ix){
+ var c=HC[ix%6],cn=(last.cname||last.tname+" 강의");
+ var steps=m.c.map(function(t,k){return '<div class="st"><div class="n">'+(k+1)+'</div><div class="x">'+esc(t)+'</div><div class="ok">☐ 했어요</div></div>'}).join("");
+ var prep=m.p.map(function(p){return '<div>'+esc(p)+'</div>'}).join("");
+ return '<div class="hwrap"><div class="sheet" style="--sc:'+c[0]+';--sd:'+c[1]+'">'+
+  '<div class="top"><div class="c">'+esc(cn)+' · 실습 안내문</div><div class="t">'+m.no+'일차 · '+esc(m.t)+'</div>'+
+  '<div class="who"><span>이름:</span><span>날짜: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;월 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;일</span></div></div>'+
+  '<div class="body"><div class="col">'+
+   '<div class="box"><span class="lb">🎯 오늘의 목표</span><div class="goal">'+esc(m.g)+'</div></div>'+
+   '<div class="box"><span class="lb">🎒 준비물 (챙겼으면 ☑)</span><div class="prep">'+prep+'</div></div>'+
+   '<p class="hw">✏️ 다음 시간까지 과제: '+esc(m.h)+'</p>'+
+  '</div><div class="col">'+
+   '<div><span class="lb">✍️ 차례대로 따라 해요</span></div>'+steps+
+   '<div class="memo"><div><span class="lb">📝 내 메모 (기억할 것·모르는 것)</span></div><div class="lines"></div></div>'+
+  '</div></div>'+
+  '<div class="foot">막히면 손을 들어 주세요 🙋 · 수강생 여러분, 천천히 하셔도 충분합니다 · 오늘 배운 것 한 줄: ____________________</div>'+
+  '</div></div>';
+}
+function drawHand(){
+ var l=last.list,h="";
+ if(hAll)l.forEach(function(m,i){h+=sheetHTML(m,i)});
+ else h=sheetHTML(l[hIx],hIx);
+ $("hsheets").innerHTML=h;
+ fitHand();
+ $("hAll").textContent=hAll?"📄 한 장씩 보기":"📚 전체 일차 보기";
+ $("hPrev").style.display=$("hNext").style.display=hAll?"none":"";
+ $("hand").scrollTop=0;
+}
+function fitHand(){
+ var k=Math.min(1,(window.innerWidth-16)/1123);
+ var ws=document.querySelectorAll(".hwrap");
+ for(var i=0;i<ws.length;i++)ws[i].style.zoom=k<1?k:"";
+}
+function openHand(ix,all){
+ if(!last)return;
+ hIx=ix;hAll=!!all;
+ $("hand").style.display="block";document.body.style.overflow="hidden";
+ drawHand();
+}
+function closeHand(){$("hand").style.display="none";document.body.style.overflow=""}
+window.addEventListener("resize",function(){if($("hand").style.display==="block")fitHand()});
+$("hClose").onclick=closeHand;
+$("hPrev").onclick=function(){hIx=(hIx+last.list.length-1)%last.list.length;drawHand()};
+$("hNext").onclick=function(){hIx=(hIx+1)%last.list.length;drawHand()};
+$("hAll").onclick=function(){hAll=!hAll;drawHand()};
+document.addEventListener("click",function(e){
+ var b=e.target.closest("[data-h]");if(!b||!last)return;
+ var v=b.getAttribute("data-h");
+ if(v==="all")openHand(0,true);else openHand(+v,false);
+});
 </script>
 </body>
 </html>
