@@ -20,6 +20,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans KR
 header{padding:max(22px,env(safe-area-inset-top)) max(4vw,16px,env(safe-area-inset-left)) 8px}
 h1{font:400 clamp(32px,4.4vw,48px)/1.05 "Do Hyeon",sans-serif;margin:0 0 6px;text-wrap:balance}
 .resetbar{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}.resetbar button.warn{background:var(--acc);border-color:var(--acc);color:#fff}
+.guide{margin:14px 0 4px;border:2px solid var(--acc);border-radius:16px;background:var(--acc2);max-width:1240px}
+.guide summary{cursor:pointer;padding:14px 18px;font:400 clamp(20px,2.4vw,26px)/1.3 "Do Hyeon",sans-serif;list-style-position:inside}
+.guide summary span{font:700 14px "Noto Sans KR";background:var(--acc);color:#fff;border-radius:999px;padding:3px 10px;margin-left:6px;vertical-align:middle}
+.gsteps{list-style:none;counter-reset:g;margin:0;padding:0 18px 6px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.gsteps li{counter-increment:g;background:var(--bg);border-radius:12px;padding:12px 14px 12px 54px;position:relative;display:flex;flex-direction:column;gap:4px}
+.gsteps li::before{content:counter(g);position:absolute;left:12px;top:12px;width:32px;height:32px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font:700 17px "Noto Sans KR"}
+.gsteps b{font-size:17px}.gsteps span{font-size:15px;color:var(--soft);line-height:1.5}.gsteps em{font-style:normal;font-weight:700;color:var(--ink)}
+.gfoot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:8px 18px 16px}.gfoot .hint{flex:1 1 260px;margin:0}
 header p{margin:0;color:var(--soft);max-width:68ch}
 .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;padding:16px max(4vw,16px) 48px;max-width:1400px}
 .stagebox{position:sticky;top:12px;align-self:start;background:var(--stage);border-radius:18px;padding:16px;color:#f4f1f5}
@@ -83,6 +91,17 @@ body.ytl #ytBack,body.ytl #ytClose{display:block}
 <h1>가사 영상 자동 생성기</h1>
 <div class="resetbar"><button type="button" id="clearLyrics">🧹 가사 비우기</button><button type="button" id="resetAll">↺ 처음 상태로 초기화</button></div>
 <p>가사를 붙여 넣고 노래 파일을 올리면, 움직이는 배경 위에 가사가 한 줄씩 떠오르는 영상을 만들어 줍니다. 쇼츠(세로)·유튜브(가로)·정사각형 모두 됩니다.</p>
+<details class="guide" id="guide" open>
+<summary>🎬 유튜브 음악 불러와서 듣는 방법 <span>5단계</span></summary>
+<ol class="gsteps">
+<li><b>노래 제목 적기</b><span>아래 2번 칸의 <em>🎬 유튜브 링크로 함께 듣기</em> 입력란에 듣고 싶은 노래 제목을 적습니다. (예: 7080 영화음악)</span></li>
+<li><b>🔍 유튜브에서 찾기 누르기</b><span>유튜브 검색 화면이 새 창(휴대폰은 유튜브 앱)으로 열립니다.</span></li>
+<li><b>영상 고르고 링크 복사하기</b><span>듣고 싶은 영상을 열고 영상 아래 <em>공유 → 복사</em>를 누릅니다. 휴대폰은 <em>공유 → 링크 복사</em>입니다.</span></li>
+<li><b>📋 붙여넣고 불러오기 누르기</b><span>이 화면으로 돌아와 <em>📋 복사한 주소 붙여넣고 불러오기</em>를 누르면 유튜브 화면이 나타납니다. (허용을 물으면 <em>허용</em>)</span></li>
+<li><b>▶ 재생 누르기</b><span>음악과 가사가 함께 나옵니다. 영상 위 <em>크게</em>, <em>⛶ 화면 가득</em>으로 크게 볼 수 있어요.</span></li>
+</ol>
+<div class="gfoot"><button type="button" class="main" id="goYT">👉 유튜브 칸으로 바로 가기</button><p class="hint">가사를 넣지 않고 음악만 들어도 됩니다. 유튜브 소리는 화면에서만 들리고 저장하는 영상 파일에는 들어가지 않습니다.</p></div>
+</details>
 </header>
 
 <div class="wrap">
@@ -563,6 +582,10 @@ $('#aiScene').onclick=async()=>{const L=parse();if(!L.length||!sampler)return;co
   if(!Array.isArray(r))throw{};S.scenes=L.map((_,i)=>SCN[r[i]]?r[i]:items[i].scene);rebuild();save();seek(0);msg('Claude가 줄마다 그림을 골랐습니다. 5번 시간표에서 바꿀 수도 있어요.')}
  catch(e){msg(e&&e.code==='rate_limited'?'잠시 뒤 다시 눌러 주세요.':'그림을 고르지 못했습니다. 낱말에 맞춘 자동 그림을 그대로 씁니다.')}
  finally{b.disabled=false;b.textContent='🎨 Claude에게 줄마다 그림 골라 달라기'}};
+
+$('#goYT').onclick=()=>{const b=$('.yt');b.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>$('#ytUrl').focus({preventScroll:true}),500)};
+try{if(localStorage.getItem('lyricGuide')==='0')$('#guide').open=false}catch(e){}
+$('#guide').addEventListener('toggle',()=>{try{localStorage.setItem('lyricGuide',$('#guide').open?'1':'0')}catch(e){}});
 
 /* ---------- 초기화 ---------- */
 function twoStep(btn,label,ask,fn){let tm=0;btn.onclick=()=>{if(btn.classList.contains('warn')){clearTimeout(tm);btn.classList.remove('warn');btn.textContent=label;fn();return}btn.classList.add('warn');btn.textContent=ask;tm=setTimeout(()=>{btn.classList.remove('warn');btn.textContent=label},4000)}}
