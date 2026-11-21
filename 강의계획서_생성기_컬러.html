@@ -474,19 +474,19 @@ var SRC=[
 ];
 function findSrc(t){t=String(t||"").toLowerCase().replace(/\s+/g," ");var r=[],seen={};
  SRC.forEach(function(s){if(seen[s.u])return;if(s.k.some(function(k){return t.indexOf(k)>=0||t.replace(/ /g,"").indexOf(k.replace(/ /g,""))>=0})){seen[s.u]=1;r.push(s)}});return r}
+function srcRow(t){var q=encodeURIComponent(t),G="https://www.google.com/search?q=";
+ return '<div class="u"><span>🔍 더 필요한 주소는 <b>공식 사이트 안에서만</b> 검색 → 결과 주소를 복사해 추가하세요. (블로그·카페 글은 넣지 마세요)</span></div><div class="u"><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Asupport.google.com">🔍 구글·유튜브 공식 도움말</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Asamsung.com%2Fsec%2Fsupport">🔍 삼성 공식 지원</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Acs.kakao.com">🔍 카카오 고객센터</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Ahelp.naver.com">🔍 네이버 고객센터</a></div><div class="u"><span>검색어 복사 →</span><code>'+esc(t)+' 고객센터</code><button type="button" class="srcCp" data-u="'+esc(t)+' 고객센터">검색어 복사</button></div>'}
 function srcHtml(t){
  if(!t)return"";var ss=findSrc(t),h='<div class="srcb noprint"><b class="h">📌 노트북LM에서 먼저 할 일</b><br>노트북LM에서 <b>'+esc(t)+' 공식 도움말 웹 주소를 먼저 소스로 추가</b>한 뒤 프롬프트를 붙여넣으세요. 그렇게 해야 노트북LM이 지어내지 않고 <b>공식 내용대로</b> 만듭니다.<br><span style="font-size:14px;color:#555">노트북LM → [소스 추가] → [웹사이트] → 아래 주소 붙여넣기 → [삽입]</span>';
  if(ss.length)ss.forEach(function(s){h+='<div class="u"><span>✅ '+esc(s.n)+'</span><code>'+esc(s.u)+'</code><button type="button" class="srcCp" data-u="'+esc(s.u)+'">주소 복사</button></div>'});
- else{var q=encodeURIComponent(t),G="https://www.google.com/search?q=";
-  h+='<div class="u"><span>🔎 이 주제의 공식 주소는 목록에 없습니다. 아래 버튼을 누르면 <b>공식 사이트 안에서만</b> 검색한 결과가 새 창으로 열립니다. 결과에서 주소(주소창)를 복사해 노트북LM에 붙여넣으세요. (블로그·카페 글은 넣지 마세요)</span></div>'
-  +'<div class="u"><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Asupport.google.com">🔍 구글·유튜브 공식 도움말에서 찾기</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Asamsung.com%2Fsec%2Fsupport">🔍 삼성 공식 지원에서 찾기</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Acs.kakao.com">🔍 카카오 고객센터에서 찾기</a><a class="srcA" target="_blank" rel="noopener" href="'+G+q+'+site%3Ahelp.naver.com">🔍 네이버 고객센터에서 찾기</a></div>'
-  +'<div class="u"><span>또는 검색어 복사 →</span><code>'+esc(t)+' 고객센터</code><button type="button" class="srcCp" data-u="'+esc(t)+' 고객센터">검색어 복사</button></div>'}
+ else h+='<div class="u"><span>🔎 이 주제의 공식 주소는 목록에 없습니다. 아래 버튼으로 공식 사이트에서 찾아 주소를 복사하세요.</span></div>';
+ h+=srcRow(t);
  return h+'</div>';
 }
 var TSRC={all:["https://www.samsung.com/sec/support/","https://cs.kakao.com/","https://support.google.com/gemini/?hl=ko","https://support.google.com/notebooklm/?hl=ko","https://support.google.com/youtube/?hl=ko"],phone:["https://www.samsung.com/sec/support/","https://cs.kakao.com/","https://support.google.com/googleplay/?hl=ko","https://support.google.com/photos/?hl=ko"],life:["https://support.google.com/gemini/?hl=ko","https://help.naver.com/","https://cs.kakao.com/","https://support.google.com/maps/?hl=ko"],create:["https://support.google.com/gemini/?hl=ko","https://support.google.com/youtube/?hl=ko","https://support.google.com/photos/?hl=ko","https://support.google.com/notebooklm/?hl=ko"]};
 function srcTrack(k){var us=TSRC[k];if(!us)return"";var h='<div class="srcb noprint"><b class="h">📌 노트북LM에서 먼저 할 일</b><br>노트북LM에서 <b>아래 공식 도움말 웹 주소를 먼저 소스로 추가</b>한 뒤 프롬프트를 붙여넣으세요. 그렇게 해야 노트북LM이 지어내지 않고 <b>공식 내용대로</b> 만듭니다.<br><span style="font-size:14px;color:#555">노트북LM → [소스 추가] → [웹사이트] → 아래 주소 붙여넣기 → [삽입] (이 강의에서 다루는 앱만 골라 추가하세요)</span>';
  us.forEach(function(u){SRC.forEach(function(s){if(s.u===u&&!h.includes('data-u="'+u+'"'))h+='<div class="u"><span>✅ '+esc(s.n)+'</span><code>'+esc(u)+'</code><button type="button" class="srcCp" data-u="'+esc(u)+'">주소 복사</button></div>'})});
- return h+'</div>'}
+ return h+srcRow(TRACKS[k]?TRACKS[k].n:'스마트폰')+'</div>'}
 window.drawSrcHint=function(){$("srcHint").innerHTML=S.topic==="custom"?srcHtml($("ctopic").value.trim()):""}
 $("ctopic").addEventListener("input",window.drawSrcHint);
 document.addEventListener("click",function(e){var b=e.target.closest(".srcCp");if(!b)return;copyText(b.getAttribute("data-u"),b.textContent==="검색어 복사"?"검색어 복사됨":"공식 도움말 주소 복사됨 → 노트북LM 소스에 붙여넣기")});
