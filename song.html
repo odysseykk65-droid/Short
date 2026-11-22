@@ -66,6 +66,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 #ytBack{display:none;position:fixed;inset:0;background:#000c;z-index:59}
 #ytClose{display:none;position:fixed;top:max(12px,env(safe-area-inset-top));right:12px;z-index:61;background:#fff;color:#111;border-color:#fff}
 body.ytl #ytBack,body.ytl #ytClose{display:block}
+.yterr{display:none;margin-top:10px;padding:12px 14px;border-radius:12px;background:#fdeae6;border:2px solid var(--acc);color:#7a1d10;font-weight:700;line-height:1.5}.yterr a{display:inline-flex;margin-top:8px;padding:10px 14px;border-radius:10px;background:var(--acc);color:#fff;text-decoration:none;min-height:44px;align-items:center}
 #ytWrap iframe{width:100%;height:100%;display:block}
 .yt{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
 .tap{width:100%;min-height:72px;font-size:20px;margin-top:10px}
@@ -149,6 +150,7 @@ body.ytl #ytBack,body.ytl #ytClose{display:block}
 <div id="ytBack"></div>
 <div id="ytWrap" style="display:none"><div id="ytPlayer"></div></div>
 <button type="button" id="ytClose">✕ 원래 크기로</button>
+<div class="yterr" id="ytErr" role="alert"></div>
 <p class="hint" id="ytInfo">유튜브 소리는 화면에서만 들리고, 저장하는 영상 파일에는 들어가지 않습니다. Claude 안에서는 열리지 않고 GitHub Pages 주소에서 쓸 수 있습니다.</p>
 </div>
 <label for="bgm">노래 파일이 없을 때 배경음악</label>
@@ -456,36 +458,42 @@ function bgStart(){bgStop();if(!ac||!bgOn())return;bgT0=T;bgA0=ac.currentTime+.0
  const tick=()=>{const ahead=ac.currentTime-bgA0+bgT0+.35;while(bgNext*BEAT<Math.min(ahead,total)){bgBeat(bgNext,bgA0+bgNext*BEAT-bgT0);bgNext++}};tick();bgTimer=setInterval(tick,60)}
 function bgStop(){clearInterval(bgTimer);bgTimer=0;if(ac)bgNodes.forEach(n=>{try{n.stop()}catch(e){}});bgNodes=[]}
 $('#audioFile').onchange=e=>{const f=e.target.files[0];if(!f)return;stop();if(yt){ytOff();yinfo('노래 파일을 올려 유튜브 연결을 뺐습니다.')}au.src=URL.createObjectURL(f);$('#audioInfo').textContent='불러오는 중…';au.onloadedmetadata=()=>{audioDur=au.duration;$('#audioInfo').textContent=`🎵 ${f.name} · ${fmt(audioDur)}`;rebuild()}};
-$('#audioClear').onclick=()=>{stop();au.removeAttribute('src');au.load();audioDur=0;$('#audioFile').value='';$('#audioInfo').textContent='노래 파일이 없으면 아래 배경음악이 깔립니다.';rebuild()};
+$('#audioClear').onclick=()=>{const had=!!audioDur||!!yt||!!$('#ytUrl').value.trim();stop();au.removeAttribute('src');au.load();audioDur=0;$('#audioFile').value='';ytTok++;yerr('');ytOff();$('#ytUrl').value='';yinfo('유튜브 소리는 화면에서만 들리고, 저장하는 영상 파일에는 들어가지 않습니다. Claude 안에서는 열리지 않고 GitHub Pages 주소에서 쓸 수 있습니다.');$('#audioInfo').textContent=(had?'✅ 노래를 뺐습니다. ':'')+'노래 파일이 없으면 아래 배경음악이 깔립니다.';msg(had?'노래(파일·유튜브)를 뺐습니다. 이제 배경음악이 깔립니다.':'');rebuild()};
 
 /* ---------- 재생 ---------- */
 let playing=false,t0=0,off=0,raf=0;
 const hasAudio=()=>!!audioDur;
 /* ---------- 유튜브 함께 듣기 ---------- */
-let yt=null,ytDur=0,ytApi=null;
+let yt=null,ytDur=0,ytApi=null,ytCur='',ytTok=0,ytReady=false,ytTm=0;
 const hasYT=()=>!!(yt&&ytDur);
 function ytId(u){u=u.trim();const m=u.match(/(?:youtu\.be\/|v=|\/shorts\/|\/embed\/|\/live\/)([\w-]{11})/);return m?m[1]:(/^[\w-]{11}$/.test(u)?u:null)}
 function loadYTApi(){if(ytApi)return ytApi;ytApi=new Promise((ok,no)=>{if(window.YT&&YT.Player)return ok();window.onYouTubeIframeAPIReady=()=>ok();const sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';sc.onerror=()=>{ytApi=null;no()};document.head.appendChild(sc);setTimeout(()=>{if(!(window.YT&&YT.Player)){ytApi=null;no()}},12000)});return ytApi}
 const yinfo=t=>{$('#ytInfo').textContent=t};
+const yerr=(t,id)=>{const b=$('#ytErr');if(!t){b.style.display='none';b.textContent='';return}b.textContent='⚠️ '+t;if(id){b.appendChild(document.createElement('br'));const a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+id;a.target='_blank';a.rel='noopener';a.textContent='▶ 유튜브에서 열어 듣기';b.appendChild(a)}b.style.display='block';b.scrollIntoView({block:'nearest',behavior:'smooth'})};
 function ytSize(v){S.ytSize=v;const w=$('#ytWrap');w.classList.toggle('m',v==='m');w.classList.toggle('l',v==='l');document.body.classList.toggle('ytl',v==='l');[...$('#ytSize').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));save()}
 $('#ytSize').onclick=e=>{const v=e.target.dataset&&e.target.dataset.v;if(v)ytSize(v)};
 $('#ytClose').onclick=$('#ytBack').onclick=()=>ytSize(S.ytSize==='l'?'m':S.ytSize);
 addEventListener('keydown',e=>{if(e.key==='Escape'&&S.ytSize==='l')ytSize('m')});
-function ytOff(){document.body.classList.remove('ytl');$('#ytSize').style.display='none';if(yt){try{yt.destroy()}catch(e){}}yt=null;ytDur=0;$('#ytWrap').style.display='none';$('#ytWrap').innerHTML='<div id="ytPlayer"></div>'}
+function ytOff(){clearTimeout(ytTm);ytCur='';ytReady=false;document.body.classList.remove('ytl');$('#ytSize').style.display='none';if(yt){try{yt.destroy()}catch(e){}}yt=null;ytDur=0;$('#ytWrap').style.display='none';$('#ytWrap').innerHTML='<div id="ytPlayer"></div>'}
 $('#ytLoad').onclick=async()=>{const id=ytId($('#ytUrl').value);if(!id){if($('#ytUrl').value.trim()){$('#ytSearch').click();return}yinfo('노래 제목이나 유튜브 주소를 먼저 적어 주세요.');return}
+ if(yt&&ytCur===id&&!$('#ytErr').textContent){yinfo('이미 불러왔습니다. 아래 유튜브 화면에서 ▶ 재생을 누르세요.');return}
+ const tok=++ytTok;yerr('');
  stop();yinfo('불러오는 중…');
- try{await loadYTApi()}catch(e){yinfo('이 화면에서는 유튜브를 열 수 없습니다. GitHub Pages에 올린 주소로 열어 주세요.');return}
- ytOff();if(audioDur){au.removeAttribute('src');au.load();audioDur=0;$('#audioFile').value='';$('#audioInfo').textContent='노래 파일이 없으면 아래 배경음악이 깔립니다.'}
+ try{await loadYTApi()}catch(e){yerr('유튜브 프로그램을 받지 못했습니다. 인터넷 연결과 「GitHub Pages 주소」로 열었는지 확인해 주세요. (내 컴퓨터 파일로 열면 안 됩니다)',id);return}
+ if(tok!==ytTok)return;
+ ytOff();ytCur=id;if(audioDur){au.removeAttribute('src');au.load();audioDur=0;$('#audioFile').value='';$('#audioInfo').textContent='노래 파일이 없으면 아래 배경음악이 깔립니다.'}
  $('#ytWrap').style.display='block';$('#ytSize').style.display='flex';ytSize(S.ytSize==='l'?'m':(S.ytSize||'m'));
- yt=new YT.Player('ytPlayer',{width:'100%',height:'100%',videoId:id,playerVars:{playsinline:1,rel:0,modestbranding:1},
-  events:{onReady:e=>{ytDur=e.target.getDuration()||0;if(!ytDur){setTimeout(()=>{ytDur=yt&&yt.getDuration()||0;rebuild()},1500)}yinfo('🎬 연결됨'+(ytDur?` · ${fmt(ytDur)}`:'')+'. ▶ 재생을 누르면 가사와 함께 나옵니다. (저장 영상에는 유튜브 소리가 들어가지 않습니다)');rebuild();seek(0)},
+ yt=new YT.Player('ytPlayer',{width:'100%',height:'100%',videoId:id,playerVars:Object.assign({playsinline:1,rel:0,modestbranding:1,enablejsapi:1},/^https?:/.test(location.protocol)?{origin:location.origin}:{}),
+  events:{onReady:e=>{ytReady=true;clearTimeout(ytTm);ytDur=e.target.getDuration()||0;if(!ytDur){setTimeout(()=>{ytDur=yt&&yt.getDuration()||0;rebuild()},1500)}yinfo('🎬 연결됨'+(ytDur?` · ${fmt(ytDur)}`:'')+'. ▶ 재생을 누르면 가사와 함께 나옵니다. (저장 영상에는 유튜브 소리가 들어가지 않습니다)');rebuild();seek(0)},
    onStateChange:e=>{if(!hasYT())return;if(e.data===1&&!playing){T=yt.getCurrentTime();playing=true;$('#playBtn').textContent='⏸ 멈춤';loop()}else if((e.data===2||e.data===0)&&playing){playing=false;cancelAnimationFrame(raf);$('#playBtn').textContent='▶ 재생'}},
-   onError:e=>{const c=e.data;yinfo(c===101||c===150?'이 영상은 주인이 다른 곳에서 틀지 못하게 막아 두었습니다. 다른 영상을 골라 주세요.':c===100||c===2?'영상을 찾을 수 없습니다. 주소를 확인해 주세요.':c===153?'내 컴퓨터 파일로 열면 유튜브가 막습니다. GitHub Pages 주소로 열어 주세요.':'유튜브 영상을 틀 수 없습니다 (오류 '+c+').');ytOff();rebuild()}}})};
+   onError:e=>{const c=e.data;const m=c===101||c===150?'이 영상은 주인이 「다른 사이트에서 재생」을 막아 두어 여기서는 나오지 않습니다. 다른 영상(같은 노래의 다른 업로드·가사 영상)을 골라 보세요.':c===100||c===2?'영상을 찾을 수 없거나 주소가 잘못되었습니다. 유튜브에서 공유 → 복사를 다시 해 주세요.':c===153?'유튜브가 이 화면을 확인하지 못해 막았습니다. 내 컴퓨터 파일이 아니라 GitHub Pages 주소로 열었는지 확인해 주세요.':'유튜브 영상을 틀 수 없습니다 (오류 '+c+').';
+   yinfo('유튜브를 불러오지 못했습니다.');ytOff();yerr(m,id);rebuild()}}});
+ clearTimeout(ytTm);ytTm=setTimeout(()=>{if(yt&&!ytReady){ytOff();yerr('유튜브 화면이 10초 안에 열리지 않았습니다. 인터넷 연결을 확인하고 다시 눌러 주세요.',id);rebuild()}},10000)};
 $('#ytSearch').onclick=()=>{const q=$('#ytUrl').value.trim();if(ytId(q)){$('#ytLoad').click();return}const qq=q||[S.title,S.artist].filter(Boolean).join(' ')||'7080 노래';const a=document.createElement('a');a.href='https://www.youtube.com/results?search_query='+encodeURIComponent(qq);a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();yinfo('유튜브 검색 창이 열렸습니다. 영상에서 공유 → 복사를 누른 뒤 이 화면으로 돌아와 📋 버튼을 누르세요.')};
 $('#ytPaste').onclick=async()=>{let t='';try{t=await navigator.clipboard.readText()}catch(e){}if(!t){$('#ytUrl').value='';$('#ytUrl').focus();yinfo('자동 붙여넣기가 막혔습니다. 위 칸을 길게 누르거나 Ctrl+V로 붙여 넣은 뒤 ▶ 불러오기를 누르세요.');return}$('#ytUrl').value=t.trim();if(!ytId(t)){yinfo('복사한 내용이 유튜브 주소가 아닙니다. 유튜브에서 공유 → 복사를 다시 해 주세요.');return}$('#ytLoad').click()};
 $('#ytUrl').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();(ytId($('#ytUrl').value)?$('#ytLoad'):$('#ytSearch')).click()}});
 $('#ytUrl').addEventListener('paste',()=>setTimeout(()=>{if(ytId($('#ytUrl').value))$('#ytLoad').click()},50));
-$('#ytClear').onclick=()=>{stop();ytOff();$('#ytUrl').value='';yinfo('유튜브 연결을 뺐습니다.');rebuild()};
+$('#ytClear').onclick=()=>{stop();ytTok++;yerr('');ytOff();$('#ytUrl').value='';yinfo('유튜브 연결을 뺐습니다.');rebuild()};
 function now(){if(hasYT())return yt.getCurrentTime()||0;return hasAudio()?au.currentTime:off+(performance.now()-t0)/1000}
 async function play(){if(playing)return;if(T>=total-.05)seek(0);playing=true;$('#playBtn').textContent='⏸ 멈춤';
  graph();if(ac&&ac.state!=='running'){try{await ac.resume()}catch(e){}}
@@ -598,7 +606,7 @@ twoStep($('#resetAll'),'↺ 처음 상태로 초기화','한 번 더 누르면 �
  photos=[];$('#photoFile').value='';$('#photoInfo').textContent='사진이 천천히 확대되며 6초마다 바뀝니다.';$('#photoBox').style.display='none';
  outBlob=null;$('#result').style.display='none';$('#outVid').removeAttribute('src');
  $('#syncBtn').textContent='👆 박자 맞추기 시작';$('#syncBtn').classList.remove('main');$('#tapNow').style.display='none';
- $('#autoTitle').value='';$('#autoSinger').value='';ytOff();$('#ytUrl').value='';T=0;resize();loadFont();rebuild();ui();msg('처음 상태로 초기화했습니다.');scrollTo({top:0,behavior:'smooth'})});
+ $('#autoTitle').value='';$('#autoSinger').value='';ytTok++;yerr('');ytOff();$('#ytUrl').value='';T=0;resize();loadFont();rebuild();ui();msg('처음 상태로 초기화했습니다.');scrollTo({top:0,behavior:'smooth'})});
 resize();loadFont();rebuild();ui();
 }
 </script>
