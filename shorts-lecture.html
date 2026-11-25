@@ -8,6 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; }
+        @keyframes pickFlash { 0%{background:#fde047;transform:scale(1.04)} 60%{background:#fde047} 100%{background:transparent;transform:scale(1)} }
+        .pick-flash { animation: pickFlash 1.4s ease-out; border-radius: 14px; }
+        @keyframes pickToastIn { from{opacity:0;transform:translate(-50%,-14px)} to{opacity:1;transform:translate(-50%,0)} }
     </style>
 </head>
 <body id="mainBody" class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 min-h-screen text-slate-900 flex flex-col transition-colors duration-300">
@@ -1017,6 +1020,7 @@
             seriesMode = false;
             const items = categoriesData[currentCategory].items;
             listMode = 'cat'; updateListModeButtons(); renderTopicList();
+            window.__pickTag = '🎲 랜덤 주제가 선택되었습니다';
             selectTopic(items[Math.floor(Math.random() * items.length)]);
         }
         function toggleFav(cat, title) {
@@ -1660,6 +1664,7 @@
             seriesMode = true; seriesEp = 1; currentScenesCount = 7; renderSceneCountButtons();
             listMode = 'cat'; updateListModeButtons();
             switchCategory(item.cat);
+            window.__pickTag = '📚 시리즈 1화가 선택되었습니다';
             selectTopic(item.title);
         }
         function makeCustomSeries() {
@@ -1885,9 +1890,11 @@
                 const row = document.createElement('div');
                 row.className = 'flex gap-1.5 items-stretch';
                 const btn = document.createElement('button');
-                btn.className = `flex-1 text-left p-3.5 rounded-2xl border-3 transition font-black text-sm sm:text-base shadow-sm hover:scale-[1.01] ${paletteClass}`;
+                const isSel = !!currentTopicTitle && title === currentTopicTitle && e.cat === currentCategory;
+                btn.className = `flex-1 text-left p-3.5 rounded-2xl border-3 transition font-black text-sm sm:text-base shadow-sm hover:scale-[1.01] active:scale-95 active:brightness-90 ${paletteClass}` + (isSel ? ' ring-4 ring-red-600 ring-offset-2' : '');
+                if (isSel) btn.setAttribute('data-sel', '1');
                 const catName = (categoriesData[e.cat] ? categoriesData[e.cat].name : '').split(' ')[0];
-                btn.innerText = `${shown + 1}. ${listMode === 'cat' ? '' : '[' + catName + '] '}${title}`;
+                btn.innerText = `${isSel ? '✅ ' : ''}${shown + 1}. ${listMode === 'cat' ? '' : '[' + catName + '] '}${title}`;
                 btn.onclick = () => pickEntry(e);
                 const isFav = favs.some(f => f.cat === e.cat && f.title === e.title);
                 const star = document.createElement('button');
@@ -1910,6 +1917,46 @@
             fillCast();
             pushRecent();
             updateInterface();
+            pickFeedback();
+        }
+
+        // 주제를 눌렀을 때 눈에 보이는 반응(확인 메시지·선택 표시·제목 깜빡임·진동)
+        function showPickToast(msg, title) {
+            let t = document.getElementById('pickToast');
+            if (t) t.remove();
+            t = document.createElement('div');
+            t.id = 'pickToast';
+            t.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:99999;width:92%;max-width:560px;background:#047857;color:#fff;border:3px solid #fff;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.45);padding:14px 16px;text-align:center;font-weight:900;animation:pickToastIn .25s ease-out;';
+            const l1 = document.createElement('div'); l1.style.cssText = 'font-size:17px;'; l1.textContent = msg;
+            const l2 = document.createElement('div'); l2.style.cssText = 'font-size:20px;margin-top:4px;color:#fef08a;word-break:keep-all;'; l2.textContent = '「' + title + '」';
+            const bt = document.createElement('button'); bt.type = 'button';
+            bt.style.cssText = 'margin-top:10px;background:#fde047;color:#111827;border-radius:14px;padding:10px 16px;font-size:16px;font-weight:900;border:2px solid #fff;';
+            bt.textContent = '⬇ 프롬프트 복사하러 가기';
+            bt.onclick = () => { const c = document.getElementById('sequentialButtonsContainer'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); t.remove(); };
+            t.appendChild(l1); t.appendChild(l2); t.appendChild(bt);
+            document.body.appendChild(t);
+            clearTimeout(window.__pickToastTimer);
+            window.__pickToastTimer = setTimeout(() => { const x = document.getElementById('pickToast'); if (x) { x.style.transition = 'opacity .4s'; x.style.opacity = '0'; setTimeout(() => x.remove(), 450); } }, 4500);
+        }
+        function pickFeedback() {
+            try {
+                const cont = document.getElementById('topicListContainer');
+                const st = cont ? cont.scrollTop : 0;
+                renderTopicList();
+                if (cont) {
+                    cont.scrollTop = st;
+                    const sel = cont.querySelector('[data-sel="1"]');
+                    if (sel) {
+                        const r = sel.getBoundingClientRect(), c = cont.getBoundingClientRect();
+                        if (r.top < c.top || r.bottom > c.bottom) sel.scrollIntoView({ block: 'nearest' });
+                    }
+                }
+                const at = document.getElementById('activeTitle');
+                if (at) { at.classList.remove('pick-flash'); void at.offsetWidth; at.classList.add('pick-flash'); }
+                showPickToast(window.__pickTag || '✅ 주제를 선택했습니다', currentTopicTitle);
+                window.__pickTag = null;
+                if (navigator.vibrate) navigator.vibrate(40);
+            } catch (e) { window.__pickTag = null; }
         }
 
         function generateCustomStory() {
