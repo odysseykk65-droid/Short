@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2027 모집 홍보 쇼츠 대본 생성기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 밝고 친근한 강의실 안내판, 큰 글씨
+   IDEA: 촬영 콘티 카드 8장 — 장면마다 복사 버튼 하나
+   PICTURE: 장면 카드 묶음 자체가 그림
+   COLOUR and TYPE: 하늘색 바탕, 장면마다 밝은 색 띠, Black Han Sans 제목 + Noto Sans KR
+   LAYOUT: 한 줄(폰) / 두 줄(PC) 카드 */
+:root{color-scheme:light;--ink:#14213d;--sub:#33415c}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;background:#cfeeff;color:var(--ink);font-size:18px;line-height:1.55;word-break:keep-all;overflow-x:clip}
+.wrap{max-width:1080px;margin:0 auto;padding:14px}
+.hero{background:#ff8a3d;color:#fff;border-radius:20px;padding:18px 20px;margin-bottom:12px}
+.hero h1{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:clamp(28px,6vw,44px);line-height:1.1;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.hero p{margin:6px 0 0;font-size:17px;font-weight:700}
+.box{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:14px 16px;margin-bottom:12px}
+.box h2{margin:0 0 8px;font-size:21px}
+.how ol{margin:0;padding-left:22px}.how li{margin:5px 0;font-size:17px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(max-width:620px){.grid2{grid-template-columns:minmax(0,1fr)}}
+label{display:block;font-weight:900;font-size:16px;margin-bottom:4px}
+input,select,textarea{width:100%;font:inherit;font-size:17px;padding:10px;border:2px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink)}
+textarea{resize:vertical;min-height:70px}
+button{font:inherit;font-weight:900;font-size:18px;border:0;border-radius:14px;padding:12px 14px;min-height:50px;cursor:pointer;color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:4px solid #1c7ed6;outline-offset:2px}
+.bar{position:sticky;top:0;z-index:5;background:#cfeeff;padding:8px 0}
+.pg{background:#fff;border:2px solid var(--ink);border-radius:12px;overflow:hidden;height:16px}
+#pgf{height:100%;width:0;background:#2f9e44;transition:width .3s}
+#pgt{font-weight:900;font-size:16px;margin-bottom:4px}
+#cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:820px){#cards{grid-template-columns:minmax(0,1fr)}}
+.card{background:#fff;border:3px solid var(--ink);border-radius:18px;overflow:hidden}
+.card.done{border-color:#2f9e44;background:#effaf4}
+.hd{display:flex;gap:10px;align-items:center;padding:10px 14px;color:var(--ink)}
+.no{flex:none;width:42px;height:42px;border-radius:50%;background:#fff;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
+.hd b{font-size:19px;line-height:1.3}
+.bd{padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.who{font-size:15px;font-weight:900;color:#c92a2a}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.cp{flex:1 1 55%;background:#e8590c}.dn{flex:1 1 25%;background:#495057;font-size:16px}.sh{flex:1 1 100%;background:#fff;color:var(--ink);border:2px solid var(--ink);font-size:16px;min-height:44px}
+.card.done .dn{background:#2f9e44}
+.len{font-size:14px;font-weight:700;color:var(--sub)}
+.pre{display:none;background:#f3f0ff;border-radius:10px;padding:10px;font-size:15px;white-space:pre-wrap;line-height:1.5}
+.pre.on{display:block}
+.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+@media(max-width:620px){.tools{grid-template-columns:minmax(0,1fr)}}
+.t1{background:#1d4ed8}.t2{background:#7048e8}.t3{background:#fff;color:#495057;border:3px solid #868e96}.t4{background:#c92a2a}
+.fs{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:6px;font-weight:900;font-size:15px}
+.fs button{min-height:44px;padding:6px 14px;font-size:16px;background:var(--ink)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2f9e44;color:#fff;padding:12px 22px;border-radius:14px;font-weight:900;opacity:0;transition:.3s;pointer-events:none;z-index:20;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+#dlg{position:fixed;inset:0;background:rgba(20,33,61,.5);display:none;align-items:center;justify-content:center;z-index:30;padding:16px}
+#dlg.on{display:flex}
+#dlg .in{background:#fff;border:3px solid var(--ink);border-radius:18px;padding:18px;max-width:420px;width:100%}
+.note{font-size:15px;color:var(--sub)}
+@media(prefers-reduced-motion:reduce){#pgf,#toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<h1>2027 모집 홍보 쇼츠<br>대본 생성기</h1>
+<p>표지 포함 8장면 · 장면마다 [복사] → 유튜브 크리에이트에 붙여넣기</p>
+</div>
+
+<div class="box how">
+<h2>사용 방법</h2>
+<ol>
+<li>아래 <b>기본 정보</b>에서 강사 성별과 과정 이름을 확인합니다.</li>
+<li>유튜브 크리에이트 하단 <b>＋</b> → <b>내 정면 사진 1장</b>을 올립니다. (모든 장면에 같은 사진)</li>
+<li>1번(표지) 카드의 <b>[복사]</b>를 누르고, 크리에이트 <b>동영상 생성</b>에 붙여넣어 만듭니다.</li>
+<li>다 만들면 <b>[만들었어요]</b>를 누르고 2번, 3번… 8번까지 반복합니다.</li>
+<li>8장면을 순서대로 이어 붙이고, 맨 아래 <b>[유튜브 업로드 문구 복사]</b>로 제목·설명을 붙여넣어 올립니다.</li>
+</ol>
+<p class="note">대사와 자막은 카드에서 직접 고칠 수 있고, 고친 내용 그대로 복사됩니다. 실제 수강생 소감으로 바꾸면 더 좋아요.</p>
+</div>
+
+<div class="box">
+<h2>기본 정보</h2>
+<div class="grid2">
+<div><label for="g">강사 성별 (내 사진과 같게)</label><select id="g"><option value="여성">여성 강사</option><option value="남성">남성 강사</option></select></div>
+<div><label for="sc">자막 색 (장면 맨 아래)</label><select id="sc"><option value="0">노란색 + 검정 테두리</option><option value="1">흰색 + 검정 테두리</option><option value="2">자막 없이 음성만</option></select></div>
+<div><label for="cn">과정 이름</label><input id="cn" type="text"></div>
+<div><label for="og">기관·장소</label><input id="og" type="text"></div>
+<div><label for="pd">접수 기간 (업로드 설명용)</label><input id="pd" type="text" placeholder="예: 2027년 1월 5일 ~ 1월 23일"></div>
+<div><label for="st">개강 일정 (업로드 설명용)</label><input id="st" type="text" placeholder="예: 2월 4일(목) 오후 2시"></div>
+<div><label for="ph">문의 전화 (업로드 설명용)</label><input id="ph" type="text" placeholder="예: 031-000-0000"></div>
+<div><label for="mu">배경음악</label><select id="mu"><option value="0">밝은 배경음악 넣기</option><option value="1">배경음악 빼기 (음성만)</option></select></div>
+</div>
+</div>
+
+<div class="bar"><div id="pgt"></div><div class="pg"><div id="pgf"></div></div>
+<div class="fs">글자 크기 <button type="button" id="fm" aria-label="글자 작게">가-</button><button type="button" id="fp" aria-label="글자 크게">가+</button></div></div>
+
+<div id="cards"></div>
+
+<div class="tools">
+<button class="t1" type="button" id="all">전체 8장면 한꺼번에 복사</button>
+<button class="t2" type="button" id="up">유튜브 업로드 문구 복사</button>
+<button class="t3" type="button" id="rs">✔ 표시만 지우기</button>
+<button class="t4" type="button" id="rs2">전체 초기화 (처음 상태로)</button>
+</div>
+<p class="note">영상 속 휴대폰 화면 글씨는 AI가 틀리게 그릴 수 있어 프롬프트에서 뺐습니다. 접수 기간·QR은 편집 앱에서 마지막 장면에 넣어 주세요.</p>
+</div>
+
+<div id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgT"><div class="in">
+<h2 id="dlgT" style="margin:0 0 8px;font-size:20px">처음 상태로 되돌릴까요?</h2>
+<p style="margin:0 0 12px">고친 대사·자막·입력한 정보와 완료 표시가 모두 지워집니다.</p>
+<div class="row"><button type="button" class="t4" id="yes" style="flex:1">네, 초기화</button><button type="button" class="t3" id="no" style="flex:1">취소</button></div>
+</div></div>
+<div id="toast" role="status"></div>
+
+<script>
+{
+const BASE=[
+ {t:"사진 한 장으로 내가 주인공",w:"강사",cover:1,sub:"사진 한 장으로 / 내가 주인공!",v:"수강생 여러분, 휴대폰 하나로 내 얼굴이 나오는 영상, 만들어 보셨나요?",sc:"강사가 한 손에 갤럭시 스마트폰을 들어 보이며 카메라를 정면으로 보고 환하게 웃으며 말한다.",cam:"가슴 위 상반신 정면, 느린 줌 인"},
+ {t:"처음엔 막막했어요",w:"수강생",sub:"저는 카톡밖에 못 해요…",v:"AI 영상이요? 저는 카톡밖에 못 하는데요…",sc:"강사 옆자리의 수강생이 휴대폰을 들고 고개를 갸웃하며 걱정스럽게 말하고, 강사는 미소 지으며 고개를 끄덕인다.",cam:"두 사람 투샷, 수강생 쪽으로 천천히 줌 인"},
+ {t:"버튼 한 번",w:"강사",sub:"주제 고르고 버튼 한 번!",v:"주제만 고르고 이 버튼만 누르세요. 대본은 생성기가 만들어 줘요.",sc:"강사가 수강생 옆에서 휴대폰 화면을 손가락으로 가리키고, 수강생이 검지로 화면을 톡 누른다.",cam:"어깨 너머 샷, 손과 휴대폰으로 줌 인"},
+ {t:"내 사진 한 장",w:"강사",sub:"내 사진 한 장이면 OK",v:"내 사진 한 장만 넣으면, 영상 속 주인공이 바로 수강생 여러분이에요.",sc:"강사가 카메라를 보며 설명하고, 옆의 수강생이 휴대폰 갤러리에서 사진을 골라 올리며 미소 짓는다.",cam:"상반신 투샷, 가벼운 패닝"},
+ {t:"와, 이게 나예요?",w:"수강생",sub:"와! 이게 나예요?",v:"어머, 이게 정말 저예요?",sc:"수강생이 완성된 영상을 보고 깜짝 놀라 입을 가리며 웃고, 주변 수강생들이 박수를 친다. 강사가 엄지를 들어 보인다.",cam:"수강생 얼굴 클로즈업 후 강의실 와이드"},
+ {t:"가족에게 자랑",w:"수강생",sub:"가족에게 바로 자랑!",v:"손주한테 보냈더니 하트가 막 와요!",sc:"수강생이 휴대폰을 가슴에 안고 행복하게 웃으며 강사에게 자랑하고, 강사가 함께 기뻐한다.",cam:"미디엄 투샷, 따뜻한 햇살"},
+ {t:"2027년 수강생 모집",w:"강사",sub:"2027 {CN} 모집!",v:"매 일차 영상 한 편씩, 직접 만들어서 가져가는 수업입니다.",sc:"밝은 강의실에서 수강생들이 모두 휴대폰을 들고 웃고 있고, 강사가 앞에 서서 두 팔을 벌려 소개한다.",cam:"강의실 와이드, 천천히 줌 인"},
+ {t:"지금 바로 신청",w:"강사",sub:"지금 바로 신청하세요",v:"스마트폰 처음이어도 괜찮아요. {OG}에서 기다리겠습니다!",sc:"강사가 카메라를 정면으로 보며 손짓으로 초대하고, 환하게 웃으며 고개 숙여 인사한다.",cam:"상반신 정면, 마지막은 천천히 줌 아웃"}
+];
+const DEF={g:"여성",sc:"0",cn:"내 폰으로 만드는 AI 영상 교실",og:"의정부시 교육재단",pd:"",st:"",ph:"",mu:"0",fs:18,done:{},ed:{}};
+const KEY="promo2027";
+const $=id=>document.getElementById(id);
+const clone=o=>JSON.parse(JSON.stringify(o));
+let st=clone(DEF);
+try{const d=JSON.parse(localStorage.getItem(KEY)||"null");if(d)st=Object.assign(clone(DEF),d);}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const HC=["#ffd43b","#8ce99a","#74c0fc","#ffa8a8","#b197fc","#ffc078","#63e6be","#f783ac"];
+const fill=s=>s.replace(/\{CN\}/g,st.cn||DEF.cn).replace(/\{OG\}/g,st.og||DEF.og);
+const val=(i,k)=>{const e=st.ed[i];return fill(e&&e[k]!=null?e[k]:BASE[i][k]);};
+const SCC=[["굵은 노란색"],["굵은 흰색"]];
+
+function prompt(i){
+ const s=BASE[i],v=val(i,"v"),sub=val(i,"sub"),n=BASE.length,o=[];
+ o.push(`[유튜브 크리에이트 ${i+1}/${n} — ${i===0?"표지":i+"번 장면"}: ${s.t}]`);
+ o.push("세로 9:16, 10초, 밝고 따뜻한 실사 영상.");
+ o.push(`[인물] 강사: 올린 사진 속 인물 본인(${st.g}). 얼굴·헤어·옷을 그대로 유지하고 모든 장면에서 같은 모습.`+(s.w==="수강생"||/수강생/.test(s.sc)?" 수강생: 사진 속 인물이 아닌 밝은 표정의 60대 한국인 여성 수강생, 단정한 카디건, 모든 장면에서 같은 사람.":""));
+ o.push("[장소] 밝고 깨끗한 스마트폰 강의실, 긴 책상, 창으로 들어오는 자연광.");
+ o.push(`[장면] ${s.sc} 카메라: ${s.cam}`);
+ o.push(`[음성] ${s.w==="강사"?"사진 속 강사가 직접 입을 움직이며":"수강생이 직접 입을 움직이며"} 한국어로 또렷하고 천천히 말한다: "${v}"`);
+ if(s.cover){const p=sub.split("/").map(x=>x.trim());o.push(`[자막] 화면 맨 위 가운데에 아주 큰 글씨 2줄. 첫째 줄 "${p[0]||sub}"은 빨간 글씨에 흰 테두리, 둘째 줄 "${p[1]||""}"은 노란 글씨에 검정 테두리. 따옴표 안의 한국어 글자만 화면에 쓰고, 색 이름이나 다른 글자는 절대 쓰지 않는다.`);}
+ else if(st.sc==="2")o.push("[자막] 화면에 자막과 글자를 넣지 않는다.");
+ else o.push(`[자막] 화면 맨 아래쪽 가운데에 ${SCC[+st.sc][0]} 큰 글씨, 두꺼운 검정 테두리, 최대 2줄: "${sub}" (얼굴을 가리지 않게). 따옴표 안의 한국어 글자만 화면에 쓰고, 색 이름·숫자 코드 등 다른 글자는 절대 쓰지 않는다.`);
+ o.push(st.mu==="1"?"[소리] 배경음악 없이 음성만.":"[소리] 밝은 어쿠스틱 배경음악을 음성보다 작게.");
+ o.push("[금지] 영어·깨진 글자, 로고, 워터마크, 자막 외 글씨(휴대폰 화면 속 글씨 포함), 아이폰 모양. 얼굴·옷 변경 금지.");
+ return o.join("\n");
+}
+function toast(m){const t=$("toast");t.textContent=m;t.className="on";clearTimeout(toast.h);toast.h=setTimeout(()=>t.className="",2200);}
+function copy(s,m){
+ const fb=()=>{const t=document.createElement("textarea");t.value=s;t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.select();try{document.execCommand("copy");toast(m)}catch(e){toast("복사가 안 되면 프롬프트 보기에서 길게 눌러 복사하세요")}t.remove();};
+ try{if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(s).then(()=>toast(m),fb);else fb();}catch(e){fb();}
+}
+function prog(){const n=BASE.length,d=BASE.filter((_,i)=>st.done[i]).length;$("pgt").textContent=`진행 ${d} / ${n} 장면 완료`+(d===n?" — 이제 이어 붙여 편집하세요":"");$("pgf").style.width=(d*100/n)+"%";}
+function draw(){
+ document.body.style.fontSize=st.fs+"px";
+ $("cards").innerHTML=BASE.map((s,i)=>{const p=prompt(i),dn=!!st.done[i];return `<div class="card${dn?" done":""}" id="c${i}">
+<div class="hd" style="background:${HC[i]}"><div class="no">${i+1}</div><b>${i===0?"표지":i+"번 장면"} · ${esc(s.t)}${dn?" ✔":""}</b></div>
+<div class="bd">
+<div class="who">말하는 사람: ${s.w==="강사"?"강사 (내 사진)":"수강생"}</div>
+<label for="v${i}">대사 (고칠 수 있어요)</label><textarea id="v${i}" data-k="v" data-i="${i}" rows="2">${esc(val(i,"v"))}</textarea>
+<label for="s${i}">자막${s.cover?" (맨 위 · / 로 두 줄 나눔)":" (맨 아래)"}</label><input id="s${i}" type="text" data-k="sub" data-i="${i}" value="${esc(val(i,"sub"))}">
+<div class="len" id="l${i}">${p.length}자 ${p.length>900?"⚠️ 900자 초과 — 대사를 줄여 주세요":"✅ 900자 이하"}</div>
+<div class="row"><button class="cp" type="button" data-cp="${i}">${i+1}번 복사</button><button class="dn" type="button" data-dn="${i}">${dn?"✔ 완료":"만들었어요"}</button>
+<button class="sh" type="button" data-sh="${i}" aria-expanded="false">프롬프트 보기</button></div>
+<div class="pre" id="p${i}"></div>
+</div></div>`}).join("");
+ prog();
+}
+function syncForm(){["g","sc","cn","og","pd","st","ph","mu"].forEach(k=>{$(k).value=st[k]});}
+function upload(){
+ const cn=st.cn||DEF.cn,og=st.og||DEF.og,L=[];
+ L.push("■ 제목\n[2027 모집] "+cn+" | 사진 한 장으로 내가 주인공!");
+ const d=[`휴대폰 하나로 내 얼굴이 나오는 AI 영상을 직접 만들어 가져가는 수업, ${cn} 2027년 수강생을 모집합니다.`,"매 일차 영상 한 편씩 완성 · 강사가 만든 전용 생성기 · 스마트폰 처음이어도 괜찮아요."];
+ const info=[["장소",og],["접수 기간",st.pd],["개강",st.st],["문의",st.ph]].filter(x=>x[1]).map(x=>"· "+x[0]+": "+x[1]);
+ L.push("■ 설명\n"+d.join("\n")+(info.length?"\n\n"+info.join("\n"):""));
+ L.push("■ 해시태그\n#shorts #AI영상 #스마트폰교육 #수강생모집 #2027 #유튜브크리에이트");
+ return L.join("\n\n");
+}
+document.addEventListener("click",e=>{
+ let b;
+ if(b=e.target.closest("[data-cp]")){const i=+b.dataset.cp;copy(prompt(i),`${i+1}번 복사됨 → 유튜브 크리에이트에 붙여넣기`);return;}
+ if(b=e.target.closest("[data-dn]")){const i=+b.dataset.dn;st.done[i]=!st.done[i];save();draw();if(st.done[i]&&i<BASE.length-1){const n=$("c"+(i+1));if(n)n.scrollIntoView({behavior:"smooth",block:"start"});}return;}
+ if(b=e.target.closest("[data-sh]")){const i=+b.dataset.sh,p=$("p"+i);const on=!p.classList.contains("on");p.textContent=prompt(i);p.classList.toggle("on",on);b.setAttribute("aria-expanded",on);b.textContent=on?"프롬프트 접기":"프롬프트 보기";}
+});
+$("cards").addEventListener("input",e=>{const t=e.target,i=t.dataset.i;if(i==null)return;st.ed[i]=st.ed[i]||{};st.ed[i][t.dataset.k]=t.value;save();const p=prompt(+i),l=$("l"+i);l.textContent=p.length+"자 "+(p.length>900?"⚠️ 900자 초과 — 대사를 줄여 주세요":"✅ 900자 이하");const pr=$("p"+i);if(pr.classList.contains("on"))pr.textContent=p;});
+["g","sc","cn","og","pd","st","ph","mu"].forEach(k=>{const el=$(k);el.addEventListener(el.tagName==="SELECT"?"change":"input",()=>{st[k]=el.value;save();if(!["pd","st","ph"].includes(k))draw();});});
+$("all").onclick=()=>copy(BASE.map((_,i)=>prompt(i)).join("\n\n────────────\n\n"),"8장면 전체 복사됨 (메모장 보관용)");
+$("up").onclick=()=>copy(upload(),"업로드 문구 복사됨 → 유튜브 제목·설명에 붙여넣기");
+$("rs").onclick=()=>{st.done={};save();draw();toast("✔ 표시를 지웠습니다");};
+$("rs2").onclick=()=>{$("dlg").classList.add("on");$("no").focus();};
+$("no").onclick=()=>$("dlg").classList.remove("on");
+$("yes").onclick=()=>{st=clone(DEF);save();syncForm();draw();$("dlg").classList.remove("on");window.scrollTo({top:0,behavior:"smooth"});toast("처음 상태로 돌아왔습니다");};
+$("fm").onclick=()=>{st.fs=Math.max(15,st.fs-1);save();draw();};
+$("fp").onclick=()=>{st.fs=Math.min(24,st.fs+1);save();draw();};
+syncForm();draw();
+}
+</script>
+</body>
+</html>
