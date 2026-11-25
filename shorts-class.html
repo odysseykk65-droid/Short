@@ -3,7 +3,7 @@
 <head><meta name="robots" content="noindex,nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[강의용] 내 사진으로 쇼츠 만들기</title>
+    <title>스마트폰 기능 AI 강사</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -22,7 +22,7 @@
     <!-- 상단 헤더 -->
     <header class="bg-gradient-to-r from-violet-700 via-indigo-700 to-blue-700 border-b-4 border-amber-400 py-5 px-4 sm:px-6 flex flex-wrap justify-between items-center gap-4 shadow-xl text-white">
         <h1 class="text-lg sm:text-2xl font-black flex items-center gap-2 drop-shadow-md">
-            🎬 내 사진으로 쇼츠 만들기 <span class="text-amber-300 text-sm bg-black/40 px-3 py-1 rounded-full font-black">한국인 전용 분산 에디션</span>
+            🎬 스마트폰 기능 AI 강사 <span class="text-amber-300 text-sm bg-black/40 px-3 py-1 rounded-full font-black">한국인 전용 분산 에디션</span>
         </h1>
         
         <!-- 상단 컨트롤 버튼 그룹 -->
@@ -274,7 +274,7 @@
                     <span class="bg-violet-700 text-white text-xs font-black px-3 py-1.5 rounded-full shadow">1단계</span>
                     <h2 class="text-base font-black text-violet-950">영상 주제 선택 또는 직접 입력</h2>
                 </div>
-                <textarea id="customTopicInput" rows="2" placeholder="(예: 며느리를 무시하던 시어머니의 통쾌한 최후 등)" class="w-full p-3.5 bg-violet-50 border-3 border-violet-400 rounded-2xl text-sm font-black text-slate-950 placeholder-slate-500 focus:ring-4 focus:ring-violet-400 focus:outline-none resize-none mb-3 shadow-inner"></textarea>
+                <textarea id="customTopicInput" rows="2" placeholder="(예: 아빠와 아들, 엄마의 된장찌개, 할머니의 손편지 → 가슴 뭉클한 감성 이야기로 만들어져요)" class="w-full p-3.5 bg-violet-50 border-3 border-violet-400 rounded-2xl text-sm font-black text-slate-950 placeholder-slate-500 focus:ring-4 focus:ring-violet-400 focus:outline-none resize-none mb-3 shadow-inner"></textarea>
                 <button onclick="generateCustomStory()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-base font-black py-3.5 px-4 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 border-2 border-emerald-300">
                     ✨ 나만의 주제 적용하기
                 </button>
@@ -429,7 +429,96 @@
         ];
 
         // 씬 번호와 전체 씬 개수에 따라 중복 없이 순차적으로 진행되는 서사 생성 함수
+        // ===== 💗 나만의 주제 = 감성 이야기 엔진 =====
+        let emoMode = false;
+        const EMO_PEOPLE = [
+            [/할머니/, '할머니', 4, 'Korean grandmother, ~78, silver hair in a bun, pink knit cardigan', '할머니'],
+            [/할아버지/, '할아버지', 4, 'Korean grandfather, ~80, white hair, gray flat cap, brown wool jacket', '할아버지'],
+            [/아빠|아버지|부친/, '아버지', 3, 'Korean father, early 70s, short gray hair, brown knit vest over a checkered shirt', '아버지'],
+            [/엄마|어머니|모친/, '어머니', 3, 'Korean mother, early 70s, short gray permed hair, lavender cardigan', '어머니'],
+            [/선생님|스승|은사/, '선생님', 3, 'retired Korean teacher, 70s, round glasses, tweed jacket', '선생님'],
+            [/시어머니/, '시어머니', 3, 'Korean mother-in-law, 70s, short permed hair, plum cardigan', '어머님'],
+            [/장인|장모/, '장모님', 3, 'Korean mother-in-law, 70s, short gray hair, beige cardigan', '장모님'],
+            [/남편/, '남편', 2, 'Korean husband, 60s, glasses, gray sweater', '여보'],
+            [/아내|부인|마누라/, '아내', 2, 'Korean wife, 60s, short brown hair, coral cardigan', '여보'],
+            [/친구|동창|단짝/, '친구', 2, 'Korean old friend, 60s, warm smile, olive jacket', '친구야'],
+            [/형|오빠/, '형', 2, 'Korean older brother, 50s, navy jacket', '형'],
+            [/언니|누나/, '언니', 2, 'Korean older sister, 50s, shoulder-length hair, cream sweater', '언니'],
+            [/동생/, '동생', 1, 'Korean younger sibling, 40s, denim shirt', '동생아'],
+            [/며느리/, '며느리', 1, 'Korean daughter-in-law, 40s, ponytail, light blue blouse', '얘야'],
+            [/사위/, '사위', 1, 'Korean son-in-law, 40s, white shirt, navy cardigan', '자네'],
+            [/제자/, '제자', 1, 'Korean former student, 40s, neat suit', '자네'],
+            [/아들/, '아들', 1, 'Korean son, 40s, navy cardigan over a white shirt', '아들아'],
+            [/딸/, '딸', 1, 'Korean daughter, 40s, long black hair, beige knit sweater', '우리 딸'],
+            [/손주|손자|손녀|아이|아기/, '손주', 0, 'Korean grandchild, ~8, bright yellow sweater', '우리 강아지']
+        ];
+        const EMO_PLACES = [
+            [/고향|시골|농사|밭|논/, 'a Korean countryside house yard with a persimmon tree and a wooden porch, golden afternoon light'],
+            [/병원|병실|입원|아프/, 'a quiet Korean hospital room with a window of soft morning light and flowers on the table'],
+            [/바다|바닷가|항구/, 'a calm Korean seaside at sunset with a small fishing boat'],
+            [/시장|장터/, 'a warm traditional Korean market alley with food stalls'],
+            [/기차|역|정류장|버스/, 'a small Korean rural train station platform at dusk'],
+            [/학교|교실|졸업/, 'an old Korean school classroom with wooden desks and afternoon sunlight'],
+            [/부엌|밥|김치|요리|도시락|된장/, 'a cozy Korean home kitchen with steam rising from a pot, warm light'],
+            [/명절|설날|추석|생일/, 'a Korean family home living room set for a holiday meal, warm lamps'],
+            [/결혼|웨딩/, 'a bright Korean wedding hall waiting room with flowers']
+        ];
+        function emoCast(topic) {
+            const found = [];
+            EMO_PEOPLE.forEach(p => { const m = p[0].exec(topic); if (m && !found.some(f => f.ko === p[1])) { const own = /^(아빠|엄마|아버지|어머니)$/.test(m[0]) ? m[0] : null; found.push({ idx: m.index, ko: own || p[1], age: p[2], en: p[3], call: own || p[4] }); } });
+            found.sort((a, b) => a.idx - b.idx);
+            let P, S;
+            if (found.length >= 2) { const a = found[0], b = found[1]; if (a.age > b.age) { S = a; P = b; } else { P = a; S = b; } }
+            else if (found.length === 1) { const a = found[0]; if (a.age >= 2) { S = a; P = { ko: '주인공', age: a.age === 2 ? 2 : 1, en: 'Korean adult child, 40s, navy cardigan over a white shirt', call: '' }; } else { P = a; S = { ko: '어머니', age: 3, en: 'Korean mother, early 70s, short gray permed hair, lavender cardigan', call: '어머니' }; } }
+            else { P = { ko: '주인공', age: 1, en: 'Korean woman, 40s, shoulder-length black hair, cream knit sweater', call: '' }; S = { ko: '어머니', age: 3, en: 'Korean mother, early 70s, short gray permed hair, lavender cardigan', call: '어머니' }; }
+            const peer = P.age === S.age;
+            const place = firstRule(EMO_PLACES, topic) || 'a cozy Korean home living room with old family photos on the wall, warm afternoon light';
+            return { P, S, peer, place };
+        }
+        // [화자, 존댓말(아랫사람→윗사람) 대사, 반말(또래) 대사]
+        const EMO_BEATS = [
+            { sp: 'P', up: ['{C}, 그때 기억나세요? 우리 참 행복했었는데.', '그 시절엔 몰랐어요. 그게 얼마나 큰 사랑이었는지.'], peer: ['그때 기억나? 우리 참 행복했었지.', '그 시절엔 몰랐어. 그게 얼마나 소중했는지.'],
+              a: 'sharing an old memory in a soft nostalgic flashback, faded warm film colors, gentle smiles', n: t => `"${t}", 오래된 추억 하나가 조용히 마음의 문을 엽니다.` },
+            { sp: 'S', up: ['바쁜데 뭐 하러 왔어. 나는 괜찮다.', '내 걱정은 말아라. 너만 잘 지내면 된다.'], peer: ['바쁜데 뭐 하러 왔어. 난 괜찮아.', '내 걱정은 하지 마. 너만 잘 지내면 돼.'],
+              a: 'the loved one smiling faintly while hiding loneliness, the protagonist quietly noticing the tired hands and gray hair', n: t => '괜찮다는 말 뒤에는, 오래 참아 온 그리움이 숨어 있었습니다.' },
+            { sp: 'P', up: ['왜 이제야 알았을까요… 늘 제 곁에 계셨는데.', '이렇게 많이 기다리고 계셨던 거예요?'], peer: ['왜 이제야 알았을까… 늘 내 곁에 있었는데.', '이렇게 많이 기다리고 있었던 거야?'],
+              a: 'the protagonist finding an old photo album and handwritten letters, eyes slowly filling with emotion', n: t => '빛바랜 사진 한 장에서, 주인공은 늘 곁에 있던 사랑을 깨닫습니다.' },
+            { sp: 'P', up: ['{C}, 이번엔 제가 옆에 있을게요.', '이제는 제가 손 꼭 잡아 드릴게요.'], peer: ['이번엔 내가 옆에 있을게.', '이제는 내가 손 꼭 잡아 줄게.'],
+              a: 'the protagonist sitting close beside the loved one and gently taking their hand, soft window light', n: t => '이번에는 주인공이 먼저, 조용히 손을 내밉니다.' },
+            { sp: 'S', up: ['고맙다… 그 말 한마디가 듣고 싶었다.', '네가 와 줘서, 정말 고맙다.'], peer: ['고마워… 그 말 한마디가 듣고 싶었어.', '와 줘서 정말 고마워.'],
+              a: 'the loved one with teary eyes and a trembling smile, holding the protagonist\'s hand tightly', n: t => '참아 왔던 마음이, 따뜻한 한마디에 눈물이 되어 흐릅니다.' },
+            { sp: 'P', up: ['사랑해요. 그동안 말 못 해서 죄송해요.', '고맙습니다. 저를 키워 주셔서.'], peer: ['고마워. 그동안 말 못 해서 미안해.', '늘 내 편이 되어 줘서, 정말 고마워.'],
+              a: 'the two embracing warmly with quiet tears, camera slowly circling them', n: t => '말로 다 하지 못한 마음이, 따뜻한 포옹으로 전해집니다.' }
+        ];
+        const EMO_END = { up: '함께 있는 지금 이 순간이, 저에게는 가장 큰 선물이에요.', peer: '함께 있는 지금 이 순간이, 우리에게 가장 큰 선물이야.',
+            a: 'the two smiling side by side in golden sunset light, the camera slowly pulling back to show the whole warm scene', n: t => `"${t}", 사랑은 늦어도 결코 늦지 않습니다. 오늘, 소중한 사람에게 마음을 전해 보세요.` };
+        const EMO_SHOT = ['close-up on their faces', 'close-up on their hands', 'wide shot of the room in warm light'];
+        const EMO_CONNECT = ['그리고', '그 순간', '조용히'];
+        function emoOn() { return emoMode && !seriesMode; }
+        function emoPos(index, total) { const isEnd = index === total; const pos = isEnd ? 6 : Math.floor((index - 1) * 6 / Math.max(1, total - 1)); const first = isEnd ? index : Math.floor((pos * (total - 1) + 5) / 6) + 1; return { isEnd, pos, k: isEnd ? 0 : index - first }; }
+        function emoStep(index, total, topic) {
+            const p = emoPos(index, total), t = topic;
+            if (p.isEnd) return { character: 'The protagonist and the loved one', action: EMO_END.a, narration: EMO_END.n(t) };
+            const b = EMO_BEATS[p.pos];
+            return { character: 'The protagonist and the loved one', action: b.a + (p.k > 0 ? ', ' + EMO_SHOT[(p.k - 1) % EMO_SHOT.length] : ''), narration: (p.k > 0 ? EMO_CONNECT[(p.k - 1) % EMO_CONNECT.length] + ' ' : '') + b.n(t) };
+        }
+        function emoDialogue(index, total, topic) {
+            const c = emoCast(topic), p = emoPos(index, total), reg = c.peer ? 'peer' : 'up';
+            let sp, line;
+            if (p.isEnd) { sp = 'P'; line = EMO_END[reg]; }
+            else { const b = EMO_BEATS[p.pos]; sp = b.sp; line = b[reg][p.k % 2]; }
+            line = line.replace('{C}, ', c.S.call && !/아$|야$|자네|얘야/.test(c.S.call) ? c.S.call + ', ' : '');
+            const who = sp === 'P' ? c.P : c.S;
+            return { role: sp === 'P' ? 'the protagonist' : 'the loved one', ko: who.ko, line, key: sp === 'P' ? 'P' : 'S', angry: false };
+        }
+        function emoFillCast(topic) {
+            const c = emoCast(topic);
+            [['castP', c.P.en], ['castA', c.S.en], ['castS', c.S.en + ' (the loved one)'], ['castSet', c.place], ['castT', '']].forEach(x => { const e = document.getElementById(x[0]); if (e) e.value = x[1]; });
+            protLabel = c.P.ko; antLabel = c.S.ko;
+        }
+        // ===== /감성 이야기 엔진 =====
         function getUniqueDistributedStep(catKey, index, total, topic) {
+            if (emoOn()) return emoStep(index, total, topic);
             let character = "A Korean protagonist";
             let action = "";
             let narration = "";
@@ -720,6 +809,7 @@
             } else { const e = document.getElementById('castT'); if (e) e.value = isOtherCat() ? deriveOtherCard(topic).T : ''; }
             protLabel = currentCategory === 'senior' ? '할머니' : '주인공';
             antLabel = currentCategory === 'senior' ? '청년' : '상대';
+            if (emoOn()) emoFillCast(topic);
         }
 
         function castRules(sty) {
@@ -1073,7 +1163,7 @@
             copyTextDirect(prompts[i].text, prompts[i].name + ' 프롬프트가 복사되었습니다!');
             markCopied(i);
         }
-        function coverNarration(t) { return `모두를 경악게 한 그 이야기, "${t}". 지금 그 서막이 열립니다.`; }
+        function coverNarration(t) { if (emoOn()) return `가슴 한편에 오래 남아 있던 이야기, "${t}". 지금부터 들려 드립니다.`; return `모두를 경악게 한 그 이야기, "${t}". 지금 그 서막이 열립니다.`; }
         function copyAllNarration() {
             let lines = ['[표지] ' + coverNarration(currentTopicTitle)];
             for (let i = 1; i <= currentScenesCount; i++) lines.push(`[${i}번 씬] ` + getUniqueDistributedStep(currentCategory, i, currentScenesCount, currentTopicTitle).narration);
@@ -1135,7 +1225,7 @@
             const THUMBS = [["그 순간 모두 얼어붙었다", "정체를 알고 소름"], ["증거가 나오자 끝났다", "녹화본 공개"], ["영상 퍼지자 난리났다", "박제당한 최후"], ["규정 한 줄에 무너졌다", "법대로 처리"], ["돌고 돌아 만났다", "인과응보 정석"], ["따뜻한 마음이 돌아왔다", "눈물 나는 반전"], ["다시 만났다", "눈물 나는 재회"], ["작은 기적이 일어났다", "모두가 울었다"]];
             const story = true;
             const thumb = story ? THUMBS[pickCheolgukType(t)] : ["결말이 충격적이다", "끝까지 보세요"];
-            const tags = ['#shorts', '#쇼츠', '#사이다', '#반전', '#통쾌'].concat(seriesMode ? ['#시리즈'] : []);
+            const tags = (emoOn() ? ['#shorts', '#쇼츠', '#감동', '#가족', '#눈물주의'] : ['#shorts', '#쇼츠', '#사이다', '#반전', '#통쾌']).concat(seriesMode ? ['#시리즈'] : []);
             if (cat === 'cheolguk') tags.push('#참교육', '#인과응보');
             else if (cat === 'senior') tags.push('#시니어', '#키오스크', '#어르신', '#디지털');
             else tags.push('#이야기');
@@ -1144,9 +1234,9 @@
             const last = getUniqueDistributedStep(cat, currentScenesCount, currentScenesCount, t).narration;
             const desc = `${first}\n\n${last}\n\n구독과 좋아요는 큰 힘이 됩니다 🙏\n※ 이 영상은 창작된 이야기로, 실제 인물·사건과 무관합니다.\n\n${tags.join(' ')}`;
             return [
-                { label: '제목 후보 1', text: `[사이다] ${sh(t, 40)}${seriesMode ? ' [' + seriesEp + '화]' : ''}` },
-                { label: '제목 후보 2', text: `${sh(t, 34)}… 끝까지 보면 소름 #shorts` },
-                { label: '제목 후보 3', text: `결말이 통쾌합니다 | ${sh(t, 30)}` },
+                { label: '제목 후보 1', text: `${emoOn() ? '[감동]' : '[사이다]'} ${sh(t, 40)}${seriesMode ? ' [' + seriesEp + '화]' : ''}` },
+                { label: '제목 후보 2', text: `${sh(t, 34)}… 끝까지 보면 ${emoOn() ? '눈물' : '소름'} #shorts` },
+                { label: '제목 후보 3', text: `${emoOn() ? '마지막에 눈물 납니다' : '결말이 통쾌합니다'} | ${sh(t, 30)}` },
                 { label: '썸네일 문구', text: thumb.join('\n') },
                 { label: '설명란', text: desc },
                 { label: '해시태그', text: tags.join(' ') }
@@ -1364,6 +1454,7 @@
         const ROLE_EN_OTHER = { P: 'the main character', A: 'the second character', S: 'a bystander' };
         const DLG_CONNECT = ["그리고요, ", "그런데, ", "그래서요, ", "저기, "];
         function getDialogue(index, total, topic) {
+            if (emoOn()) return emoDialogue(index, total, topic);
             if (themeActive(topic)) return themeDialogue(index, total, topic);
             const srd = seriesMode && !seriesWarm();
             let ovd;
@@ -1731,6 +1822,7 @@
         // ===== /추가 기능 모음 =====
 
         function pickCheolgukType(topic) {
+            if (emoOn()) return 5;
             if (seriesMode) return seriesArcFor(topic, seriesEp);
             if (cheolgukType !== 'auto') return Number(cheolgukType);
             if (CHEOLGUK_TYPE_MAP[topic] !== undefined) return CHEOLGUK_TYPE_MAP[topic];
@@ -1927,6 +2019,7 @@
         function filterTopics() { renderTopicList(); }
 
         function selectTopic(title) {
+            emoMode = false;
             currentTopicTitle = title.replace(/\s*\[\d+\]$/, '').replace(/^\d+\.\s*/, '');
             document.getElementById('activeTitle').innerText = currentTopicTitle;
             document.getElementById('customTopicInput').value = currentTopicTitle;
@@ -1980,10 +2073,12 @@
             let val = document.getElementById('customTopicInput').value.trim();
             if(!val) { alert('주제를 입력해주세요!'); return; }
             currentTopicTitle = val;
+            emoMode = true;
             document.getElementById('activeTitle').innerText = val;
             fillCast();
+            if (typeof setBgm === 'function') setBgm('따스한 감성 발라드');
             updateInterface();
-            alert('✨ 나만의 주제가 적용되었습니다!');
+            alert('💗 나만의 주제가 감성 이야기로 만들어졌습니다!\n(추억 → 그리움 → 깨달음 → 다가감 → 고백 → 포옹 → 따뜻한 결말)');
         }
 
         function setScenes(count) {
@@ -2067,7 +2162,7 @@
                     ? "w-full bg-gradient-to-r from-rose-700 to-pink-700 hover:from-rose-800 hover:to-pink-800 text-white text-sm sm:text-base font-black py-4 px-5 rounded-3xl shadow-xl transition text-center mb-3.5 flex flex-col items-center justify-center gap-1 border-3 border-amber-300" 
                     : "w-full bg-gradient-to-r from-indigo-700 to-violet-700 hover:from-indigo-800 hover:to-violet-800 text-white text-sm sm:text-base font-black py-4 px-5 rounded-3xl shadow-xl transition text-center mb-3.5 flex flex-col items-center justify-center gap-1 border-3 border-indigo-300";
                 
-                let btnTitle = isEnding ? `🎬 [${i}번 씬 - ★ 사이다 결말] 영문 프롬프트 복사${lenTag(scenePromptText)}` : `🎬 [${i}번 씬] 고유 서사 영상 프롬프트 복사${lenTag(scenePromptText)}`;
+                let btnTitle = isEnding ? `🎬 [${i}번 씬 - ★ ${emoOn() ? '감동 결말' : '사이다 결말'}] 영문 프롬프트 복사${lenTag(scenePromptText)}` : `🎬 [${i}번 씬] 고유 서사 영상 프롬프트 복사${lenTag(scenePromptText)}`;
 
                 let b = document.createElement('button');
                 if (copiedIdx.has(i)) btnTitle = '✅ ' + btnTitle;
@@ -2121,7 +2216,7 @@
                 
                 sceneDiv.innerHTML = `
                     <div class="flex justify-between items-center border-b-2 pb-3 ${isEnding ? 'border-rose-300' : 'border-indigo-300'}">
-                        <span class="text-base sm:text-lg font-black ${isEnding ? 'text-rose-950' : 'text-indigo-950'}">🎬 [${i}번째 씬${isEnding ? ' - ★ 통쾌한 사이다 결말' : ''}] 고유 서사 연출 씬</span>
+                        <span class="text-base sm:text-lg font-black ${isEnding ? 'text-rose-950' : 'text-indigo-950'}">🎬 [${i}번째 씬${isEnding ? (emoOn() ? ' - ★ 가슴 뭉클한 감동 결말' : ' - ★ 통쾌한 사이다 결말') : ''}] 고유 서사 연출 씬</span>
                     </div>
                     <div>
                         <span class="text-xs font-black ${isEnding ? 'text-rose-950' : 'text-indigo-950'} block mb-1.5">🚫 [화면 자막 없음 - 한국인 주연 순수 영상 프롬프트]</span>
