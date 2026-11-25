@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>강의 안내 영상 포스터 생성기 (5가지 버전)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:18px;color:#14213D;background:#EAF4FF;-webkit-text-size-adjust:100%}
+header{background:linear-gradient(90deg,#2F80ED,#27AE9A);color:#fff;padding:18px 16px;text-align:center}
+header h1{margin:0;font-size:1.45em}
+header p{margin:6px 0 0;font-size:.95em}
+.wrap{max-width:1180px;margin:16px auto;padding:0 12px;display:grid;grid-template-columns:minmax(0,1fr) 470px;gap:18px;align-items:start}
+@media(max-width:920px){.wrap{grid-template-columns:minmax(0,1fr)}.right{position:static!important}}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(20,33,61,.12)}
+.card h2{margin:0 0 10px;font-size:1.15em}
+.ic{display:inline-block;width:38px;text-align:center;margin-right:6px}
+.mini{margin:6px 0 10px;padding-left:26px;line-height:1.7}
+.no{display:inline-block;background:#14213D;color:#FFE45C;border-radius:50%;width:34px;height:34px;line-height:34px;text-align:center;margin-right:8px;font-weight:700}
+label{display:block;font-weight:700;margin:10px 0 4px}
+input[type=text],textarea,select,input[type=date]{width:100%;font-size:1em;padding:12px;border:2px solid #9DB8E6;border-radius:12px;font-family:inherit;color:#14213D;background:#fff}
+textarea{min-height:90px;resize:vertical}
+input[type=range]{width:100%;height:36px}
+input[type=color]{width:100%;height:50px;border:2px solid #9DB8E6;border-radius:12px;padding:2px;background:#fff}
+input[type=file]{width:100%;font-size:1em;padding:10px;border:2px dashed #2F80ED;border-radius:12px;background:#F3F8FF}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.hint{font-size:.85em;color:#4A5A78;margin:4px 0 0}
+button{font-family:inherit;font-size:1em;font-weight:700;border:0;border-radius:14px;padding:14px 16px;cursor:pointer;min-height:52px}
+.big{width:100%;background:#E8590C;color:#fff;font-size:1.1em;margin-top:8px}
+.big2{width:100%;background:#2F80ED;color:#fff;font-size:1.1em;margin-top:8px}
+.gray{background:#E3EAF6;color:#14213D}
+.pre{display:flex;flex-wrap:wrap;gap:8px}
+.pre button{width:62px;height:62px;min-height:62px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 2px #9DB8E6;padding:0}
+.pre button.on{box-shadow:0 0 0 4px #14213D}
+.right{position:sticky;top:8px}
+.vers{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
+.vers button{padding:4px;min-height:0;background:#fff;border:3px solid #C9D7EE;border-radius:12px}
+.vers button.on{border-color:#E8590C;background:#FFF1E6}
+.vers canvas{width:100%;display:block;border-radius:8px}
+.vers span{display:block;font-size:.8em;margin-top:2px}
+#cv{width:100%;max-width:440px;display:block;margin:0 auto;border-radius:14px;box-shadow:0 4px 14px rgba(20,33,61,.3);background:#fff}
+#pr{white-space:pre-wrap;background:#F3F8FF;border:2px solid #9DB8E6;border-radius:12px;padding:12px;font-size:.92em;line-height:1.55;max-height:340px;overflow:auto}
+.cnt{font-size:.9em;margin:6px 0}
+.warn{color:#B3261E;font-weight:700}
+.ok{color:#1B7F4B;font-weight:700}
+details summary{font-weight:700;cursor:pointer;padding:8px 0}
+.steps{background:#FFF9DB;border-radius:14px;padding:12px 14px;margin-bottom:14px;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#14213D;color:#fff;padding:14px 22px;border-radius:30px;font-weight:700;opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:90%}
+.toast.on{opacity:1}
+.chk{display:flex;gap:10px;align-items:center;margin-top:10px;font-weight:700}
+.chk input{width:26px;height:26px}
+</style></head><body>
+<header><h1>📣 강의 안내 영상 포스터 생성기</h1><p>사진·제목·일자·장소·시간·멘트만 넣으면 포스터가 만들어지고, 유튜브 크리에이트용 프롬프트까지 나옵니다 (PC·모바일 겸용)</p></header>
+<div class="wrap">
+<div class="left">
+<div class="steps"><b style="font-size:1.1em">딱 3단계만 하세요</b><br><b>1단계</b> 아래 칸 입력 · 버전과 색 고르기<br><b>2단계</b> 프롬프트 복사 → 크리에이트에 <b>내 사진 한 장</b> 올리고 붙여넣기 → 만든 영상 저장<br><b>3단계</b> 그 영상을 올리고 「완성 영상 만들기」 → 저장</div>
+
+<div class="card"><h2><span class="ic">📷</span>내 사진</h2>
+<input type="file" id="ph" accept="image/*">
+<p class="hint">미리보기용입니다. 완성 영상에는 크리에이트가 만든 말하는 영상이 이 자리에 들어갑니다. 사진은 이 기기 안에서만 쓰입니다.</p>
+<label for="z">사진 크기 (확대)</label><input type="range" id="z" min="100" max="300" step="5">
+<div class="row2"><div><label for="px">사진 좌우</label><input type="range" id="px" min="-100" max="100" step="5"></div><div><label for="py">사진 위아래</label><input type="range" id="py" min="-100" max="100" step="5"></div></div>
+</div>
+
+<div class="card"><h2><span class="ic">✏</span>제목</h2>
+<input type="text" id="f_title" placeholder="예: 내 사진으로 쇼츠 만들기" maxlength="40">
+<p class="hint">띄어쓰기에서 두 줄로 나뉘어 첫 줄은 기본색, 둘째 줄은 포인트색으로 나옵니다.</p></div>
+
+<div class="card"><h2><span class="ic">️</span>일자</h2>
+<input type="date" id="d_pick"><label for="f_date">포스터에 쓰이는 글씨 (고쳐 쓸 수 있어요)</label>
+<input type="text" id="f_date" placeholder="예: 11월 26일(목)" maxlength="30"></div>
+
+<div class="card"><h2><span class="ic">📅</span>장소</h2>
+<input type="text" id="f_place" placeholder="예: 의정부시 교육재단 3층 디지털 세미나실" maxlength="50"></div>
+
+<div class="card"><h2><span class="ic">📍</span>시간</h2>
+<div class="row2"><div><label for="t1">시작</label><input type="time" id="t1" style="width:100%;font-size:1em;padding:12px;border:2px solid #9DB8E6;border-radius:12px"></div><div><label for="t2">끝</label><input type="time" id="t2" style="width:100%;font-size:1em;padding:12px;border:2px solid #9DB8E6;border-radius:12px"></div></div>
+<label for="f_time">포스터에 쓰이는 글씨 (고쳐 쓸 수 있어요)</label>
+<input type="text" id="f_time" placeholder="예: 16:00 ~ 18:00 (2시간)" maxlength="30"></div>
+
+<div class="card"><h2><span class="ic">⏰</span>멘트 (강사가 말할 문장)</h2>
+<textarea id="f_say" placeholder="예: 수강생 여러분, 11월 26일 목요일 오후 4시, 의정부 교육재단 3층 디지털 세미나실에서 만나요." maxlength="120"></textarea>
+<div class="cnt" id="saycnt"></div>
+<div class="chk"><input type="checkbox" id="c_say"><label for="c_say" style="margin:0">멘트를 포스터 아래에 글씨로도 넣기</label></div>
+<p class="hint">비워 두면 일자·시간·장소로 멘트를 만들어 드립니다.</p></div>
+
+<div class="card"><h2>🎨 배경색 바꾸기</h2>
+<div class="pre" id="pre"></div>
+<div class="row3"><div><label for="k1">위쪽 색</label><input type="color" id="k1"></div><div><label for="k2">아래쪽 색</label><input type="color" id="k2"></div><div><label for="ka">제목 둘째 줄색</label><input type="color" id="ka"></div></div>
+<label for="ktx">글자색 (배경 위 글씨)</label>
+<select id="ktx"><option value="auto">자동 (배경에 맞춰)</option><option value="w">흰색</option><option value="n">진한 남색</option></select>
+<p class="hint">동그라미를 누르면 색 조합이 바뀝니다. 직접 색을 고를 수도 있습니다.</p></div>
+
+<div class="card"><details><summary>＋ 더 넣기 (선택: 강사 이름, 부제, 강의 내용, 준비물 등)</summary>
+<label for="x_badge">위쪽 작은 글씨</label><input type="text" id="x_badge" maxlength="12" placeholder="예: 강의 안내">
+<label for="x_name">강사 이름</label><input type="text" id="x_name" maxlength="12" placeholder="예: 이한경">
+<label for="x_sub">부제 (제목 아래 띠)</label><input type="text" id="x_sub" maxlength="40" placeholder="예: 쇼츠 대본 생성기로 8장면 영상 만들기">
+<label for="x_content">강의 내용</label><textarea id="x_content" maxlength="120" placeholder="예: 쇼츠 대본을 만들고, 8개 장면을 영상으로 만든 뒤 이어 붙여 편집합니다."></textarea>
+<label for="x_prep">준비물</label><input type="text" id="x_prep" maxlength="40" placeholder="예: 스마트폰(충전된 상태)">
+<label for="x_bottom">포스터 아래 한 줄 (따로 쓰고 싶을 때)</label><input type="text" id="x_bottom" maxlength="50" placeholder="비우면 멘트가 들어갑니다">
+</details></div>
+
+<div class="card"><h2>🎙 크리에이트 설정</h2>
+<details><summary>고급: 다른 프롬프트 방식</summary><label for="pm">프롬프트 방식</label><select id="pm"><option value="3">① 말하는 영상만 만들고 → 아래에서 포스터와 합치기 (권장 · 글씨가 정확)</option><option value="1">② 완성 포스터 한 장만 올리기 (크리에이트가 바꿀 수 있음)</option><option value="2">③ 포스터 + 내 사진 두 장 (크리에이트가 바꿀 수 있음)</option><option value="0">④ 내 사진만 (화면을 프롬프트로 설명, 글씨가 깨질 수 있음)</option></select></details>
+<div class="row2"><div><label for="voice">강사 성별·목소리</label><select id="voice"><option value="0">차분한 중년 남성</option><option value="1">차분한 중년 여성</option></select></div>
+<div><label for="music">배경음악</label><select id="music"><option value="0">넣기</option><option value="1">빼기 (음성만)</option></select></div></div></div>
+
+<div class="card"><button class="gray" id="sample" style="width:100%">📋 예시(강의 안내)로 채우기</button>
+<button class="gray" id="wipe" style="width:100%;margin-top:8px">🧹 싹 지우기</button></div>
+</div>
+
+<div class="right">
+<div class="card"><h2>추천 5가지 버전</h2>
+<div class="vers" id="vers"></div>
+<canvas id="cv" width="1080" height="1920"></canvas></div>
+<div class="card"><h2>2단계 · 크리에이트에서 영상 만들기</h2>
+<div class="row2"><button class="gray" id="mA" type="button">가) 사진 한 장<br><small>→ 3단계에서 합치기</small></button><button class="gray" id="mB" type="button">나) 포스터 + 사진<br><small>두 장을 차례로 올리기</small></button></div>
+<div id="boxA"><ol class="mini"><li>아래 <b>프롬프트 복사</b></li><li>유튜브 크리에이트에 <b>내 사진 한 장</b> 올리고 붙여넣기</li><li>만든 영상을 <b>휴대폰에 저장</b></li></ol></div>
+<div id="boxB" style="display:none"><ol class="mini"><li>마음에 드는 <b>포스터 1개</b>를 위에서 고르고 <b>갤러리에 저장</b></li><li><b>강사 멘트</b>를 텍스트로 저장 (또는 복사)</li><li>크리에이트에 <b>① 포스터 → ② 내 사진</b> 순서로 올리기</li><li>아래 <b>프롬프트 복사</b>해서 붙여넣기</li></ol>
+<button class="big2" id="dl" type="button">📥 포스터 갤러리에 저장</button>
+<button class="big2" id="sh" type="button" style="display:none">📤 휴대폰에서 바로 저장·공유</button>
+<p class="hint">저장한 포스터는 갤러리의 「다운로드」 앨범(없으면 내 파일 → 다운로드)에 있습니다. 안 저장되고 그림이 열리면 길게 눌러 「이미지 저장」을 선택하세요.</p>
+<div class="row2"><button class="big2" id="txt" type="button" style="background:#7B5BD6">📝 멘트 텍스트 저장</button><button class="big2" id="cs" type="button" style="background:#7B5BD6">📋 멘트만 복사</button></div>
+<p class="hint">※ 크리에이트가 포스터를 바꿔 버리면 「가) 사진 한 장」 방식을 쓰세요.</p></div>
+<button class="big" id="cp">📋 프롬프트 복사</button>
+<details><summary>프롬프트 내용 보기</summary><div id="pr"></div><div class="cnt" id="prcnt"></div></details>
+<p class="hint" id="prhint"></p></div>
+<div class="card" id="card3"><h2>3단계 · 영상 합치기 → 완성</h2>
+<input type="file" id="vf" accept="video/*">
+<div class="cnt" id="vst"></div>
+<button class="big" id="vrec" disabled>🎬 완성 영상 만들기 (영상 길이만큼 걸려요)</button>
+<button class="gray" id="vpv" disabled style="width:100%;margin-top:8px">▶ 먼저 미리보기 (소리 나옴)</button>
+<div id="vout"></div>
+</div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+var W=1080,H=1920,KEY="poster1125",KP="poster1125p";
+var FONT='"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo","Nanum Gothic",sans-serif';
+var MC={};function mt(c,t){var k=c.font+"|"+t,v=MC[k];if(v===undefined){v=c.measureText(t).width;MC[k]=v}return v}
+function F(s,w){return(w||"bold")+" "+s+"px "+FONT}
+function $(i){return document.getElementById(i)}
+var PRE=[["초록→파랑","#52D6A2","#5E86F0","#FFE45C","w"],["분홍→보라","#FF8FB8","#8E6BF2","#FFF06A","w"],["주황→노랑","#FF9F43","#FFD93D","#C62828","n"],["하늘→민트","#4DB8FF","#5EE8C0","#C2185B","n"],["빨강→주황","#F25C5C","#FFA94D","#FFF06A","w"],["연두→노랑","#8FE04F","#FFE66D","#D9480F","n"],["보라→파랑","#8E7CF3","#4A90F0","#FFE45C","w"],["코랄→핑크","#FF7E7E","#FF9ED2","#FFF06A","w"]];
+var VN=["카드형","큰 사진형","쇼츠 표지형","동그라미형","초대장형"];
+var SAMPLE={title:"내 사진으로 쇼츠 만들기",date:"11월 26일(목)",place:"의정부시 교육재단 3층 디지털 세미나실",time:"16:00 ~ 18:00 (2시간)",say:"수강생 여러분, 11월 26일 목요일 오후 4시, 의정부 교육재단 3층 디지털 세미나실에서 만나요.",badge:"강의 안내",name:"이한경",sub:"쇼츠 대본 생성기로 8장면 영상 만들기",content:"쇼츠 대본 생성기로 대본을 만들고, 8개 장면을 유튜브 크리에이트로 영상으로 만든 뒤 이어 붙여 편집하고 공유합니다.",prep:"스마트폰(충전된 상태)",bottom:"수강생 여러분, 시간에 맞춰 편하게 오세요"};
+var BLANK={title:"",date:"",place:"",time:"",say:"",badge:"",name:"",sub:"",content:"",prep:"",bottom:""};
+function base(){return{ver:0,pre:0,k1:PRE[0][1],k2:PRE[0][2],ka:PRE[0][3],ktx:"auto",saybot:true,z:100,px:0,py:-60,voice:0,music:0,pm:3}}
+var S=Object.assign(base(),SAMPLE);
+var PH=null,VID=null,VIDON=false;
+function load(){try{var d=JSON.parse(localStorage.getItem(KEY)||"null");if(d)Object.assign(S,d)}catch(e){}try{var p=localStorage.getItem(KP);if(p)setPhoto(p,true)}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function toast(m){var t=$("toast");t.textContent=m;t.className="toast on";clearTimeout(toast.h);toast.h=setTimeout(function(){t.className="toast"},2200)}
+/* ---------- 도구 ---------- */
+function hx(h){h=h.replace("#","");return[parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]}
+function mix(a,b,t){var x=hx(a),y=hx(b);return"rgb("+Math.round(x[0]+(y[0]-x[0])*t)+","+Math.round(x[1]+(y[1]-x[1])*t)+","+Math.round(x[2]+(y[2]-x[2])*t)+")"}
+function lum(h){var c=hx(h);return(0.299*c[0]+0.587*c[1]+0.114*c[2])/255}
+function txc(){if(S.ktx==="w")return"#FFFFFF";if(S.ktx==="n")return"#14213D";return lum(mix2())>0.62?"#14213D":"#FFFFFF"}
+function mix2(){var a=hx(S.k1),b=hx(S.k2),m=[0,1,2].map(function(i){return Math.round((a[i]+b[i])/2)});return"#"+m.map(function(v){return("0"+v.toString(16)).slice(-2)}).join("")}
+function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function wrap(c,t,mw){var out=[];String(t).split("\n").forEach(function(p){var ws=p.split(" "),ln="";ws.forEach(function(w){var tt=ln?ln+" "+w:w;if(mt(c,tt)<=mw){ln=tt}else{if(ln)out.push(ln);if(mt(c,w)>mw){var s="";for(var i=0;i<w.length;i++){var t2=s+w[i];if(mt(c,t2)>mw&&s){out.push(s);s=w[i]}else s=t2}ln=s}else ln=w}});out.push(ln)});return out}
+function fit(c,t,mw,ml,st,mn,mh){var s=st,l;for(;;){c.font=F(s);l=wrap(c,t,mw);if((l.length<=ml&&(!mh||l.length*s*1.25<=mh))||s<=mn)break;s-=2}return{s:s,l:l}}
+function put(c,o,x,y,al,fill,lh){c.textAlign=al;c.textBaseline="top";c.fillStyle=fill;c.font=F(o.s);lh=lh||1.25;o.l.forEach(function(s,i){c.fillText(s,x,y+i*o.s*lh)});return y+o.l.length*o.s*lh}
+function tH(o,lh){return o.l.length*o.s*(lh||1.25)}
+function shadow(c,on){if(on){c.shadowColor="rgba(0,30,70,.35)";c.shadowBlur=10;c.shadowOffsetY=4}else{c.shadowColor="transparent";c.shadowBlur=0;c.shadowOffsetY=0}}
+function T(v,ph){return v&&v.trim()?v.trim():ph}
+function parts(t){t=T(t,"제목을 입력하세요");if(t.indexOf("\n")>=0){var a=t.split("\n");return[a[0],a.slice(1).join(" ")]}var w=t.split(" ").filter(Boolean);if(w.length>=2){var best=1,bd=1e9;for(var i=1;i<w.length;i++){var L=w.slice(0,i).join(" ").length,R=w.slice(i).join(" ").length,d=Math.abs(L-R);if(d<bd){bd=d;best=i}}return[w.slice(0,best).join(" "),w.slice(best).join(" ")]}if(t.length>6){var h=Math.ceil(t.length/2);return[t.slice(0,h),t.slice(h)]}return[t,""]}
+function bg(c,v){var g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,S.k1);g.addColorStop(1,S.k2);c.fillStyle=g;c.fillRect(0,0,W,H);c.fillStyle="rgba(255,255,255,.16)";var cs=[[[930,110,210],[70,330,46],[150,170,16],[1000,1500,150],[60,1760,90]],[[980,60,160],[80,1100,80]],[[100,80,120],[1000,1800,170]],[[540,380,420],[60,1700,100],[1020,1650,70]],[[200,200,170],[900,1700,200]]][v];cs.forEach(function(a){c.beginPath();c.arc(a[0],a[1],a[2],0,7);c.fill()})}
+function photo(c,x,y,w,h,r,bw,circle){c.save();if(circle){c.beginPath();c.arc(x+w/2,y+h/2,w/2,0,7);c.closePath()}else rr(c,x,y,w,h,r);c.clip();var SR=(VIDON&&VID&&VID.videoWidth)?VID:PH;if(SR){var iw=SR===VID?VID.videoWidth:SR.naturalWidth,ih=SR===VID?VID.videoHeight:SR.naturalHeight,s=Math.max(w/iw,h/ih)*S.z/100,dw=iw*s,dh=ih*s,dx=x+(w-dw)/2-(S.px/100)*((dw-w)/2),dy=y+(h-dh)/2-(S.py/100)*((dh-h)/2);c.drawImage(SR,dx,dy,dw,dh)}else{var g=c.createLinearGradient(0,y,0,y+h);g.addColorStop(0,"#EAF2FF");g.addColorStop(1,"#C5D8F7");c.fillStyle=g;c.fillRect(x,y,w,h);c.fillStyle="#9DB8E6";var m=Math.min(w,h);c.beginPath();c.arc(x+w/2,y+h*.38,m*.17,0,7);c.fill();c.beginPath();c.ellipse(x+w/2,y+h*.78,m*.33,m*.28,0,Math.PI,0);c.fill();c.fillStyle="#5F7DB5";c.font=F(Math.max(30,m*.07));c.textAlign="center";c.textBaseline="middle";c.fillText("내 사진",x+w/2,y+h*.93)}c.restore();if(bw){c.save();if(circle){c.beginPath();c.arc(x+w/2,y+h/2,w/2,0,7)}else rr(c,x,y,w,h,r);c.lineWidth=bw;c.strokeStyle="#fff";c.stroke();c.restore()}}
+function pill(c,x,y,w,h,f){rr(c,x,y,w,h,h/2);c.fillStyle=f;c.fill()}
+function saytxt(){if(S.bottom&&S.bottom.trim())return S.bottom.trim();if(S.saybot)return spoken();return""}
+function spoken(){if(S.say&&S.say.trim())return S.say.trim();var d=S.date.replace(/\(([월화수목금토일])\)/,function(m,w){return" "+w+"요일"}),tm=S.time.match(/^\s*(\d{1,2}):(\d{2})/),ts="";if(tm){var h=+tm[1],mi=+tm[2];ts=(h<12?"오전 ":"오후 ")+(h%12===0?12:h%12)+"시"+(mi?" "+mi+"분":"")}return("수강생 여러분, "+[d.trim(),ts].filter(Boolean).join(" ")+(S.place?", "+S.place.trim()+"에서":"")+" 만나요.").replace(/\s+/g," ")}
+/* 공통: 정보 카드 */
+function infoCard(c,x,y,w,h,label,val,col,ph){c.save();c.shadowColor="rgba(20,33,61,.18)";c.shadowBlur=14;c.shadowOffsetY=4;rr(c,x,y,w,h,28);c.fillStyle="#fff";c.fill();c.restore();c.save();rr(c,x,y,w,h,28);c.clip();c.fillStyle=col;c.fillRect(x,y,w,12);c.restore();c.font=F(36);c.textAlign="left";c.textBaseline="top";c.fillStyle=col;c.fillText(label,x+28,y+26);var o=fit(c,T(val,ph),w-56,3,60,32,h-90);var th=tH(o);put(c,o,x+28,y+72+Math.max(0,(h-72-24-th)/2),"left",val&&val.trim()?"#14213D":"#9AA8C2")}
+function box(c,x,y,w,h,label,txt,col,sz){c.save();c.shadowColor="rgba(20,33,61,.18)";c.shadowBlur=12;c.shadowOffsetY=3;rr(c,x,y,w,h,26);c.fillStyle="#fff";c.fill();c.restore();c.save();rr(c,x,y,w,h,26);c.clip();c.fillStyle=col;c.fillRect(x,y,w,10);c.restore();c.font=F(32);c.textAlign="left";c.textBaseline="top";c.fillStyle=col;c.fillText(label,x+26,y+20);var o=fit(c,txt,w-52,3,sz,24,h-72);put(c,o,x+26,y+68,"left","#14213D",1.3)}
+function titleBlock(c,x,y,mw,start,al,c1,c2,stroke,sw1){var p=parts(S.title),out=y;[p[0],p[1]].forEach(function(t,i){if(!t)return;var o=fit(c,t,mw,1,start,40);c.font=F(o.s);c.textAlign=al;c.textBaseline="top";if(stroke){c.lineJoin="round";c.lineWidth=sw1;c.strokeStyle=stroke[i];o.l.forEach(function(s,j){c.strokeText(s,x,out+j*o.s*1.2)})}c.fillStyle=i?c2:c1;o.l.forEach(function(s,j){c.fillText(s,x,out+j*o.s*1.2)});out+=o.l.length*o.s*1.2});return out}
+/* ---------- 버전 1: 카드형 ---------- */
+function v1(c){bg(c,0);var tx=txc(),nm=S.name&&S.name.trim();if(S.badge&&S.badge.trim()){c.font=F(34);var bw=mt(c,S.badge)+70;pill(c,W-60-bw,56,bw,70,"#fff");c.fillStyle="#14213D";c.textAlign="center";c.textBaseline="middle";c.fillText(S.badge,W-60-bw/2,92)}
+shadow(c,tx==="#FFFFFF");var y=titleBlock(c,W-60,150,900,128,"right",tx,S.ka);shadow(c,false);
+if(S.sub&&S.sub.trim()){var so=fit(c,S.sub,860,1,36,22);c.font=F(so.s);var sw=mt(c,so.l[0])+60;pill(c,W-60-sw,y+10,sw,68,"#165D6B");c.fillStyle="#fff";c.textAlign="center";c.textBaseline="middle";c.fillText(so.l[0],W-60-sw/2,y+44);y+=92}
+var top=Math.max(y+20,480),yb=H-44,say=saytxt();
+if(say){var o=fit(c,say,960,2,42,28);yb-=tH(o);put(c,o,W/2,yb,"center",tx);yb-=22}
+if(S.prep&&S.prep.trim()){yb-=96;box(c,60,yb,960,96,"",S.prep,"#2F7FE0",34);yb-=22}
+if(S.content&&S.content.trim()){yb-=250;box(c,60,yb,960,250,"강의 내용",S.content,"#1B9E8A",34);yb-=22}
+var A=yb-top,pillH=nm?90:0,ph=A-pillH,gap=22,ch=(A-2*gap)/3;
+infoCard(c,60,top,500,ch,"날짜",S.date,"#F08A24","일자를 입력하세요");infoCard(c,60,top+ch+gap,500,ch,"시간",S.time,"#E8508C","시간을 입력하세요");infoCard(c,60,top+2*(ch+gap),500,ch,"장소",S.place,"#7B5BD6","장소를 입력하세요");
+photo(c,590,top,430,ph,34,8);
+if(nm){var g=c.createLinearGradient(590,0,1020,0);g.addColorStop(0,"#1B9E8A");g.addColorStop(1,"#2F7FE0");pill(c,590,top+ph+18,430,72,g);c.fillStyle="#fff";c.font=F(38);c.textAlign="center";c.textBaseline="middle";c.fillText("강사 "+S.name.trim(),805,top+ph+54)}}
+/* prep 박스 라벨 보정: 준비물 라벨 */
+var _box=box;box=function(c,x,y,w,h,label,txt,col,sz){if(!label&&h===96){c.save();c.shadowColor="rgba(20,33,61,.18)";c.shadowBlur=12;c.shadowOffsetY=3;rr(c,x,y,w,h,26);c.fillStyle="#fff";c.fill();c.restore();c.save();rr(c,x,y,w,h,26);c.clip();c.fillStyle=col;c.fillRect(x,y,w,10);c.restore();c.font=F(32);c.textAlign="left";c.textBaseline="middle";c.fillStyle=col;c.fillText("준비물",x+26,y+54);var o=fit(c,txt,w-180,1,34,22);c.font=F(o.s);c.fillStyle="#14213D";c.fillText(o.l[0],x+150,y+54)}else _box(c,x,y,w,h,label,txt,col,sz)};
+/* ---------- 버전 2: 큰 사진형 ---------- */
+function v2(c){bg(c,1);var tx=txc(),nm=S.name&&S.name.trim();photo(c,0,0,W,1090,0,0);var m=mix(S.k1,S.k2,1090/H).match(/\d+/g).map(Number);var g=c.createLinearGradient(0,640,0,1090);g.addColorStop(0,"rgba("+m.join(",")+",0)");g.addColorStop(.85,"rgba("+m.join(",")+",.96)");g.addColorStop(1,"rgb("+m.join(",")+")");c.fillStyle=g;c.fillRect(0,640,W,450);
+if(S.badge&&S.badge.trim()){c.font=F(34);var bw=mt(c,S.badge)+70;pill(c,40,44,bw,70,"#fff");c.fillStyle="#14213D";c.textAlign="center";c.textBaseline="middle";c.fillText(S.badge,40+bw/2,80)}
+if(nm){c.font=F(34);var nw=mt(c,"강사 "+S.name.trim())+70;pill(c,W-40-nw,44,nw,70,"#14213D");c.fillStyle="#FFE45C";c.textAlign="center";c.textBaseline="middle";c.fillText("강사 "+S.name.trim(),W-40-nw/2,80)}
+var p=parts(S.title),n=p.filter(Boolean).length,sz=n>1?118:140;shadow(c,true);var ty=1090-(n>1?290:170);titleBlock(c,W/2,ty,960,sz,"center",tx==="#FFFFFF"?"#FFFFFF":"#14213D",S.ka);shadow(c,false);
+var yb=H-44,say=saytxt();if(say){var o=fit(c,say,880,3,44,28),bh=tH(o)+50;yb-=bh;rr(c,50,yb,980,bh,36);c.fillStyle="#14213D";c.fill();put(c,o,W/2,yb+25,"center","#FFFFFF");yb-=22}
+if(S.prep&&S.prep.trim()){yb-=96;box(c,50,yb,980,96,"",S.prep,"#2F7FE0",34);yb-=18}
+if(S.content&&S.content.trim()){yb-=230;box(c,50,yb,980,230,"강의 내용",S.content,"#1B9E8A",32);yb-=22}
+var py=1112,ph=yb-py;if(ph<300)ph=300;var rh=(ph-30)/3;c.save();c.shadowColor="rgba(20,33,61,.2)";c.shadowBlur=16;c.shadowOffsetY=4;rr(c,50,py,980,ph,40);c.fillStyle="#fff";c.fill();c.restore();
+[["날짜",S.date,"#F08A24","일자를 입력하세요"],["시간",S.time,"#E8508C","시간을 입력하세요"],["장소",S.place,"#7B5BD6","장소를 입력하세요"]].forEach(function(r,i){var ry=py+15+i*rh;pill(c,80,ry+(rh-60)/2,150,60,r[2]);c.fillStyle="#fff";c.font=F(32);c.textAlign="center";c.textBaseline="middle";c.fillText(r[0],155,ry+rh/2+2);var o=fit(c,T(r[1],r[3]),740,2,54,30,rh-14);put(c,o,260,ry+(rh-tH(o))/2,"left",r[1]&&r[1].trim()?"#14213D":"#9AA8C2")})}
+/* ---------- 버전 3: 쇼츠 표지형 (빨강+노랑 제목) ---------- */
+function v3(c){bg(c,2);var tx=txc(),nm=S.name&&S.name.trim();var y=titleBlock(c,W/2,60,980,150,"center","#FF2B2B","#FFE500",["#FFFFFF","#14213D"],16);
+if(S.badge&&S.badge.trim()){c.font=F(32);var bw=mt(c,S.badge)+60;pill(c,W/2-bw/2,y+4,bw,60,"#14213D");c.fillStyle="#FFE45C";c.textAlign="center";c.textBaseline="middle";c.fillText(S.badge,W/2,y+35);y+=76}
+var top=y+14,yb=H-44,say=saytxt(),bh=0;if(say){var o=fit(c,say,820,3,46,28);bh=tH(o)+56}
+var infoH=290,extra=0;if(S.content&&S.content.trim())extra=0;
+var photoBottom=H-44-(bh?bh+60:0)-infoH-40;var ph=photoBottom-top;
+photo(c,90,top,900,ph,50,12);
+if(nm){c.font=F(36);var nw=mt(c,"강사 "+S.name.trim())+70;pill(c,W/2-nw/2,top+ph-36,nw,72,"#14213D");c.fillStyle="#FFE45C";c.textAlign="center";c.textBaseline="middle";c.fillText("강사 "+S.name.trim(),W/2,top+ph);}
+var iy=photoBottom+36;rr(c,90,iy,900,infoH,40);c.fillStyle="#14213D";c.fill();
+function cell(x,w,yy,hh,lab,val,ph2){c.font=F(30);c.textAlign="left";c.textBaseline="top";c.fillStyle="#FFE45C";c.fillText(lab,x,yy);var o=fit(c,T(val,ph2),w,2,52,28,hh-36);put(c,o,x,yy+36,"left",val&&val.trim()?"#FFFFFF":"#8A99B8")}
+cell(130,380,iy+26,120,"날짜",S.date,"일자 입력");cell(560,400,iy+26,120,"시간",S.time,"시간 입력");c.fillStyle="rgba(255,255,255,.25)";c.fillRect(130,iy+150,820,3);cell(130,820,iy+166,110,"장소",S.place,"장소를 입력하세요");
+if(say){var by=iy+infoH+30;rr(c,90,by,900,bh,40);c.fillStyle="#fff";c.fill();c.beginPath();c.moveTo(W/2-30,by);c.lineTo(W/2+30,by);c.lineTo(W/2,by-30);c.closePath();c.fill();put(c,fit(c,say,820,3,46,28),W/2,by+28,"center","#14213D")}}
+/* ---------- 버전 4: 동그라미형 ---------- */
+function v4(c){bg(c,3);var tx=txc(),nm=S.name&&S.name.trim(),y=70;if(S.badge&&S.badge.trim()){c.font=F(32);var bw=mt(c,S.badge)+60;pill(c,W/2-bw/2,y,bw,62,"#fff");c.fillStyle="#14213D";c.textAlign="center";c.textBaseline="middle";c.fillText(S.badge,W/2,y+32);y+=88}
+shadow(c,tx==="#FFFFFF");y=titleBlock(c,W/2,y,940,124,"center",tx,S.ka);shadow(c,false);
+var yb=H-44,say=saytxt();if(say){var o=fit(c,say,900,3,44,28);yb-=tH(o);put(c,o,W/2,yb,"center",tx);yb-=24}
+var rowH=120,panelH=rowH*3+40;yb-=panelH;var panelY=yb;var D=Math.min(740,panelY-y-70);D=Math.max(D,380);var cy=y+14;
+c.fillStyle="rgba(255,255,255,.35)";c.beginPath();c.arc(W/2,cy+D/2,D/2+34,0,7);c.fill();photo(c,W/2-D/2,cy,D,D,0,18,true);
+if(nm){c.font=F(38);var nw=mt(c,"강사 "+S.name.trim())+90;pill(c,W/2-nw/2,cy+D-26,nw,76,"#14213D");c.fillStyle="#FFE45C";c.textAlign="center";c.textBaseline="middle";c.fillText("강사 "+S.name.trim(),W/2,cy+D+12)}
+c.save();c.shadowColor="rgba(20,33,61,.22)";c.shadowBlur=16;c.shadowOffsetY=4;rr(c,70,panelY,940,panelH,44);c.fillStyle="#fff";c.fill();c.restore();
+[["날짜",S.date,"#F08A24","일자를 입력하세요"],["시간",S.time,"#E8508C","시간을 입력하세요"],["장소",S.place,"#7B5BD6","장소를 입력하세요"]].forEach(function(r,i){var ry=panelY+20+i*rowH;c.fillStyle=r[2];c.beginPath();c.arc(120,ry+rowH/2,18,0,7);c.fill();c.font=F(34);c.textAlign="left";c.textBaseline="middle";c.fillText(r[0],152,ry+rowH/2+2);var o=fit(c,T(r[1],r[3]),640,2,50,28,rowH-10);put(c,o,290,ry+(rowH-tH(o))/2,"left",r[1]&&r[1].trim()?"#14213D":"#9AA8C2")});}
+/* ---------- 버전 5: 초대장형 ---------- */
+function v5(c){bg(c,4);var nm=S.name&&S.name.trim();c.save();c.shadowColor="rgba(20,33,61,.3)";c.shadowBlur=30;c.shadowOffsetY=8;rr(c,50,90,980,H-180,70);c.fillStyle="#FFFFFF";c.fill();c.restore();c.save();rr(c,50,90,980,H-180,70);c.clip();var g=c.createLinearGradient(0,90,0,H-90);g.addColorStop(0,S.k1);g.addColorStop(1,S.k2);c.fillStyle=g;c.fillRect(50,90,38,H-180);c.restore();
+var y=150,dark=mix(S.k2,"#14213D",.45),dk=mix(S.k1,"#14213D",.5);
+if(S.badge&&S.badge.trim()){c.font=F(32);var bw=mt(c,S.badge)+70;pill(c,W/2-bw/2+20,y,bw,62,dk);c.fillStyle="#fff";c.textAlign="center";c.textBaseline="middle";c.fillText(S.badge,W/2+20,y+32);y+=90}
+y=titleBlock(c,W/2+20,y,860,112,"center","#14213D",dark);
+var cx=130,cw=840,yb=H-90-50,say=saytxt(),bh=0;if(say){var o=fit(c,say,cw-90,3,42,28);bh=tH(o)+60;yb-=bh;rr(c,cx,yb,cw,bh,32);c.fillStyle=mix(S.k1,"#FFFFFF",.78);c.fill();c.fillStyle=dk;c.font=F(90);c.textAlign="left";c.textBaseline="top";c.fillText("“",cx+18,yb-6);put(c,o,cx+cw/2+10,yb+30,"center","#14213D");yb-=26}
+var infoH=250;yb-=infoH;var iy=yb;yb-=24;var top=y+24;var ph=yb-top;
+photo(c,cx,top,cw,ph,40,0);
+if(nm){c.font=F(34);var nw=mt(c,"강사 "+S.name.trim())+70;pill(c,cx+cw-nw-20,top+ph-76,nw,60,"rgba(20,33,61,.88)");c.fillStyle="#FFE45C";c.textAlign="center";c.textBaseline="middle";c.fillText("강사 "+S.name.trim(),cx+cw-nw/2-20,top+ph-46)}
+var cols=[["날짜",S.date,"일자 입력","#F08A24",1],["시간",S.time,"시간 입력","#E8508C",2],["장소",S.place,"장소 입력","#7B5BD6",4]],cwA=[270,270,300],cxA=[0,270,540];cols.forEach(function(r,i){var x=cx+cxA[i],cwid=cwA[i];if(i){c.fillStyle="#D5DEEE";c.fillRect(x,iy+16,3,infoH-32)}c.font=F(32);c.textAlign="left";c.textBaseline="top";c.fillStyle=r[3];c.fillText(r[0],x+(i?22:6),iy+14);var o=fit(c,T(r[1],r[2]),cwid-(i?36:22),r[4],46,22,infoH-70);put(c,o,x+(i?22:6),iy+62,"left",r[1]&&r[1].trim()?"#14213D":"#9AA8C2",1.28)})}
+var VER=[v1,v2,v3,v4,v5];
+function paint(cv,ver,sc){var c=cv.getContext("2d");c.save();c.setTransform(sc,0,0,sc,0,0);c.clearRect(0,0,W,H);c.textBaseline="top";VER[ver](c);c.restore()}
+/* ---------- 프롬프트 ---------- */
+var VC=["차분하고 따뜻한 중년 남성","차분하고 따뜻한 중년 여성"];
+function cname(h){var c=hx(h),r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn;if(d<.08)return l>.8?"흰색":l<.25?"검정":"회색";var hh;if(mx===r)hh=((g-b)/d+6)%6;else if(mx===g)hh=(b-r)/d+2;else hh=(r-g)/d+4;hh*=60;var n=hh<15||hh>=345?"빨강":hh<40?"주황":hh<65?"노랑":hh<95?"연두":hh<160?"초록":hh<190?"민트":hh<215?"하늘":hh<260?"파랑":hh<300?"보라":"분홍";return(l>.75?"연한 ":"")+n}
+function prompt0(withBottom){var say=spoken(),p=parts(S.title),t1=p[0],t2=p[1],tc=txc()==="#FFFFFF"?"흰색":"진한 남색",ac=cname(S.ka),gd=S.voice?"여성":"남성",D=T(S.date,""),TM=T(S.time,""),PL=T(S.place,""),nm=S.name&&S.name.trim()?'이름표 "강사 '+S.name.trim()+'"':"",bd=S.badge&&S.badge.trim()?'맨 위 작은 흰 알약 "'+S.badge.trim()+'". ':"",bt=saytxt(),
+bgd="배경은 위쪽 "+cname(S.k1)+", 아래쪽 "+cname(S.k2)+"으로 이어지는 부드러운 그라데이션. ";
+function ttl(c1,c2,where){return where+" 큰 굵은 제목 "+(t2?'2줄: "'+t1+'"('+c1+'), "'+t2+'"('+c2+')':'"'+t1+'"('+c1+')')+". "}
+var info='날짜 "'+D+'", 시간 "'+TM+'", 장소 "'+PL+'"';
+var lay=["왼쪽에 흰 카드 3개: \"날짜 "+D+"\", \"시간 "+TM+"\", \"장소 "+PL+"\". 오른쪽에 인물이 서 있는 세로 액자(상반신)"+(nm?", 액자 아래 "+nm:"")+". "+ttl(tc,ac,"오른쪽 위에"),
+"위쪽 전체가 인물 사진 큰 화면(상반신)"+(nm?", "+nm+" 포함":"")+". "+ttl(tc==="흰색"?"흰색":"진한 남색",ac,"사진 아래쪽에 겹쳐 가운데 정렬로")+"그 아래 흰 카드 한 장 안에 세 줄: "+info+". ",
+ttl("빨강색, 흰 테두리","노랑색, 검정 테두리","맨 위 가운데 아주")+"가운데에 인물 큰 액자(상반신)"+(nm?", 액자 아래 "+nm:"")+". 아래 남색 띠 안에 "+info+". ",
+ttl(tc,ac,"위쪽 가운데에")+"가운데에 큰 동그란 액자 안에 인물"+(nm?", 아래 "+nm:"")+". 아래 흰 카드 한 장 안에 세 줄: "+info+". ",
+"흰 초대장 카드 한 장이 화면 대부분을 차지함. "+ttl("진한 남색","진한 "+cname(S.k2),"카드 위쪽 가운데에")+"가운데에 인물 액자(상반신)"+(nm?", "+nm:"")+". 아래에 세 칸 나란히 "+info+". "][S.ver];
+var o=[];o.push("세로 9:16, 10초, 선명한 실사 영상. 올린 사진 속 인물 본인("+gd+", 얼굴·헤어·옷 그대로)이 아래 강의 안내 화면 안에 들어가 직접 말합니다.");
+o.push("[안내 화면] "+bgd+bd+lay+(withBottom&&bt?'맨 아래 한 줄 "'+bt+'".':""));
+o.push("[움직임] 카메라 고정. 화면 속 인물만 카메라를 보며 자연스럽게 말하고 고개를 끄덕이며 마지막 2초는 환하게 웃습니다. 글씨·카드·배경은 움직이거나 바뀌지 않습니다.");
+o.push("[음성] 화면 속 인물이 직접 말합니다. "+VC[S.voice]+" 목소리로 한국어를 또렷하고 천천히, 입 모양을 맞춰: \""+say+"\"");
+if(/자동/.test(say))o.push("[발음 주의] '자동'은 '자 동'처럼 또박또박 읽습니다.");
+o.push("[글씨] 따옴표 안의 글씨만 오탈자 없이 또렷하게 넣고, 다른 글씨는 넣지 않습니다.");
+o.push(S.music?"[소리] 배경음악 없이 음성만 넣습니다.":"[소리] 밝은 어쿠스틱 배경음악을 음성보다 작게.");
+o.push("[금지] 영어, 깨진 글자, 로고, 워터마크, 인물 변형.");return o.join("\n")}
+function prompt2(){var say=spoken(),gd=S.voice?"여성":"남성",o=[];o.push("세로 9:16, 10초. 올린 이미지는 2장입니다. 첫 번째는 강의 안내 이미지, 두 번째는 강사 사진입니다. 첫 번째 안내 이미지를 첫 장면 그대로 유지하고, 안내 이미지 속 사진 자리(사람 모양 자리 포함)의 인물은 두 번째 사진 속 인물 본인("+gd+", 얼굴·헤어·옷 그대로)으로 합니다. 카메라는 고정, 줌·이동 없음.");o.push("[움직임] 사진 자리의 강사 한 명만 카메라를 보며 자연스럽게 말하고 고개를 끄덕이며 표정이 부드럽게 변합니다. 마지막 2초는 환하게 웃습니다. 안내 이미지의 글씨·카드·배경색·레이아웃은 한 글자도 바뀌지 않고 흔들리지 않습니다.");o.push("[음성] 안내 이미지 속 강사가 직접 말합니다. "+VC[S.voice]+" 목소리로 한국어를 또렷하고 천천히, 입 모양을 맞춰: \""+say+"\"");if(/자동/.test(say))o.push("[발음 주의] '자동'은 '자 동'처럼 또박또박 읽습니다.");o.push("[자막] 새 자막과 새 글씨를 넣지 않습니다. 안내 이미지에 있는 글씨만 보입니다.");o.push(S.music?"[소리] 배경음악 없이 음성만 넣습니다.":"[소리] 밝은 어쿠스틱 배경음악을 음성보다 작게.");o.push("[금지] 영어, 깨진 글자, 로고, 워터마크, 인물 변형, 글씨 변형.");return o.join("\n")}
+function prompt3(){var say=spoken(),gd=S.voice?"여성":"남성",o=[];o.push("세로 9:16, 10초. 올린 사진 속 인물 본인("+gd+", 얼굴·헤어·옷·배경 그대로)이 카메라를 정면으로 보며 직접 말합니다. 가슴 위 상반신, 카메라 고정, 줌·이동 없음.");o.push("[움직임] 자연스럽게 말하며 고개를 가볍게 끄덕이고 표정이 부드럽게 변합니다. 마지막 2초는 환하게 웃습니다. 손과 몸은 거의 움직이지 않습니다.");o.push("[음성] "+VC[S.voice]+" 목소리로 한국어를 또렷하고 천천히, 입 모양을 맞춰: \""+say+"\"");if(/자동/.test(say))o.push("[발음 주의] '자동'은 '자 동'처럼 또박또박 읽습니다.");o.push("[자막] 화면에 자막과 글씨를 넣지 않습니다.");o.push(S.music?"[소리] 배경음악 없이 음성만 넣습니다.":"[소리] 밝은 어쿠스틱 배경음악을 음성보다 작게.");o.push("[금지] 영어, 깨진 글자, 로고, 워터마크, 인물 변형, 배경 교체.");return o.join("\n")}
+function prompt(){if(S.pm===3)return prompt3();if(S.pm===2)return prompt2();if(!S.pm){var a=prompt0(true);return a.length>900?prompt0(false):a}return prompt1()}
+function prompt1(){var say=spoken(),o=[];o.push("세로 9:16, 10초. 올린 이미지 한 장 전체가 영상의 화면입니다. 처음부터 끝까지 이미지 전체(제목 글씨, 날짜·시간·장소 카드, 배경색, 사진 액자)가 그대로 보입니다. 카메라는 고정, 확대·크롭·얼굴 클로즈업·화면 전환 없음.");o.push("[움직임] 이미지 안 액자 속 인물 한 명만 그 자리에서 움직입니다. 인물의 크기와 위치는 그대로입니다. 카메라를 보며 자연스럽게 말하고 고개를 가볍게 끄덕이며 표정이 부드럽게 변합니다. 마지막 2초는 환하게 웃습니다. 얼굴·헤어·옷은 변하지 않습니다. 포스터의 글씨·카드·배경색·레이아웃은 한 글자도 바뀌지 않고 흔들리지 않습니다.");o.push("[음성] 포스터 속 인물이 직접 말합니다. "+VC[S.voice]+" 목소리로 한국어를 또렷하고 천천히, 입 모양을 맞춰: \""+say+"\"");if(/자동/.test(say))o.push("[발음 주의] '자동'은 '자 동'처럼 또박또박 읽습니다.");o.push("[자막] 새 자막과 새 글씨를 넣지 않습니다. 포스터에 있는 글씨만 보입니다.");o.push(S.music?"[소리] 배경음악 없이 음성만 넣습니다.":"[소리] 밝은 어쿠스틱 배경음악을 음성보다 작게.");o.push("[금지] 포스터 밖으로 인물만 크게 보여 주기, 배경 교체, 영어, 깨진 글자, 로고, 워터마크, 인물 변형, 글씨 변형.");return o.join("\n")}
+/* ---------- 화면 ---------- */
+var CV=$("cv"),tmr=null;
+function redraw(){setMode();paint(CV,S.ver,1);for(var i=0;i<5;i++)paint($("th"+i),i,.125);var p=prompt();$("pr").textContent=p;var n=p.length;$("prcnt").innerHTML=n<=900?'<span class="ok">글자 수 '+n+'자 (900자 이내 · 좋아요)</span>':'<span class="warn">글자 수 '+n+'자 — 900자를 넘었습니다. 멘트를 줄여 주세요</span>';$("prhint").innerHTML=S.pm===3?"얼굴이 크고 밝은 정면 사진이 좋습니다. 만든 영상은 <b>3단계</b>에서 포스터와 합칩니다.":S.pm===2?"① 위의 <b>포스터 저장</b> → ② 유튜브 크리에이트에 <b>첫 번째로 안내 이미지, 두 번째로 내 사진</b> 올리기 → ③ 이 프롬프트 붙여넣기 → ④ 만들기":S.pm===1?"① 위 <b>1번 칸에서 내 사진을 먼저 넣고</b> 포스터 저장 → ② 유튜브 크리에이트에 <b>포스터 한 장만</b> 올리기 → ③ 이 프롬프트 붙여넣기 → ④ 만들기"+(PH?"":" <b class=\"warn\">⚠️ 아직 내 사진이 없습니다. 1번 칸에서 사진을 넣어 주세요</b>"):"① <b>내 사진</b>을 유튜브 크리에이트에 올리기 → ② 이 프롬프트 붙여넣기 → ③ 만들기. 글씨가 깨지면 「프롬프트 방식」을 ① 또는 ③으로 바꾸세요.";var sl=spoken().length;$("saycnt").innerHTML=sl<=45?'<span class="ok">말할 글자 '+sl+'자 · 10초 안에 말할 수 있어요 (45자 이내 권장)</span>':'<span class="warn">말할 글자 '+sl+'자 · 10초에 다 못 말할 수 있어요 (45자 이내 권장)</span>';for(var j=0;j<5;j++)$("vb"+j).className=j===S.ver?"on":"";var pb=document.querySelectorAll("#pre button");pb.forEach(function(b,i){b.className=i===S.pre?"on":""})}
+function setMode(){var b=S.pm===2;$("boxA").style.display=b?"none":"block";$("boxB").style.display=b?"block":"none";$("card3").style.display=b?"none":"block";$("mA").style.cssText=!b&&S.pm===3?"background:#FFE45C;box-shadow:0 0 0 3px #14213D":"";$("mB").style.cssText=b?"background:#FFE45C;box-shadow:0 0 0 3px #14213D":""}
+function cpy(t,m){function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");toast(m)}catch(e){toast("복사 실패: 길게 눌러 직접 복사해 주세요")}document.body.removeChild(a)}if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){toast(m)},fb)}else fb()}
+function later(){clearTimeout(tmr);tmr=setTimeout(function(){save();redraw()},70)}
+function sync(){var m={f_title:"title",f_date:"date",f_place:"place",f_time:"time",f_say:"say",x_badge:"badge",x_name:"name",x_sub:"sub",x_content:"content",x_prep:"prep",x_bottom:"bottom"};for(var k in m)$(k).value=S[m[k]]||"";$("z").value=S.z;$("px").value=S.px;$("py").value=S.py;$("k1").value=S.k1;$("k2").value=S.k2;$("ka").value=S.ka;$("ktx").value=S.ktx;$("c_say").checked=!!S.saybot;$("voice").value=S.voice;$("music").value=S.music;$("pm").value=S.pm}
+function bind(){var m={f_title:"title",f_date:"date",f_place:"place",f_time:"time",f_say:"say",x_badge:"badge",x_name:"name",x_sub:"sub",x_content:"content",x_prep:"prep",x_bottom:"bottom"};Object.keys(m).forEach(function(k){$(k).addEventListener("input",function(){S[m[k]]=this.value;later()})});
+["z","px","py"].forEach(function(k){$(k).addEventListener("input",function(){S[k]=+this.value;later()})});["k1","k2","ka"].forEach(function(k){$(k).addEventListener("input",function(){S[k]=this.value;S.pre=-1;later()})});
+$("ktx").onchange=function(){S.ktx=this.value;later()};$("c_say").onchange=function(){S.saybot=this.checked;later()};$("voice").onchange=function(){S.voice=+this.value;later()};$("music").onchange=function(){S.music=+this.value;later()};$("pm").onchange=function(){S.pm=+this.value;later()};
+$("d_pick").onchange=function(){if(!this.value)return;var a=this.value.split("-"),d=new Date(+a[0],+a[1]-1,+a[2]);S.date=(+a[1])+"월 "+(+a[2])+"일("+"일월화수목금토".charAt(d.getDay())+")";$("f_date").value=S.date;later()};
+function tm(){var a=$("t1").value,b=$("t2").value;if(!a)return;var s=a+(b?" ~ "+b:"");if(b){var x=a.split(":"),y=b.split(":"),df=(+y[0]*60+ +y[1])-(+x[0]*60+ +x[1]);if(df>0){var h=Math.floor(df/60),mi=df%60;s+=" ("+(h?h+"시간":"")+(mi?(h?" ":"")+mi+"분":"")+")"}}S.time=s;$("f_time").value=s;later()}
+$("t1").onchange=tm;$("t2").onchange=tm;
+$("ph").onchange=function(){var f=this.files&&this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){shrink(r.result,function(u){setPhoto(u);try{localStorage.setItem(KP,u)}catch(e){toast("사진이 커서 저장은 못 했어요 (이번에는 사용 가능)")}})};r.readAsDataURL(f)};
+$("mA").onclick=function(){S.pm=3;$("pm").value=3;later()};$("mB").onclick=function(){S.pm=2;$("pm").value=2;later()};
+$("txt").onclick=function(){var t=spoken()+"\n",b=new Blob([t],{type:"text/plain;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="teacher_ment.txt";document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u)},4000);toast("멘트를 텍스트 파일로 저장했습니다")};
+$("cs").onclick=function(){cpy(spoken(),"멘트를 복사했습니다 → 붙여넣기")};
+$("vf").onchange=function(){var f=this.files&&this.files[0];if(f)loadVid(f)};$("vpv").onclick=function(){compose(false)};$("vrec").onclick=function(){compose(true)};
+$("sample").onclick=function(){Object.assign(S,SAMPLE);sync();later();toast("예시로 채웠습니다")};
+var wt=null;$("wipe").onclick=function(){if(!wt){$("wipe").textContent="⚠️ 한 번 더 누르면 모두 지웁니다";$("wipe").style.background="#FFB4A8";wt=setTimeout(function(){wt=null;$("wipe").textContent="🧹 싹 지우기";$("wipe").style.background=""},3500);return}clearTimeout(wt);wt=null;$("wipe").textContent="🧹 싹 지우기";$("wipe").style.background="";S=Object.assign(base(),BLANK);PH=null;try{localStorage.removeItem(KEY);localStorage.removeItem(KP)}catch(e){}$("ph").value="";$("d_pick").value="";$("t1").value="";$("t2").value="";sync();save();redraw();toast("싹 지웠습니다")};
+$("dl").onclick=function(){CV.toBlob(function(b){var u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="poster_v"+(S.ver+1)+".png";document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u)},4000);toast("저장했습니다. 안 보이면 그림이 열려요 → 길게 눌러 저장");if(/iP(hone|ad|od)/.test(navigator.userAgent)){window.open(CV.toDataURL("image/png"),"_blank")}},"image/png")};
+$("cp").onclick=function(){var t=prompt();function fb(){var a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();try{document.execCommand("copy");toast("프롬프트를 복사했습니다 → 크리에이트에 붙여넣기")}catch(e){toast("복사 실패: 길게 눌러 직접 복사해 주세요")}document.body.removeChild(a)}if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){toast("프롬프트를 복사했습니다 → 크리에이트에 붙여넣기")},fb)}else fb()};
+if(navigator.canShare){CV.toBlob(function(){},"image/png");$("sh").style.display="block";$("sh").onclick=function(){CV.toBlob(function(b){var f=new File([b],"poster.png",{type:"image/png"});if(navigator.canShare({files:[f]}))navigator.share({files:[f],title:"포스터"}).catch(function(){});else toast("이 기기는 공유 저장을 지원하지 않습니다. 포스터 저장 버튼을 쓰세요")},"image/png")}}}
+function shrink(u,cb){var im=new Image();im.onload=function(){var m=1400,s=Math.min(1,m/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);cb(cv.toDataURL("image/jpeg",.85))};im.onerror=function(){toast("사진을 열 수 없습니다")};im.src=u}
+function setPhoto(u,quiet){var im=new Image();im.onload=function(){PH=im;if(!quiet){S.z=100;S.px=0;S.py=-60;sync()}redraw()};im.src=u}
+var CTX=null,SRCN=null,DEST=null,RUN=false;
+function vstat(t,w){$("vst").innerHTML=w?'<span class="warn">'+t+'</span>':t}
+function loadVid(f){if(VID){try{VID.pause()}catch(e){}}VID=document.createElement("video");VID.playsInline=true;VID.preload="auto";VID.src=URL.createObjectURL(f);SRCN=null;VID.onloadeddata=function(){VIDON=true;VID.currentTime=0.05;$("vpv").disabled=false;$("vrec").disabled=false;vstat("영상을 불러왔습니다 ("+Math.round(VID.duration*10)/10+"초). 아래 버튼을 눌러 보세요.");VID.onseeked=function(){VID.onseeked=null;redraw()}};VID.onerror=function(){VIDON=false;vstat("이 영상을 열 수 없습니다. 다른 영상으로 시도해 주세요.",1)}}
+function audioGraph(){if(SRCN)return;var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;CTX=new AC();SRCN=CTX.createMediaElementSource(VID);DEST=CTX.createMediaStreamDestination();SRCN.connect(DEST)}
+function compose(rec){if(RUN||!VID)return;RUN=true;$("vpv").disabled=true;$("vrec").disabled=true;var rc=null,mr=null,chunks=[],ctxPrev=false;
+var RW=720,RH=1280;rc=document.createElement("canvas");rc.width=RW;rc.height=RH;
+audioGraph();if(CTX&&CTX.state==="suspended")CTX.resume();
+if(!rec&&CTX&&SRCN){try{SRCN.connect(CTX.destination);ctxPrev=true}catch(e){}}
+VID.currentTime=0;var done=false;
+function finish(){if(done)return;done=true;RUN=false;try{VID.pause()}catch(e){}if(ctxPrev){try{SRCN.disconnect(CTX.destination)}catch(e){}}$("vpv").disabled=false;$("vrec").disabled=false;VID.currentTime=0.05;VID.onseeked=function(){VID.onseeked=null;redraw()}}
+if(rec){if(!window.MediaRecorder||!rc.captureStream){RUN=false;$("vpv").disabled=false;$("vrec").disabled=false;vstat("이 브라우저는 영상 저장을 지원하지 않습니다. 크롬(Chrome)으로 열어 주세요.",1);return}
+var st=rc.captureStream(30);if(DEST&&DEST.stream.getAudioTracks().length)st.addTrack(DEST.stream.getAudioTracks()[0]);
+var mimes=["video/mp4;codecs=avc1,mp4a.40.2","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"],mime="";for(var i=0;i<mimes.length;i++){if(MediaRecorder.isTypeSupported(mimes[i])){mime=mimes[i];break}}
+try{mr=new MediaRecorder(st,mime?{mimeType:mime,videoBitsPerSecond:4000000}:{videoBitsPerSecond:4000000})}catch(e){RUN=false;$("vpv").disabled=false;$("vrec").disabled=false;vstat("영상 저장을 시작하지 못했습니다.",1);return}
+mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+mr.onstop=function(){var ext=/mp4/.test(mr.mimeType||mime)?"mp4":"webm",b=new Blob(chunks,{type:(mr.mimeType||mime||"video/webm").split(";")[0]}),u=URL.createObjectURL(b);$("vout").innerHTML='<video controls playsinline style="width:100%;max-width:360px;display:block;margin:10px auto;border-radius:12px" src="'+u+'"></video><a class="dl" download="poster_video.'+ext+'" href="'+u+'" style="display:block;text-align:center;background:#1B9E5A;color:#fff;padding:16px;border-radius:14px;font-weight:700;text-decoration:none">💾 완성 영상 저장 (.'+ext+')</a>';vstat("완성했습니다! 아래 영상을 확인하고 저장하세요.");toast("영상이 완성되었습니다")};
+mr.start(500)}
+vstat(rec?"만드는 중입니다… 끝날 때까지 화면을 켜 두세요":"미리보기 중…");
+function frame(){if(done)return;paint(rc,S.ver,RW/W);var mc=CV.getContext("2d");mc.clearRect(0,0,W,H);mc.drawImage(rc,0,0,W,H);if(VID.ended||VID.currentTime>=VID.duration-0.05){if(rec&&mr&&mr.state!=="inactive"){setTimeout(function(){try{mr.stop()}catch(e){}},300)}finish();return}requestAnimationFrame(frame)}
+VID.play().then(function(){requestAnimationFrame(frame)},function(){finish();vstat("영상을 재생하지 못했습니다. 한 번 더 눌러 주세요.",1)});
+setTimeout(function(){if(!done){if(rec&&mr&&mr.state!=="inactive"){try{mr.stop()}catch(e){}}finish()}},(VID.duration+4)*1000)}
+function init(){var pre=$("pre");PRE.forEach(function(p,i){var b=document.createElement("button");b.type="button";b.title=p[0];b.style.background="linear-gradient(180deg,"+p[1]+","+p[2]+")";b.onclick=function(){S.pre=i;S.k1=p[1];S.k2=p[2];S.ka=p[3];S.ktx=p[4]==="w"?"w":"n";$("k1").value=S.k1;$("k2").value=S.k2;$("ka").value=S.ka;$("ktx").value=S.ktx;later()};pre.appendChild(b)});
+var v=$("vers");VN.forEach(function(n,i){var b=document.createElement("button");b.type="button";b.id="vb"+i;b.innerHTML='<canvas id="th'+i+'" width="135" height="240"></canvas><span>'+(i+1)+'번 '+n+'</span>';b.onclick=function(){S.ver=i;later()};v.appendChild(b)});load();sync();bind();redraw();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(redraw)}
+init();
+</script></body></html>
